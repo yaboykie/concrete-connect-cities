@@ -6,6 +6,7 @@ import { locationData } from './LocationData';
 import { Button } from '@/components/ui/button';
 import QuoteForm from '@/components/QuoteForm';
 import { Separator } from '@/components/ui/separator';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 // Helper function to get unique states from location data
 const getUniqueStates = () => {
@@ -81,6 +82,7 @@ const getStateName = (code: string) => {
 
 const LocationsList = () => {
   const uniqueStates = getUniqueStates();
+  const isMobile = useIsMobile();
   
   return (
     <main className="flex-grow">
@@ -91,47 +93,66 @@ const LocationsList = () => {
             {/* Left Column: Headline and Trust Signals */}
             <div className="lg:w-1/2 space-y-6">
               <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
-                Get Free Quotes From Top-Rated Local Driveway Concreters
+                Driveway Concreters Near You – Get Fast, Free Quotes
               </h1>
               
-              <p className="text-xl text-gray-700">
-                Matched instantly with trusted local pros. Most respond within 2 business hours — no spam, 
-                no pressure, just real quotes from verified driveway concreters.
-              </p>
+              {!isMobile && (
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Check className="h-5 w-5 text-brand-blue flex-shrink-0" />
+                    <span className="text-gray-700">All concreters are licensed, insured, and thoroughly vetted</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Check className="h-5 w-5 text-brand-blue flex-shrink-0" />
+                    <span className="text-gray-700">We only work with professionals rated 4.5 stars and above</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Check className="h-5 w-5 text-brand-blue flex-shrink-0" />
+                    <span className="text-gray-700">Free service with zero obligation to hire</span>
+                  </div>
+                </div>
+              )}
               
-              <div className="bg-white/80 backdrop-blur-sm p-5 rounded-lg border border-gray-100 shadow-sm">
-                <p className="text-gray-800 leading-relaxed">
-                  A new driveway isn't just functional — it's the <strong>first thing people see</strong> when they visit your home. 
-                  Real estate agents confirm that an attractive, well-installed concrete driveway can <strong>increase property value by $3,000 to $10,000</strong> depending 
-                  on your area and home price.
+              <div className="space-y-4">
+                <p className="text-lg text-gray-700">
+                  A beautiful driveway doesn't just add curb appeal — it sets the tone for your entire home.
                 </p>
                 
-                <p className="text-gray-800 leading-relaxed mt-3">
-                  Most homeowners recoup <strong>50–80% of the installation cost</strong> if they sell. A clean, modern concrete 
-                  driveway gives buyers that crucial positive first impression—showing your home is well-maintained 
-                  and move-in ready, which is especially important in today's competitive real estate markets.
+                <p className="text-lg text-gray-700">
+                  Whether you're welcoming guests or pulling in after a long day, a fresh concrete driveway gives you 
+                  something to be proud of. It's clean, durable, and instantly improves how your home is seen.
                 </p>
                 
-                <p className="text-gray-800 leading-relaxed mt-3 font-medium">
-                  Get your free quote now and discover how a new concrete driveway could add serious value to your home — 
-                  with no pressure or obligation to hire.
+                <p className="text-lg text-gray-700">
+                  And when it's time to sell? Real estate agents estimate a new driveway can add <strong>$10,000 to $20,000</strong> in resale value.
+                </p>
+                
+                <p className="text-lg text-gray-700">
+                  With ConcreterQuotes, you're matched instantly with top-rated driveway concreters in your area. No pressure, 
+                  no spam — just fast, free quotes from vetted pros who typically reply within 1–2 business hours.
                 </p>
               </div>
               
-              <div className="space-y-3 pt-2">
-                <div className="flex items-center gap-2">
-                  <Check className="h-5 w-5 text-brand-blue flex-shrink-0" />
-                  <span className="text-gray-700">All concreters are licensed, insured, and thoroughly vetted</span>
+              {/* Mobile-only Trust Signals */}
+              {isMobile && (
+                <div className="pt-4">
+                  <h3 className="text-xl font-semibold mb-3">Why Homeowners Love Working With Us</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <Check className="h-5 w-5 text-brand-blue flex-shrink-0" />
+                      <span className="text-gray-700">All concreters are licensed, insured, and thoroughly vetted</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Check className="h-5 w-5 text-brand-blue flex-shrink-0" />
+                      <span className="text-gray-700">We only work with professionals rated 4.5 stars and above</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Check className="h-5 w-5 text-brand-blue flex-shrink-0" />
+                      <span className="text-gray-700">Free service with zero obligation to hire</span>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Check className="h-5 w-5 text-brand-blue flex-shrink-0" />
-                  <span className="text-gray-700">We only work with professionals rated 4.5 stars and above</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="h-5 w-5 text-brand-blue flex-shrink-0" />
-                  <span className="text-gray-700">Free service with zero obligation to hire</span>
-                </div>
-              </div>
+              )}
               
               {/* Mobile-only CTA button (hidden on desktop) */}
               <div className="lg:hidden pt-4">

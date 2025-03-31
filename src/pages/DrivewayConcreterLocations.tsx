@@ -49,8 +49,8 @@ const DrivewayConcreterLocations = () => {
       <HelmetProvider>
         <div className="min-h-screen flex flex-col">
           <SEOHead 
-            title="Get Free Quotes From Top-Rated Local Driveway Concreters" 
-            description="Find professional and affordable driveway concreters near you. Get free quotes from trusted local pros within 2 hours. Licensed, insured, and highly-rated contractors."
+            title="Driveway Concreters Near You – Get Fast, Free Quotes" 
+            description="Get matched instantly with top-rated local driveway concreters. Enjoy a beautiful new driveway and boost your home's value. Free quotes, fast replies, and no obligation."
             schemaData={{
               "@context": "https://schema.org",
               "@type": "Organization",
