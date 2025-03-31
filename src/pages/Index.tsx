@@ -14,7 +14,7 @@ const Index = () => {
     { 
       service: 'concrete-driveways',
       title: 'Concrete Driveways', 
-      description: 'Get a beautiful, durable driveway installed by a local expert.',
+      description: "Get a beautiful, durable driveway installed by a local expert.",
       icon: <Truck className="h-10 w-10 mb-2 text-brand-blue" />,
       path: '/driveway-concreters/locations',
       cta: 'Get Driveway Quotes'
@@ -22,7 +22,7 @@ const Index = () => {
     { 
       service: 'concrete-patios', 
       title: 'Concrete Patios', 
-      description: 'Create an outdoor living space that's beautiful, durable, and low-maintenance.',
+      description: "Create an outdoor living space that's beautiful, durable, and low-maintenance.",
       icon: <House className="h-10 w-10 mb-2 text-brand-blue" />,
       path: '/concrete-patios/locations',
       cta: 'Find Patio Contractors'
@@ -30,7 +30,7 @@ const Index = () => {
     { 
       service: 'concrete-slab', 
       title: 'Concrete Slabs', 
-      description: 'Foundations, patios, sheds — all professionally poured.',
+      description: "Foundations, patios, sheds — all professionally poured.",
       icon: <Shovel className="h-10 w-10 mb-2 text-brand-blue" />,
       path: '/concrete-slab/locations',
       cta: 'Find Slab Contractors'
@@ -38,7 +38,7 @@ const Index = () => {
     { 
       service: 'concrete-garage', 
       title: 'Garage Concrete', 
-      description: 'Smooth, strong garage floors and complete garage builds.',
+      description: "Smooth, strong garage floors and complete garage builds.",
       icon: <House className="h-10 w-10 mb-2 text-brand-blue" />,
       path: '/concrete-garage/locations',
       cta: 'Quote My Garage Project'
@@ -46,7 +46,7 @@ const Index = () => {
     { 
       service: 'decorative-concrete', 
       title: 'Decorative Concrete', 
-      description: 'Stamped, colored, or exposed aggregate concrete to boost curb appeal.',
+      description: "Stamped, colored, or exposed aggregate concrete to boost curb appeal.",
       icon: <Hammer className="h-10 w-10 mb-2 text-brand-blue" />,
       path: '/decorative-concrete/locations',
       cta: 'Explore Decorative Options'
@@ -54,7 +54,7 @@ const Index = () => {
     { 
       service: 'commercial-concrete', 
       title: 'Commercial Concrete', 
-      description: 'Need help with a larger project? We\'ve got commercial pros too.',
+      description: "Need help with a larger project? We've got commercial pros too.",
       icon: <Building className="h-10 w-10 mb-2 text-brand-blue" />,
       path: '/commercial-concrete/locations',
       cta: 'Talk to a Commercial Concreter'
