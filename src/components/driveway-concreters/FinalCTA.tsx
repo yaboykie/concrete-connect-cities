@@ -13,20 +13,14 @@ const FinalCTA: React.FC<FinalCTAProps> = ({ fullLocation }) => {
     ? fullLocation.split(',')[0].trim() 
     : fullLocation;
 
-  // Check if we're in NYC for specific messaging
-  const isNYC = displayLocation.toLowerCase() === 'new york city';
-
   return (
     <section className="section bg-gradient-to-b from-brand-blue/90 to-brand-navy py-16 text-white">
       <div className="container mx-auto px-4 text-center">
         <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">
-          {isNYC ? "Get Your Free NYC Driveway Quotes Today" : `Ready for Expert Driveway Service in ${displayLocation}?`}
+          Get Your Free {displayLocation} Driveway Quotes Today
         </h2>
         <p className="text-xl text-gray-100 mb-8 max-w-3xl mx-auto font-medium">
-          {isNYC ? 
-            "Our network of vetted NYC concrete pros handle everything from DOB permits to finishing touches, creating driveways that withstand NYC's tough conditions." :
-            `Our professional concreters in ${displayLocation} deliver beautiful, durable concrete driveways with exceptional service and craftsmanship.`
-          }
+          Our network of vetted {displayLocation} concrete pros handle everything from permits to finishing touches, creating driveways that withstand local conditions and add value to your property.
         </p>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
@@ -44,7 +38,7 @@ const FinalCTA: React.FC<FinalCTAProps> = ({ fullLocation }) => {
             </div>
             <h3 className="text-lg font-bold mb-2">Verified Professionals</h3>
             <p className="text-gray-100">
-              {isNYC ? "All contractors licensed with NYC Department of Consumer Affairs" : "All contractors meet strict licensing requirements"}
+              All contractors meet strict licensing requirements and pass our verification process
             </p>
           </div>
           
