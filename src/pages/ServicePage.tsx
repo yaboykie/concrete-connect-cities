@@ -10,6 +10,7 @@ import TestimonialSection from '@/components/TestimonialSection';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, CheckCircle, MapPin, Shield } from 'lucide-react';
 import serviceContent from '@/data/serviceContent';
+import { Helmet } from 'react-helmet-async';
 
 const ServicePage = () => {
   const { service } = useParams<{ service: string }>();
@@ -22,6 +23,11 @@ const ServicePage = () => {
   
   return (
     <div className="min-h-screen flex flex-col">
+      <Helmet>
+        <title>{content.title} | Professional Concrete Services</title>
+        <meta name="description" content={content.introduction} />
+      </Helmet>
+      
       <Header />
       
       <main className="flex-grow">
