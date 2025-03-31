@@ -67,25 +67,33 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ location = "", service = "" }) =>
     return serviceStr ? serviceStr.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Concrete';
   };
 
+  // Format the location to only show city if it contains both city and state
+  const formatLocation = (loc: string) => {
+    if (loc.includes(',')) {
+      return loc.split(',')[0].trim();
+    }
+    return loc;
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-xl p-6 md:p-8">
-      <h3 className="text-2xl font-bold text-center mb-4">
+      <h3 className="text-2xl font-bold text-center mb-4 text-gray-800">
         Get 3 Free {getFormattedServiceName(service)} Quotes
-        {location ? ` in ${location}` : ''}
+        {location ? ` in ${formatLocation(location)}` : ''}
       </h3>
       
       <div className="mb-6 space-y-2">
         <div className="flex items-start">
           <CheckCircle className="h-5 w-5 mr-2 text-brand-blue flex-shrink-0 mt-0.5" />
-          <span className="text-sm">Local pros who know local building codes</span>
+          <span className="text-sm text-gray-700">Local pros who know local building codes</span>
         </div>
         <div className="flex items-start">
           <CheckCircle className="h-5 w-5 mr-2 text-brand-blue flex-shrink-0 mt-0.5" />
-          <span className="text-sm">No calls from random contractors</span>
+          <span className="text-sm text-gray-700">No calls from random contractors</span>
         </div>
         <div className="flex items-start">
           <CheckCircle className="h-5 w-5 mr-2 text-brand-blue flex-shrink-0 mt-0.5" />
-          <span className="text-sm">Transparent pricing — no surprises</span>
+          <span className="text-sm text-gray-700">Transparent pricing — no surprises</span>
         </div>
       </div>
       
@@ -145,12 +153,14 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ location = "", service = "" }) =>
               <SelectValue placeholder="Select Project Type" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="new-driveway">New Driveway Installation</SelectItem>
-              <SelectItem value="driveway-repair">Driveway Repair/Resurfacing</SelectItem>
-              <SelectItem value="patio">Concrete Patio</SelectItem>
-              <SelectItem value="sidewalk">Sidewalk/Walkway</SelectItem>
-              <SelectItem value="foundation">Foundation Work</SelectItem>
-              <SelectItem value="decorative">Decorative/Stamped Concrete</SelectItem>
+              <SelectItem value="concrete-driveway">Concrete Driveway</SelectItem>
+              <SelectItem value="concrete-patio">Concrete Patio</SelectItem>
+              <SelectItem value="concrete-sidewalk">Concrete Sidewalk/Path</SelectItem>
+              <SelectItem value="concrete-foundation">Foundation Work</SelectItem>
+              <SelectItem value="concrete-repair">Concrete Repair</SelectItem>
+              <SelectItem value="stamped-concrete">Decorative/Stamped Concrete</SelectItem>
+              <SelectItem value="concrete-steps">Concrete Steps/Stairs</SelectItem>
+              <SelectItem value="concrete-slab">Concrete Slab</SelectItem>
               <SelectItem value="other">Other Concrete Work</SelectItem>
             </SelectContent>
           </Select>

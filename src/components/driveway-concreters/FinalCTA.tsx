@@ -8,6 +8,11 @@ interface FinalCTAProps {
 }
 
 const FinalCTA: React.FC<FinalCTAProps> = ({ fullLocation }) => {
+  // Extract just the city name if the location includes city and state
+  const displayLocation = fullLocation.includes(',') 
+    ? fullLocation.split(',')[0].trim() 
+    : fullLocation;
+
   return (
     <section className="section bg-brand-yellow/50">
       <div className="container mx-auto px-4 text-center">
@@ -16,7 +21,7 @@ const FinalCTA: React.FC<FinalCTAProps> = ({ fullLocation }) => {
         </h2>
         <p className="text-xl text-gray-700 mb-8 max-w-3xl mx-auto">
           Stop putting up with that cracked, faded driveway. Our network of trusted 
-          contractors in {fullLocation} is ready to help with free, no-obligation quotes!
+          contractors in {displayLocation} is ready to help with free, no-obligation quotes!
         </p>
         <Button className="cta-button text-lg font-bold" size="lg">
           Get 3 Free Quotes Today

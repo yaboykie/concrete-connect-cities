@@ -24,6 +24,15 @@ const App = () => (
             <Route path="/locations/:state/:city/:service" element={<LocationService />} />
             <Route path="/driveway-concreters/locations" element={<DrivewayConcreterLocations />} />
             <Route path="/driveway-concreters/locations/:state/:city" element={<DrivewayConcreterLocations />} />
+            
+            {/* New routes for concrete contractors */}
+            <Route path="/concrete-contractor/locations" element={<DrivewayConcreterLocations />} />
+            <Route path="/concrete-contractor/locations/:state/:city" element={<DrivewayConcreterLocations />} />
+            
+            {/* New routes for concrete patios */}
+            <Route path="/concrete-patios/locations" element={<DrivewayConcreterLocations />} />
+            <Route path="/concrete-patios/locations/:state/:city" element={<DrivewayConcreterLocations />} />
+            
             {/* Example direct route to Austin, TX */}
             <Route path="/driveway-concreters/austin-tx" element={<DrivewayConcreterLocations />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
