@@ -1,134 +1,291 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, ArrowRight, Star, CheckCircle, Clock } from 'lucide-react';
+import { MapPin, Check, ArrowRight } from 'lucide-react';
 import { locationData } from './LocationData';
 import { Button } from '@/components/ui/button';
+import QuoteForm from '@/components/QuoteForm';
+import { Separator } from '@/components/ui/separator';
 
-const LocationsList: React.FC = () => {
-  // Helper function to format location names consistently
-  const formatStateName = (state: string) => {
-    return state.length > 2 
-      ? state.replace(/\b\w/g, l => l.toUpperCase()) 
-      : state;
+// Helper function to get unique states from location data
+const getUniqueStates = () => {
+  const states = locationData.map(location => ({
+    state: location.state,
+    stateName: getStateName(location.state)
+  }));
+  
+  // Remove duplicates by state code
+  const uniqueStates = Array.from(new Map(states.map(item => [item.state, item])).values());
+  
+  // Sort alphabetically by state name
+  return uniqueStates.sort((a, b) => a.stateName.localeCompare(b.stateName));
+};
+
+// Get full state name from abbreviation
+const getStateName = (code: string) => {
+  const stateNames: Record<string, string> = {
+    'AL': 'Alabama',
+    'AK': 'Alaska',
+    'AZ': 'Arizona',
+    'AR': 'Arkansas',
+    'CA': 'California',
+    'CO': 'Colorado',
+    'CT': 'Connecticut',
+    'DE': 'Delaware',
+    'FL': 'Florida',
+    'GA': 'Georgia',
+    'HI': 'Hawaii',
+    'ID': 'Idaho',
+    'IL': 'Illinois',
+    'IN': 'Indiana',
+    'IA': 'Iowa',
+    'KS': 'Kansas',
+    'KY': 'Kentucky',
+    'LA': 'Louisiana',
+    'ME': 'Maine',
+    'MD': 'Maryland',
+    'MA': 'Massachusetts',
+    'MI': 'Michigan',
+    'MN': 'Minnesota',
+    'MS': 'Mississippi',
+    'MO': 'Missouri',
+    'MT': 'Montana',
+    'NE': 'Nebraska',
+    'NV': 'Nevada',
+    'NH': 'New Hampshire',
+    'NJ': 'New Jersey',
+    'NM': 'New Mexico',
+    'NY': 'New York',
+    'NC': 'North Carolina',
+    'ND': 'North Dakota',
+    'OH': 'Ohio',
+    'OK': 'Oklahoma',
+    'OR': 'Oregon',
+    'PA': 'Pennsylvania',
+    'RI': 'Rhode Island',
+    'SC': 'South Carolina',
+    'SD': 'South Dakota',
+    'TN': 'Tennessee',
+    'TX': 'Texas',
+    'UT': 'Utah',
+    'VT': 'Vermont',
+    'VA': 'Virginia',
+    'WA': 'Washington',
+    'WV': 'West Virginia',
+    'WI': 'Wisconsin',
+    'WY': 'Wyoming'
   };
+  
+  return stateNames[code] || code;
+};
 
+const LocationsList = () => {
+  const uniqueStates = getUniqueStates();
+  
   return (
-    <div className="min-h-screen flex flex-col">
-      <main className="flex-grow container mx-auto px-4 py-12">
-        <h1 className="text-4xl font-bold mb-6 text-brand-blue">Transform Your Home's First Impression</h1>
-        <p className="text-xl text-gray-700 mb-8 max-w-4xl">
-          A stunning concrete driveway doesn't just add curb appeal—it adds real value to your property. 
-          Our network of skilled local contractors delivers beautiful, durable driveways that stand up to 
-          weather, traffic, and time.
-        </p>
-        
-        <div className="bg-gradient-to-r from-brand-blue/10 to-brand-yellow/10 rounded-lg p-8 mb-12 border border-brand-blue/20 shadow-md">
-          <h2 className="text-2xl font-semibold mb-4 flex items-center">
-            <Star className="h-6 w-6 mr-2 text-brand-yellow" />
-            Featured City: Austin, TX
-          </h2>
-          <p className="mb-4 text-lg">
-            Austin homeowners are upgrading from cracked, dated driveways to modern concrete designs that 
-            handle everything from scorching summers to flash floods. Local concrete pros offer competitive 
-            pricing with most projects running $2,500-$5,000 for complete installation.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <div className="flex items-center">
-              <CheckCircle className="h-5 w-5 mr-2 text-green-600" />
-              <span>Heat-resistant concrete mixes</span>
-            </div>
-            <div className="flex items-center">
-              <CheckCircle className="h-5 w-5 mr-2 text-green-600" />
-              <span>Local permitting expertise</span>
-            </div>
-            <div className="flex items-center">
-              <CheckCircle className="h-5 w-5 mr-2 text-green-600" />
-              <span>Decorative options available</span>
-            </div>
-          </div>
-          <Link to="/driveway-concreters/locations/tx/austin">
-            <Button className="bg-brand-blue hover:bg-brand-blue/90 text-lg">
-              Get Free Austin Driveway Quotes
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-          </Link>
-        </div>
-        
-        <h2 className="text-2xl font-bold mb-6">Find Expert Concrete Contractors Near You</h2>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {locationData.map((location, index) => {
-            // Format the display name without changing the URL
-            const displayName = location.full_name || 
-              `${location.city}, ${formatStateName(location.state || '')}`;
+    <main className="flex-grow">
+      {/* Hero Section - Concrete Driveway Value Proposition */}
+      <section className="bg-gradient-to-b from-brand-navy to-blue-900 text-white py-16">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <h1 className="text-4xl font-bold mb-6">Transform Your Home With a Professional Concrete Driveway</h1>
+            <p className="text-xl text-gray-200 mb-8">
+              A new concrete driveway does more than just complete your home's exterior — it enhances curb appeal, 
+              adds property value, and provides decades of low-maintenance durability that other materials simply can't match.
+            </p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              <div className="bg-white/10 backdrop-blur-sm p-5 rounded-lg">
+                <h3 className="text-xl font-semibold mb-3">Built to Last</h3>
+                <p className="text-gray-200">
+                  Professional concrete driveways can last 30+ years with minimal maintenance, outperforming asphalt 
+                  and gravel alternatives by decades.
+                </p>
+              </div>
               
-            // Generate unique selling points based on location patterns
-            let uniquePoint = "Transform your property with durable concrete";
-            
-            // Simple logic to customize copy based on patterns in the location name
-            if (location.state?.toLowerCase() === 'ca' || location.state?.toLowerCase() === 'fl') {
-              uniquePoint = "Weather-resistant driveways for year-round beauty";
-            } else if (location.state?.toLowerCase() === 'tx') {
-              uniquePoint = "Heat-resistant concrete that stays cool underfoot";
-            } else if (location.state?.toLowerCase() === 'ny' || location.state?.toLowerCase() === 'il') {
-              uniquePoint = "Freeze-thaw resistant concrete built for harsh winters";
-            } else if (location.state?.toLowerCase() === 'wa' || location.state?.toLowerCase() === 'or') {
-              uniquePoint = "Rain-friendly designs with superior drainage";
-            }
-            
-            return (
-              <Link 
-                key={index}
-                to={`/driveway-concreters/locations/${location.state?.toLowerCase() || ''}/${location.city?.toLowerCase().replace(/\s+/g, '-') || ''}`}
-                className="p-6 border rounded-lg shadow-md hover:shadow-lg transition-all bg-white group"
-              >
-                <div className="flex items-center mb-3">
-                  <MapPin className="h-5 w-5 mr-2 text-brand-blue" />
-                  <h3 className="text-lg font-semibold group-hover:text-brand-blue transition-colors">{displayName}</h3>
-                </div>
-                <p className="text-gray-700 mb-4">{uniquePoint}</p>
-                <div className="flex items-center text-sm text-gray-600 mb-4">
-                  <Clock className="h-4 w-4 mr-1 text-brand-blue/70" />
-                  <span>Most projects completed in 3-5 days</span>
-                </div>
-                <div className="text-brand-blue font-medium flex items-center text-sm">
-                  Get free quotes from local experts
-                  <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                </div>
-              </Link>
-            );
-          })}
-        </div>
-        
-        <div className="mt-16 bg-gray-50 p-8 rounded-lg border border-gray-200">
-          <h2 className="text-2xl font-bold mb-4">Why Choose Our Concrete Contractor Network?</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
-              <div className="flex items-center mb-3">
-                <CheckCircle className="h-6 w-6 mr-2 text-green-600" />
-                <h3 className="font-semibold text-lg">Vetted Local Pros</h3>
+              <div className="bg-white/10 backdrop-blur-sm p-5 rounded-lg">
+                <h3 className="text-xl font-semibold mb-3">Design Flexibility</h3>
+                <p className="text-gray-200">
+                  From stamped patterns to decorative aggregates and color options, concrete offers unmatched 
+                  design versatility for any home style.
+                </p>
               </div>
-              <p className="text-gray-700">Every contractor in our network is licensed, insured, and has a proven track record of quality work.</p>
             </div>
-            <div>
-              <div className="flex items-center mb-3">
-                <CheckCircle className="h-6 w-6 mr-2 text-green-600" />
-                <h3 className="font-semibold text-lg">Competitive Pricing</h3>
-              </div>
-              <p className="text-gray-700">Get multiple quotes to compare prices and find the best value for your specific driveway project.</p>
-            </div>
-            <div>
-              <div className="flex items-center mb-3">
-                <CheckCircle className="h-6 w-6 mr-2 text-green-600" />
-                <h3 className="font-semibold text-lg">Local Expertise</h3>
-              </div>
-              <p className="text-gray-700">Our contractors understand local building codes, permit requirements, and climate considerations.</p>
+            
+            <div className="mb-10">
+              <h3 className="text-xl font-semibold mb-4">Why Choose a Professional Concrete Driveway:</h3>
+              <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <li className="flex items-start">
+                  <Check className="h-5 w-5 text-brand-yellow mr-2 mt-1 flex-shrink-0" />
+                  <span>Increases property value by up to 10%</span>
+                </li>
+                <li className="flex items-start">
+                  <Check className="h-5 w-5 text-brand-yellow mr-2 mt-1 flex-shrink-0" />
+                  <span>Superior strength handles heavy vehicles</span>
+                </li>
+                <li className="flex items-start">
+                  <Check className="h-5 w-5 text-brand-yellow mr-2 mt-1 flex-shrink-0" />
+                  <span>Environmentally friendly with recycled materials</span>
+                </li>
+                <li className="flex items-start">
+                  <Check className="h-5 w-5 text-brand-yellow mr-2 mt-1 flex-shrink-0" />
+                  <span>Snow removal is easier than other surfaces</span>
+                </li>
+                <li className="flex items-start">
+                  <Check className="h-5 w-5 text-brand-yellow mr-2 mt-1 flex-shrink-0" />
+                  <span>More affordable long-term than other options</span>
+                </li>
+                <li className="flex items-start">
+                  <Check className="h-5 w-5 text-brand-yellow mr-2 mt-1 flex-shrink-0" />
+                  <span>Year-round installation in most climates</span>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
-      </main>
-    </div>
+      </section>
+      
+      {/* Quote Form Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+              <div>
+                <h2 className="text-3xl font-bold mb-4">Ready to Upgrade Your Driveway?</h2>
+                <p className="mb-6 text-lg">
+                  Get free, no-obligation quotes from pre-screened concrete driveway contractors in your area. 
+                  We'll match you with professionals who understand local building codes, soil conditions, and 
+                  weather factors.
+                </p>
+                
+                <div className="mb-6 space-y-4">
+                  <div className="flex items-start">
+                    <div className="bg-brand-blue text-white rounded-full h-8 w-8 flex items-center justify-center flex-shrink-0 mt-0.5 mr-3">
+                      <span className="font-medium">1</span>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold">Fill out our simple form</h4>
+                      <p className="text-gray-600">Tell us about your driveway project</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start">
+                    <div className="bg-brand-blue text-white rounded-full h-8 w-8 flex items-center justify-center flex-shrink-0 mt-0.5 mr-3">
+                      <span className="font-medium">2</span>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold">Get matched with pros</h4>
+                      <p className="text-gray-600">We'll find qualified contractors in your area</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start">
+                    <div className="bg-brand-blue text-white rounded-full h-8 w-8 flex items-center justify-center flex-shrink-0 mt-0.5 mr-3">
+                      <span className="font-medium">3</span>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold">Compare quotes & save</h4>
+                      <p className="text-gray-600">Choose the best value for your project</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <QuoteForm service="concrete-driveway" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      {/* States Listing Section */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="max-w-5xl mx-auto">
+            <h2 className="text-3xl font-bold text-center mb-12">Find Concrete Driveway Contractors Near You</h2>
+            
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              {uniqueStates.map((state, index) => (
+                <Link 
+                  key={index}
+                  to={`/driveway-concreters/locations/${state.state.toLowerCase()}`}
+                  className="flex items-center p-3 border rounded-md hover:border-brand-blue hover:bg-blue-50 transition-colors"
+                >
+                  <MapPin className="h-4 w-4 mr-2 text-brand-blue" />
+                  <span className="font-medium">{state.stateName}</span>
+                </Link>
+              ))}
+            </div>
+            
+            <div className="bg-gray-50 p-8 rounded-lg mt-16">
+              <h3 className="text-2xl font-bold mb-4">Why Choose ConcreterQuotes.com?</h3>
+              <p className="mb-6">
+                At ConcreterQuotes.com, we simplify the process of finding reliable concrete professionals. Our network of vetted 
+                contractors specialize in driveways for residential and commercial properties of all sizes.
+              </p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="flex">
+                  <div className="flex-shrink-0 mr-3">
+                    <div className="h-10 w-10 rounded-full bg-brand-blue flex items-center justify-center">
+                      <Check className="h-5 w-5 text-white" />
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-1">Verified Professionals</h4>
+                    <p className="text-gray-600">Every contractor in our network is pre-screened and qualified</p>
+                  </div>
+                </div>
+                
+                <div className="flex">
+                  <div className="flex-shrink-0 mr-3">
+                    <div className="h-10 w-10 rounded-full bg-brand-blue flex items-center justify-center">
+                      <Check className="h-5 w-5 text-white" />
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-1">Free Quotes</h4>
+                    <p className="text-gray-600">No fees or obligations to get estimates for your project</p>
+                  </div>
+                </div>
+                
+                <div className="flex">
+                  <div className="flex-shrink-0 mr-3">
+                    <div className="h-10 w-10 rounded-full bg-brand-blue flex items-center justify-center">
+                      <Check className="h-5 w-5 text-white" />
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-1">Local Expertise</h4>
+                    <p className="text-gray-600">Contractors who understand your area's specific requirements</p>
+                  </div>
+                </div>
+                
+                <div className="flex">
+                  <div className="flex-shrink-0 mr-3">
+                    <div className="h-10 w-10 rounded-full bg-brand-blue flex items-center justify-center">
+                      <Check className="h-5 w-5 text-white" />
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-1">Fast Response</h4>
+                    <p className="text-gray-600">Get matched with available contractors within 24-48 hours</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="text-center mt-12">
+              <Button className="cta-button text-lg" size="lg">
+                Get Free Driveway Quotes
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
   );
 };
 
