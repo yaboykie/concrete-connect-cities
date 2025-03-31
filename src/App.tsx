@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import LocationService from "./pages/LocationService";
+import DrivewayConcreterLocations from "./pages/DrivewayConcreterLocations";
 
 const queryClient = new QueryClient();
 
@@ -19,6 +20,8 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/locations/:state/:city/:service" element={<LocationService />} />
+          <Route path="/driveway-concreters/locations" element={<DrivewayConcreterLocations />} />
+          <Route path="/driveway-concreters/locations/:state/:city" element={<DrivewayConcreterLocations />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

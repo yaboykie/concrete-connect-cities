@@ -13,37 +13,43 @@ const Index = () => {
       service: 'concrete-contractor',
       title: 'Concrete Contractor', 
       description: 'Find top-rated general concrete contractors for all your concrete projects.',
-      icon: <Construction className="h-10 w-10 mb-2 text-brand-blue" />
+      icon: <Construction className="h-10 w-10 mb-2 text-brand-blue" />,
+      path: '/locations'
     },
     { 
       service: 'concrete-driveways',
       title: 'Driveway Concreters', 
       description: 'Specialized contractors for beautiful, durable concrete driveways.',
-      icon: <Truck className="h-10 w-10 mb-2 text-brand-blue" />
+      icon: <Truck className="h-10 w-10 mb-2 text-brand-blue" />,
+      path: '/driveway-concreters/locations'
     },
     { 
       service: 'concrete-slab', 
       title: 'Concrete Slab', 
       description: 'Expert installation of concrete slabs for foundations, patios, and more.',
-      icon: <Shovel className="h-10 w-10 mb-2 text-brand-blue" /> 
+      icon: <Shovel className="h-10 w-10 mb-2 text-brand-blue" />,
+      path: '/locations'
     },
     { 
       service: 'concrete-garage', 
       title: 'Concrete Garage', 
       description: 'Professional garage floor solutions and complete garage construction.',
-      icon: <House className="h-10 w-10 mb-2 text-brand-blue" />
+      icon: <House className="h-10 w-10 mb-2 text-brand-blue" />,
+      path: '/locations'
     },
     { 
       service: 'decorative-concrete', 
       title: 'Decorative Concrete', 
       description: 'Stamped, colored and decorative concrete options for your property.',
-      icon: <Hammer className="h-10 w-10 mb-2 text-brand-blue" />
+      icon: <Hammer className="h-10 w-10 mb-2 text-brand-blue" />,
+      path: '/locations'
     },
     { 
       service: 'commercial-concrete', 
       title: 'Commercial Concrete', 
       description: 'Large-scale concrete solutions for commercial properties and businesses.',
-      icon: <Building className="h-10 w-10 mb-2 text-brand-blue" />
+      icon: <Building className="h-10 w-10 mb-2 text-brand-blue" />,
+      path: '/locations'
     }
   ];
 
@@ -98,7 +104,9 @@ const Index = () => {
                       return (
                         <Link 
                           key={locIndex} 
-                          to={`/locations/${location.state}/${location.city}/${category.service}`}
+                          to={category.service === 'concrete-driveways' 
+                              ? `${category.path}/${location.state}/${location.city}`
+                              : `${category.path}/${location.state}/${location.city}/${category.service}`}
                           className="block text-brand-blue hover:underline"
                         >
                           <div className="flex items-center justify-center">
@@ -109,7 +117,7 @@ const Index = () => {
                       );
                     })}
                     <Link 
-                      to="/locations" 
+                      to={category.path} 
                       className="block text-brand-blue font-medium hover:underline flex items-center justify-center mt-2"
                     >
                       View More Locations
