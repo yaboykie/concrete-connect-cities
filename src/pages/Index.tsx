@@ -7,14 +7,14 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, MapPin, Hammer, Construction, Shovel, Building, Truck, House } from 'lucide-react';
 
 const Index = () => {
-  // Example location pages with different concrete service categories
+  // Example service categories with simplified linking
   const serviceCategories = [
     { 
       service: 'concrete-contractor',
       title: 'Concrete Contractor', 
       description: 'Find top-rated general concrete contractors for all your concrete projects.',
       icon: <Construction className="h-10 w-10 mb-2 text-brand-blue" />,
-      path: '/locations'
+      path: '/concrete-contractor/locations'
     },
     { 
       service: 'concrete-driveways',
@@ -28,39 +28,29 @@ const Index = () => {
       title: 'Concrete Slab', 
       description: 'Expert installation of concrete slabs for foundations, patios, and more.',
       icon: <Shovel className="h-10 w-10 mb-2 text-brand-blue" />,
-      path: '/locations'
+      path: '/concrete-slab/locations'
     },
     { 
       service: 'concrete-garage', 
       title: 'Concrete Garage', 
       description: 'Professional garage floor solutions and complete garage construction.',
       icon: <House className="h-10 w-10 mb-2 text-brand-blue" />,
-      path: '/locations'
+      path: '/concrete-garage/locations'
     },
     { 
       service: 'decorative-concrete', 
       title: 'Decorative Concrete', 
       description: 'Stamped, colored and decorative concrete options for your property.',
       icon: <Hammer className="h-10 w-10 mb-2 text-brand-blue" />,
-      path: '/locations'
+      path: '/decorative-concrete/locations'
     },
     { 
       service: 'commercial-concrete', 
       title: 'Commercial Concrete', 
       description: 'Large-scale concrete solutions for commercial properties and businesses.',
       icon: <Building className="h-10 w-10 mb-2 text-brand-blue" />,
-      path: '/locations'
+      path: '/commercial-concrete/locations'
     }
-  ];
-
-  // Example locations for demonstration purposes
-  const exampleLocations = [
-    { state: 'new-york', city: 'new-york-city' },
-    { state: 'california', city: 'los-angeles' },
-    { state: 'texas', city: 'houston' },
-    { state: 'florida', city: 'miami' },
-    { state: 'illinois', city: 'chicago' },
-    { state: 'arizona', city: 'phoenix' },
   ];
 
   return (
@@ -96,34 +86,13 @@ const Index = () => {
                     {category.description}
                   </p>
                   
-                  <div className="mt-4 space-y-2">
-                    {exampleLocations.slice(0, 3).map((location, locIndex) => {
-                      const cityFormatted = location.city.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-                      const stateFormatted = location.state.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-                      
-                      return (
-                        <Link 
-                          key={locIndex} 
-                          to={category.service === 'concrete-driveways' 
-                              ? `${category.path}/${location.state}/${location.city}`
-                              : `${category.path}/${location.state}/${location.city}/${category.service}`}
-                          className="block text-brand-blue hover:underline"
-                        >
-                          <div className="flex items-center justify-center">
-                            <MapPin className="h-4 w-4 mr-1" />
-                            <span>{cityFormatted}, {stateFormatted}</span>
-                          </div>
-                        </Link>
-                      );
-                    })}
-                    <Link 
-                      to={category.path} 
-                      className="block text-brand-blue font-medium hover:underline flex items-center justify-center mt-2"
-                    >
-                      View More Locations
-                      <ArrowRight className="ml-1 h-4 w-4" />
-                    </Link>
-                  </div>
+                  <Link 
+                    to={category.path}
+                    className="inline-flex items-center justify-center text-brand-blue font-medium hover:underline mt-4"
+                  >
+                    View Service Details
+                    <ArrowRight className="ml-1 h-4 w-4" />
+                  </Link>
                 </div>
               ))}
             </div>
