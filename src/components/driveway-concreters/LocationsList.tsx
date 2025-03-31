@@ -84,6 +84,14 @@ const LocationsList = () => {
   const uniqueStates = getUniqueStates();
   const isMobile = useIsMobile();
   
+  // Scroll to quote form function
+  const scrollToQuoteForm = () => {
+    const formElement = document.getElementById('quote-form');
+    if (formElement) {
+      formElement.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+  
   return (
     <main className="flex-grow">
       {/* Hero Section with Quote Form */}
@@ -96,6 +104,14 @@ const LocationsList = () => {
                 Driveway Concreters Near You – Get Fast, Free Quotes
               </h1>
               
+              {/* Mobile-specific subheadline */}
+              {isMobile && (
+                <p className="text-lg text-gray-700">
+                  Matched instantly with top-rated local pros. Most reply in 1–2 business hours — no spam, no pressure, just real quotes.
+                </p>
+              )}
+              
+              {/* Desktop Trust Signals */}
               {!isMobile && (
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
@@ -109,6 +125,37 @@ const LocationsList = () => {
                   <div className="flex items-center gap-2">
                     <Check className="h-5 w-5 text-brand-blue flex-shrink-0" />
                     <span className="text-gray-700">Free service with zero obligation to hire</span>
+                  </div>
+                </div>
+              )}
+              
+              {/* Mobile-only CTA button visible without scrolling */}
+              {isMobile && (
+                <div className="pt-2">
+                  <Button className="cta-button text-lg w-full" size="lg" onClick={scrollToQuoteForm}>
+                    Get My Free Driveway Quote
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </div>
+              )}
+              
+              {/* Mobile-only Trust Signals - moved up above sales content */}
+              {isMobile && (
+                <div className="pt-2">
+                  <h3 className="text-xl font-semibold mb-3">Why Homeowners Love Working With Us</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <Check className="h-5 w-5 text-brand-blue flex-shrink-0" />
+                      <span className="text-gray-700">All concreters are licensed, insured, and thoroughly vetted</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Check className="h-5 w-5 text-brand-blue flex-shrink-0" />
+                      <span className="text-gray-700">We only work with professionals rated 4.5 stars and above</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Check className="h-5 w-5 text-brand-blue flex-shrink-0" />
+                      <span className="text-gray-700">Free service with zero obligation to hire</span>
+                    </div>
                   </div>
                 </div>
               )}
@@ -132,40 +179,11 @@ const LocationsList = () => {
                   no spam — just fast, free quotes from vetted pros who typically reply within 1–2 business hours.
                 </p>
               </div>
-              
-              {/* Mobile-only Trust Signals */}
-              {isMobile && (
-                <div className="pt-4">
-                  <h3 className="text-xl font-semibold mb-3">Why Homeowners Love Working With Us</h3>
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2">
-                      <Check className="h-5 w-5 text-brand-blue flex-shrink-0" />
-                      <span className="text-gray-700">All concreters are licensed, insured, and thoroughly vetted</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Check className="h-5 w-5 text-brand-blue flex-shrink-0" />
-                      <span className="text-gray-700">We only work with professionals rated 4.5 stars and above</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Check className="h-5 w-5 text-brand-blue flex-shrink-0" />
-                      <span className="text-gray-700">Free service with zero obligation to hire</span>
-                    </div>
-                  </div>
-                </div>
-              )}
-              
-              {/* Mobile-only CTA button (hidden on desktop) */}
-              <div className="lg:hidden pt-4">
-                <Button className="cta-button text-lg" size="lg">
-                  Get My Free Driveway Quote
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </div>
             </div>
             
             {/* Right Column: Quote Form */}
             <div className="lg:w-1/2 w-full mt-8 lg:mt-0">
-              <div className="bg-white rounded-lg shadow-xl p-6">
+              <div className="bg-white rounded-lg shadow-xl p-6" id="quote-form">
                 <QuoteForm service="concrete-driveway" />
                 <p className="text-center text-sm font-medium text-gray-600 mt-4">
                   We'll match you with local concreters within 2 business hours.
@@ -235,7 +253,7 @@ const LocationsList = () => {
             </div>
             
             <div className="text-center">
-              <Button className="cta-button text-lg" size="lg">
+              <Button className="cta-button text-lg" size="lg" onClick={scrollToQuoteForm}>
                 Get My Free Driveway Quote
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
@@ -322,7 +340,7 @@ const LocationsList = () => {
             </div>
             
             <div className="text-center mt-12">
-              <Button className="cta-button text-lg" size="lg">
+              <Button className="cta-button text-lg" size="lg" onClick={scrollToQuoteForm}>
                 Get My Free Driveway Quote
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
@@ -330,6 +348,20 @@ const LocationsList = () => {
           </div>
         </div>
       </section>
+      
+      {/* Sticky CTA Button for Mobile */}
+      {isMobile && (
+        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 shadow-lg z-50">
+          <Button 
+            className="cta-button text-lg w-full" 
+            size="lg" 
+            onClick={scrollToQuoteForm}
+          >
+            Get My Free Quote
+            <ArrowRight className="ml-2 h-5 w-5" />
+          </Button>
+        </div>
+      )}
     </main>
   );
 };
