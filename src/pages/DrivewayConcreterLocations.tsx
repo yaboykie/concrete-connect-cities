@@ -49,8 +49,8 @@ const DrivewayConcreterLocations = () => {
       <HelmetProvider>
         <div className="min-h-screen flex flex-col">
           <SEOHead 
-            title="Driveway Concreters Near You – Get Fast, Free Quotes" 
-            description="Matched instantly with top-rated driveway concreters. Most respond in 1–2 business hours. No pressure. Just fast, local quotes from vetted pros."
+            title="Get Free Quotes From Top-Rated Local Driveway Concreters" 
+            description="Looking for trusted driveway concreters near you? Get free quotes in under 10 seconds from top-rated local pros. Licensed, insured, and vetted for quality."
             schemaData={{
               "@context": "https://schema.org",
               "@type": "Organization",
@@ -73,7 +73,7 @@ const DrivewayConcreterLocations = () => {
         <div className="min-h-screen flex flex-col">
           <SEOHead 
             title={`Top Driveway Concreters in ${state.toUpperCase()} - Get Free Local Quotes`}
-            description={`Connect with top driveway concreters in ${state.toUpperCase()}. Get free quotes from reliable professionals in your area within 2 hours.`}
+            description={`Looking for trusted driveway concreters in ${state.toUpperCase()}? Get free quotes in under 10 seconds from top-rated local pros. Licensed, insured, and vetted for quality.`}
             schemaData={{
               "@context": "https://schema.org",
               "@type": "Organization",
@@ -137,7 +137,7 @@ const DrivewayConcreterLocations = () => {
       <div className="min-h-screen flex flex-col">
         <SEOHead 
           title={`Top ${locationContent?.title || 'Driveway Concreters'}`}
-          description={locationContent?.metaDescription || `Find professional driveway concreters in ${city}, ${state}. Get free quotes from trusted local pros for your concrete driveway project.`}
+          description={locationContent?.metaDescription || `Looking for trusted driveway concreters in ${city}, ${state}? Get free quotes in under 10 seconds from top-rated local pros. Licensed, insured, and vetted for quality.`}
           schemaData={locationContent?.schemaData}
           canonicalUrl={canonicalUrl}
         />

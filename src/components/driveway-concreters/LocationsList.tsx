@@ -100,87 +100,102 @@ const LocationsList = () => {
           <div className="flex flex-col lg:flex-row items-start gap-8">
             {/* Left Column: Headline and Trust Signals */}
             <div className="lg:w-1/2 space-y-5 md:space-y-6">
-              <h1 className="text-3xl md:text-5xl font-bold text-gray-900 leading-tight">
-                Driveway Concreters Near You
+              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
+                Get Free Quotes From Top-Rated Local Driveway Concreters
               </h1>
               
-              {/* Mobile-specific layout */}
+              <div className="text-lg text-gray-700">
+                Matched instantly with trusted local pros.
+                Most respond within 1–2 business hours — no spam, no pressure, just real quotes from vetted concreters.
+              </div>
+              
+              {/* Mobile layout order: H1, form, trust, sales copy */}
               {isMobile && (
                 <>
-                  {/* Trust Signals moved to top on mobile */}
-                  <div className="space-y-3 bg-white p-4 rounded-lg shadow-sm border border-gray-100">
-                    <div className="flex items-start gap-2">
-                      <Check className="h-5 w-5 text-brand-blue flex-shrink-0 mt-0.5" />
-                      <span className="text-gray-700">All concreters are licensed, insured, and thoroughly vetted</span>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <Check className="h-5 w-5 text-brand-blue flex-shrink-0 mt-0.5" />
-                      <span className="text-gray-700">We only work with professionals rated 4.5 stars and above</span>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <Check className="h-5 w-5 text-brand-blue flex-shrink-0 mt-0.5" />
-                      <span className="text-gray-700">Free service with zero obligation to hire</span>
-                    </div>
+                  {/* Form moved up on mobile */}
+                  <div className="mt-6" id="quote-form">
+                    <QuoteForm service="concrete-driveway" />
                   </div>
                   
-                  {/* Mobile-only CTA button visible without scrolling */}
-                  <div>
-                    <Button className="cta-button text-lg w-full py-6" size="lg" onClick={scrollToQuoteForm}>
-                      Get My Free Driveway Quote
-                      <ArrowRight className="ml-2 h-5 w-5" />
-                    </Button>
+                  {/* Trust Signals on mobile */}
+                  <div className="bg-white p-5 rounded-lg shadow-sm border border-gray-100 mt-8">
+                    <h3 className="font-bold text-xl mb-3">Why Homeowners Trust Us</h3>
+                    <div className="space-y-3">
+                      <div className="flex items-start gap-2">
+                        <Check className="h-5 w-5 text-brand-blue flex-shrink-0 mt-1" />
+                        <span className="text-gray-700">All concreters are licensed, insured, and thoroughly vetted</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <Check className="h-5 w-5 text-brand-blue flex-shrink-0 mt-1" />
+                        <span className="text-gray-700">We only match with professionals rated 4.5 stars and above</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <Check className="h-5 w-5 text-brand-blue flex-shrink-0 mt-1" />
+                        <span className="text-gray-700">Free service with zero obligation to hire</span>
+                      </div>
+                    </div>
                   </div>
                 </>
               )}
               
-              {/* Desktop Trust Signals */}
+              {/* Desktop trust signals (only shown on desktop) */}
               {!isMobile && (
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2">
-                    <Check className="h-5 w-5 text-brand-blue flex-shrink-0" />
-                    <span className="text-gray-700">All concreters are licensed, insured, and thoroughly vetted</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Check className="h-5 w-5 text-brand-blue flex-shrink-0" />
-                    <span className="text-gray-700">We only work with professionals rated 4.5 stars and above</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Check className="h-5 w-5 text-brand-blue flex-shrink-0" />
-                    <span className="text-gray-700">Free service with zero obligation to hire</span>
+                <div className="bg-white p-5 rounded-lg shadow-sm border border-gray-100">
+                  <h3 className="font-bold text-xl mb-3">Why Homeowners Trust Us</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <Check className="h-5 w-5 text-brand-blue flex-shrink-0" />
+                      <span className="text-gray-700">All concreters are licensed, insured, and thoroughly vetted</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Check className="h-5 w-5 text-brand-blue flex-shrink-0" />
+                      <span className="text-gray-700">We only match with professionals rated 4.5 stars and above</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Check className="h-5 w-5 text-brand-blue flex-shrink-0" />
+                      <span className="text-gray-700">Free service with zero obligation to hire</span>
+                    </div>
                   </div>
                 </div>
               )}
               
               <div className="space-y-4">
                 <p className="text-lg text-gray-700">
-                  A beautiful driveway doesn't just add curb appeal — it sets the tone for your entire home.
+                  Your driveway says a lot about your home — and a brand-new concrete driveway makes a bold, clean statement.
+                  Whether you're welcoming guests or pulling in after a long day, a professionally poured concrete driveway is something to be proud of.
                 </p>
                 
                 <p className="text-lg text-gray-700">
-                  Whether you're welcoming guests or pulling in after a long day, a fresh concrete driveway gives you 
-                  something to be proud of. It's clean, durable, and instantly improves how your home is seen.
+                  It's not just durable. It's visually impressive. It adds curb appeal, shows your home is well cared for, and makes it feel move-in ready.
                 </p>
                 
                 <p className="text-lg text-gray-700">
-                  And when it's time to sell? Real estate agents estimate a new driveway can add <strong>$10,000 to $20,000</strong> in resale value.
+                  And when it's time to sell? Real estate agents estimate that a beautiful driveway can add <strong>$10,000 to $20,000</strong> in perceived value, depending on your home and market.
                 </p>
                 
                 <p className="text-lg text-gray-700">
-                  With ConcreterQuotes, you're matched instantly with top-rated driveway concreters in your area. No pressure, 
-                  no spam — just fast, free quotes from vetted pros who typically reply within 1–2 business hours.
+                  But honestly, most homeowners just love how it looks.
+                </p>
+                
+                <p className="text-lg text-gray-700">
+                  Your time is valuable. That's why we built this form to take under 10 seconds.
+                  Once submitted, you're instantly matched with top-rated local concreters — pros who typically respond within 1 to 2 business hours.
+                </p>
+                
+                <p className="text-lg text-gray-700">
+                  No spam. No pressure. Just free quotes from real concreters who've been vetted on their quality of work, reviews, and reliability.
                 </p>
               </div>
             </div>
             
-            {/* Right Column: Quote Form */}
-            <div className="lg:w-1/2 w-full mt-8 lg:mt-0">
-              <div className="bg-white rounded-lg shadow-xl p-6" id="quote-form">
-                <QuoteForm service="concrete-driveway" />
-                <p className="text-center text-sm font-medium text-gray-600 mt-4">
-                  We'll match you with local concreters within 2 business hours.
-                </p>
+            {/* Right Column: Quote Form (only shown on desktop) */}
+            {!isMobile && (
+              <div className="lg:w-1/2 w-full">
+                <div className="bg-white rounded-lg shadow-xl p-6" id="quote-form">
+                  <QuoteForm service="concrete-driveway" />
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </section>
