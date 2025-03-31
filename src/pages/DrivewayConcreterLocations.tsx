@@ -50,7 +50,7 @@ const DrivewayConcreterLocations = () => {
         <div className="min-h-screen flex flex-col">
           <SEOHead 
             title="Driveway Concreters Near You – Get Fast, Free Quotes" 
-            description="Get matched instantly with top-rated local driveway concreters. Enjoy a beautiful new driveway and boost your home's value. Free quotes, fast replies, and no obligation."
+            description="Matched instantly with top-rated driveway concreters. Most respond in 1–2 business hours. No pressure. Just fast, local quotes from vetted pros."
             schemaData={{
               "@context": "https://schema.org",
               "@type": "Organization",

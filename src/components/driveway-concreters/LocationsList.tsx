@@ -145,15 +145,15 @@ const LocationsList = () => {
                   <h3 className="text-xl font-semibold mb-3">Why Homeowners Love Working With Us</h3>
                   <div className="space-y-3">
                     <div className="flex items-center gap-2">
-                      <Check className="h-5 w-5 text-brand-blue flex-shrink-0" />
+                      <Check className="h-5 w-5 text-brand-blue flex-shrink-0 mt-0.5" />
                       <span className="text-gray-700">All concreters are licensed, insured, and thoroughly vetted</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Check className="h-5 w-5 text-brand-blue flex-shrink-0" />
+                      <Check className="h-5 w-5 text-brand-blue flex-shrink-0 mt-0.5" />
                       <span className="text-gray-700">We only work with professionals rated 4.5 stars and above</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Check className="h-5 w-5 text-brand-blue flex-shrink-0" />
+                      <Check className="h-5 w-5 text-brand-blue flex-shrink-0 mt-0.5" />
                       <span className="text-gray-700">Free service with zero obligation to hire</span>
                     </div>
                   </div>
