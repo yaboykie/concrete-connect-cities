@@ -19,7 +19,7 @@ const FinalCTA: React.FC<FinalCTAProps> = ({ fullLocation }) => {
           contractors in {fullLocation} is ready to help with free, no-obligation quotes!
         </p>
         <Button className="cta-button text-lg" size="lg">
-          Get Your Free Driveway Quote in {fullLocation}
+          Get Your Free Affordable Driveway Quote in {fullLocation}
           <ArrowRight className="ml-2 h-5 w-5" />
         </Button>
       </div>

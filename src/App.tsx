@@ -22,6 +22,8 @@ const App = () => (
           <Route path="/locations/:state/:city/:service" element={<LocationService />} />
           <Route path="/driveway-concreters/locations" element={<DrivewayConcreterLocations />} />
           <Route path="/driveway-concreters/locations/:state/:city" element={<DrivewayConcreterLocations />} />
+          {/* Example direct route to Austin, TX */}
+          <Route path="/driveway-concreters/austin-tx" element={<DrivewayConcreterLocations />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
