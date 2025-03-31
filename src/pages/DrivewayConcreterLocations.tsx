@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
@@ -104,8 +103,6 @@ const DrivewayConcreterLocations = () => {
     );
   }
   
-  // Build canonical URL
-  const formattedCity = city.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
   const canonicalUrl = `https://concreterquotes.com/driveway-concreters/locations/${state}/${city}`;
   
   return (

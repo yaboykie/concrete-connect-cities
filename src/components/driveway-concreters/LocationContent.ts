@@ -1,4 +1,3 @@
-
 import { FAQ, Service, Testimonial, LocationContentType, LocationData } from './types';
 import { supabase } from "@/integrations/supabase/client";
 
@@ -26,7 +25,22 @@ export const getLocationContent = async (state: string, city: string): Promise<L
     };
     
     const formattedCity = city.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-    const formattedState = locationMatch.state_abbreviation || state.toUpperCase();
+    
+    // Properly format the state name (title case instead of all caps)
+    let formattedState;
+    if (locationMatch.state) {
+      // If we have the full state name, capitalize first letter of each word
+      formattedState = locationMatch.state.replace(/\b\w/g, l => l.toUpperCase());
+    } else if (locationMatch.state_abbreviation) {
+      // If we only have the abbreviation, keep it uppercase (standard for abbreviations)
+      formattedState = locationMatch.state_abbreviation;
+    } else {
+      // Fallback to the input state, properly capitalized if it's a full name
+      formattedState = state.length > 2 
+        ? state.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) 
+        : state.toUpperCase();
+    }
+    
     const fullLocation = `${formattedCity}, ${formattedState}`;
     
     // Service specific content
@@ -162,7 +176,13 @@ export const getLocationContent = async (state: string, city: string): Promise<L
 // Fallback function if database fetch fails
 const getFallbackLocationContent = (state: string, city: string): LocationContentType => {
   const formattedCity = city.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-  const formattedState = state.toUpperCase();
+  
+  // Format state name properly - if it's more than 2 characters, assume it's a full name and capitalize
+  // Otherwise, assume it's an abbreviation and convert to uppercase
+  const formattedState = state.length > 2 
+    ? state.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) 
+    : state.toUpperCase();
+    
   const fullLocation = `${formattedCity}, ${formattedState}`;
   
   return {

@@ -6,6 +6,13 @@ import { locationData } from './LocationData';
 import { Button } from '@/components/ui/button';
 
 const LocationsList: React.FC = () => {
+  // Helper function to format location names consistently
+  const formatStateName = (state: string) => {
+    return state.length > 2 
+      ? state.replace(/\b\w/g, l => l.toUpperCase()) 
+      : state;
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <main className="flex-grow container mx-auto px-4 py-12">
@@ -34,23 +41,29 @@ const LocationsList: React.FC = () => {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {locationData.map((location, index) => (
-            <Link 
-              key={index}
-              to={`/driveway-concreters/locations/${location.state.toLowerCase()}/${location.city.toLowerCase().replace(/\s+/g, '-')}`}
-              className="p-6 border rounded-lg shadow-sm hover:shadow-md transition-shadow bg-white"
-            >
-              <div className="flex items-center mb-2">
-                <MapPin className="h-5 w-5 mr-2 text-brand-blue" />
-                <h3 className="text-lg font-semibold">{location.full_name}</h3>
-              </div>
-              <p className="text-gray-600 mb-3">Find affordable driveway concreters in {location.full_name}, with prices starting from just $4-$6 per square foot.</p>
-              <div className="text-brand-blue font-medium flex items-center text-sm">
-                View location details
-                <ArrowRight className="ml-1 h-4 w-4" />
-              </div>
-            </Link>
-          ))}
+          {locationData.map((location, index) => {
+            // Format the display name without changing the URL
+            const displayName = location.full_name || 
+              `${location.city}, ${formatStateName(location.state || '')}`;
+              
+            return (
+              <Link 
+                key={index}
+                to={`/driveway-concreters/locations/${location.state?.toLowerCase() || ''}/${location.city?.toLowerCase().replace(/\s+/g, '-') || ''}`}
+                className="p-6 border rounded-lg shadow-sm hover:shadow-md transition-shadow bg-white"
+              >
+                <div className="flex items-center mb-2">
+                  <MapPin className="h-5 w-5 mr-2 text-brand-blue" />
+                  <h3 className="text-lg font-semibold">{displayName}</h3>
+                </div>
+                <p className="text-gray-600 mb-3">Find affordable driveway concreters in {displayName}, with prices starting from just $4-$6 per square foot.</p>
+                <div className="text-brand-blue font-medium flex items-center text-sm">
+                  View location details
+                  <ArrowRight className="ml-1 h-4 w-4" />
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </main>
     </div>
