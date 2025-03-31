@@ -64,13 +64,33 @@ const ServicePage = () => {
           </div>
         </div>
         
-        {/* Hero Section */}
-        <section className="bg-gradient-to-b from-brand-navy to-blue-900 text-white py-16 md:py-24">
+        {/* Quote Form Section - Moved to the top */}
+        <section className="bg-white py-12 border-b">
           <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto text-center mb-8">
+              <h1 className="text-4xl font-bold mb-4">Get Matched With Vetted {content.title} Professionals Near You</h1>
+              <p className="text-xl text-gray-700 mb-6 max-w-3xl mx-auto">
+                Trusted local contractors. Response time within 2 business hours. One simple form to get competitive quotes – no pushy salespeople, no hassle.
+              </p>
+              <div className="flex flex-wrap gap-4 justify-center mb-4">
+                <div className="flex items-center text-sm text-gray-600">
+                  <CheckCircle className="h-5 w-5 text-brand-blue mr-2" />
+                  <span>All contractors are licensed and insured.</span>
+                </div>
+                <div className="flex items-center text-sm text-gray-600">
+                  <CheckCircle className="h-5 w-5 text-brand-blue mr-2" />
+                  <span>We only work with professionals rated 4.5 stars and above.</span>
+                </div>
+                <div className="flex items-center text-sm text-gray-600">
+                  <CheckCircle className="h-5 w-5 text-brand-blue mr-2" />
+                  <span>No spam. No obligation. Just real local quotes.</span>
+                </div>
+              </div>
+            </div>
+            
             <div className="flex flex-col lg:flex-row items-center gap-12">
               <div className="lg:w-3/5">
-                <h1 className="text-white mb-6">{content.title}</h1>
-                <p className="text-lg text-gray-200 mb-8">{content.introduction}</p>
+                <p className="text-lg text-gray-700 mb-8">{content.introduction}</p>
                 <div className="space-y-4 mb-8">
                   {content.benefits.map((benefit, index) => (
                     <div key={index} className="flex items-start">
@@ -80,13 +100,51 @@ const ServicePage = () => {
                   ))}
                 </div>
                 <Button className="cta-button text-lg" size="lg">
-                  Get Your Free Quote
+                  Get My Free {formatServiceName(service)} Quote
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
+                <p className="text-sm font-medium text-gray-600 mt-3">
+                  We'll match you with a contractor within 2 business hours.
+                </p>
               </div>
               
               <div className="lg:w-2/5">
                 <QuoteForm location="Your Area" service={service} />
+              </div>
+            </div>
+          </div>
+        </section>
+        
+        {/* Hero Section - Moved below the quote form */}
+        <section className="section bg-gradient-to-br from-[#1E3A8A] to-[#3B82F6] text-white py-16 md:py-24">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto">
+              <h2 className="text-3xl font-bold mb-6">{content.title}</h2>
+              <p className="text-lg text-gray-200 mb-8">{content.introduction}</p>
+              
+              <div className="grid md:grid-cols-2 gap-6 mb-8">
+                <div className="bg-white/10 backdrop-blur-sm p-5 rounded-lg">
+                  <h3 className="text-xl font-semibold mb-3">Professional Quality</h3>
+                  <p className="text-gray-200">
+                    Our network of skilled contractors delivers exceptional results that stand the test of time,
+                    using only premium materials and proven techniques.
+                  </p>
+                </div>
+                
+                <div className="bg-white/10 backdrop-blur-sm p-5 rounded-lg">
+                  <h3 className="text-xl font-semibold mb-3">Customer Satisfaction</h3>
+                  <p className="text-gray-200">
+                    We've connected thousands of homeowners with trusted professionals,
+                    resulting in beautiful, durable concrete installations across America.
+                  </p>
+                </div>
+              </div>
+              
+              <div className="text-center">
+                <Button className="cta-button text-lg" size="lg">
+                  Get My Free {formatServiceName(service)} Quote
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
               </div>
             </div>
           </div>
@@ -168,9 +226,12 @@ const ServicePage = () => {
               contractors is ready to help you create the perfect {service.replace(/-/g, ' ')} for your property.
             </p>
             <Button className="cta-button text-lg" size="lg">
-              Get Your Free Quote Today
+              Get My Free Quote Today
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
+            <p className="text-sm font-medium text-gray-600 mt-3">
+              We'll match you with a contractor within 2 business hours.
+            </p>
           </div>
         </section>
       </main>

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Check, ArrowRight } from 'lucide-react';
@@ -84,11 +83,44 @@ const LocationsList = () => {
   
   return (
     <main className="flex-grow">
-      {/* Hero Section - Concrete Driveway Value Proposition */}
-      <section className="bg-gradient-to-b from-brand-navy to-blue-900 text-white py-16">
+      {/* Quote Form Section - Moved to top for better CRO */}
+      <section className="py-12 pt-10 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center mb-10">
+            <h1 className="text-4xl font-bold mb-4">Get Matched With Vetted Driveway Concreters Near You</h1>
+            <p className="text-xl text-gray-700 mb-6 max-w-3xl mx-auto">
+              Trusted local contractors. Response time within 2 business hours. One simple form to get competitive quotes – no pushy salespeople, no hassle.
+            </p>
+            <div className="flex flex-wrap gap-4 justify-center mb-6">
+              <div className="flex items-center text-sm text-gray-600">
+                <Check className="h-5 w-5 text-brand-blue mr-2" />
+                <span>All concreters are licensed and insured.</span>
+              </div>
+              <div className="flex items-center text-sm text-gray-600">
+                <Check className="h-5 w-5 text-brand-blue mr-2" />
+                <span>We only work with professionals rated 4.5 stars and above.</span>
+              </div>
+              <div className="flex items-center text-sm text-gray-600">
+                <Check className="h-5 w-5 text-brand-blue mr-2" />
+                <span>No spam. No obligation. Just real local quotes.</span>
+              </div>
+            </div>
+          </div>
+          
+          <div className="max-w-lg mx-auto">
+            <QuoteForm service="concrete-driveway" />
+            <p className="text-center text-sm font-medium text-gray-600 mt-4">
+              We'll match you with a concreter within 2 business hours.
+            </p>
+          </div>
+        </div>
+      </section>
+      
+      {/* Hero Section - Value Proposition (moved below the form) */}
+      <section className="bg-gradient-to-br from-[#1E3A8A] to-[#3B82F6] text-white py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
-            <h1 className="text-4xl font-bold mb-6">Transform Your Home With a Professional Concrete Driveway</h1>
+            <h2 className="text-3xl font-bold mb-6">Transform Your Home With a Professional Concrete Driveway</h2>
             <p className="text-xl text-gray-200 mb-8">
               A new concrete driveway does more than just complete your home's exterior — it enhances curb appeal, 
               adds property value, and provides decades of low-maintenance durability that other materials simply can't match.
@@ -141,59 +173,12 @@ const LocationsList = () => {
                 </li>
               </ul>
             </div>
-          </div>
-        </div>
-      </section>
-      
-      {/* Quote Form Section */}
-      <section className="py-16 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-              <div>
-                <h2 className="text-3xl font-bold mb-4">Ready to Upgrade Your Driveway?</h2>
-                <p className="mb-6 text-lg">
-                  Get free, no-obligation quotes from pre-screened concrete driveway contractors in your area. 
-                  We'll match you with professionals who understand local building codes, soil conditions, and 
-                  weather factors.
-                </p>
-                
-                <div className="mb-6 space-y-4">
-                  <div className="flex items-start">
-                    <div className="bg-brand-blue text-white rounded-full h-8 w-8 flex items-center justify-center flex-shrink-0 mt-0.5 mr-3">
-                      <span className="font-medium">1</span>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold">Fill out our simple form</h4>
-                      <p className="text-gray-600">Tell us about your driveway project</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start">
-                    <div className="bg-brand-blue text-white rounded-full h-8 w-8 flex items-center justify-center flex-shrink-0 mt-0.5 mr-3">
-                      <span className="font-medium">2</span>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold">Get matched with pros</h4>
-                      <p className="text-gray-600">We'll find qualified contractors in your area</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start">
-                    <div className="bg-brand-blue text-white rounded-full h-8 w-8 flex items-center justify-center flex-shrink-0 mt-0.5 mr-3">
-                      <span className="font-medium">3</span>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold">Compare quotes & save</h4>
-                      <p className="text-gray-600">Choose the best value for your project</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <div>
-                <QuoteForm service="concrete-driveway" />
-              </div>
+            
+            <div className="text-center">
+              <Button className="cta-button text-lg" size="lg">
+                Get My Free Driveway Quote
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
             </div>
           </div>
         </div>
@@ -278,7 +263,7 @@ const LocationsList = () => {
             
             <div className="text-center mt-12">
               <Button className="cta-button text-lg" size="lg">
-                Get Free Driveway Quotes
+                Get My Free Driveway Quote
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </div>
