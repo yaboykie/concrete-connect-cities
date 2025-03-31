@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import QuoteForm from '@/components/QuoteForm';
@@ -11,6 +11,14 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, CheckCircle, MapPin, Shield } from 'lucide-react';
 import serviceContent from '@/data/serviceContent';
 import { Helmet } from 'react-helmet-async';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+  BreadcrumbPage,
+} from '@/components/ui/breadcrumb';
 
 const ServicePage = () => {
   const { service } = useParams<{ service: string }>();
@@ -21,16 +29,39 @@ const ServicePage = () => {
   
   const content = serviceContent[service];
   
+  // Format the service name for display in breadcrumbs
+  const formatServiceName = (serviceName: string) => {
+    return serviceName.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+  };
+  
   return (
     <div className="min-h-screen flex flex-col">
       <Helmet>
         <title>{content.title} | Professional Concrete Services</title>
         <meta name="description" content={content.introduction} />
+        <link rel="canonical" href={`https://concreterquotes.com/${service}`} />
       </Helmet>
       
       <Header />
       
       <main className="flex-grow">
+        {/* Breadcrumb Navigation */}
+        <div className="bg-gray-50 py-2 border-b">
+          <div className="container mx-auto px-4">
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbLink as={Link} to="/">Home</BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>{formatServiceName(service)}</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+          </div>
+        </div>
+        
         {/* Hero Section */}
         <section className="bg-gradient-to-b from-brand-navy to-blue-900 text-white py-16 md:py-24">
           <div className="container mx-auto px-4">
