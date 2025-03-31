@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 
 interface GoogleMapProps {
   latitude: number | null;
@@ -9,30 +9,47 @@ interface GoogleMapProps {
 }
 
 const GoogleMap: React.FC<GoogleMapProps> = ({ latitude, longitude, city, state }) => {
+  const mapRef = useRef<HTMLDivElement>(null);
+  
+  useEffect(() => {
+    // Only try to initialize the map if we have valid coordinates
+    if (latitude && longitude && mapRef.current) {
+      const mapOptions = {
+        center: { lat: latitude, lng: longitude },
+        zoom: 12,
+      };
+      
+      const map = new google.maps.Map(mapRef.current, mapOptions);
+      
+      // Add a marker at the center location
+      new google.maps.Marker({
+        position: { lat: latitude, lng: longitude },
+        map,
+        title: `${city}, ${state}`,
+      });
+    }
+  }, [latitude, longitude, city, state]);
+  
+  // Display a fallback if coordinates aren't available
   if (!latitude || !longitude) {
     return (
-      <div className="aspect-video bg-gray-100 rounded-lg flex items-center justify-center">
-        <p className="text-gray-500">Map of {city}, {state} not available</p>
+      <div className="rounded-lg overflow-hidden border border-gray-300 shadow-md p-6 bg-gray-50 text-center">
+        <h3 className="text-xl font-semibold mb-3">Our Service Area Covers All of {city}</h3>
+        <p className="text-lg mb-4">
+          🗺️ Our local concreters cover every neighborhood in {city} and surrounding areas.
+        </p>
+        <p className="text-sm text-gray-600">
+          Get matched with pros who know the specific requirements of your area.
+        </p>
       </div>
     );
   }
-
-  const mapUrl = `https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${city},${state}&zoom=12&maptype=roadmap`;
   
   return (
-    <div className="aspect-video rounded-lg overflow-hidden shadow-md">
-      <iframe
-        width="100%"
-        height="100%"
-        frameBorder="0"
-        style={{ border: 0 }}
-        src={mapUrl}
-        allowFullScreen
-        title={`Map of ${city}, ${state}`}
-        loading="lazy"
-        referrerPolicy="no-referrer-when-downgrade"
-      ></iframe>
-    </div>
+    <div 
+      ref={mapRef} 
+      className="w-full h-80 rounded-lg overflow-hidden border border-gray-300 shadow-md"
+    ></div>
   );
 };
 

@@ -69,10 +69,25 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ location = "", service = "" }) =>
 
   return (
     <div className="bg-white rounded-lg shadow-xl p-6 md:p-8">
-      <h3 className="text-2xl font-bold text-center mb-6">
-        Get Your Free {getFormattedServiceName(service)} Quote
+      <h3 className="text-2xl font-bold text-center mb-4">
+        Get 3 Free {getFormattedServiceName(service)} Quotes
         {location ? ` in ${location}` : ''}
       </h3>
+      
+      <div className="mb-6 space-y-2">
+        <div className="flex items-start">
+          <CheckCircle className="h-5 w-5 mr-2 text-brand-blue flex-shrink-0 mt-0.5" />
+          <span className="text-sm">Local pros who know local building codes</span>
+        </div>
+        <div className="flex items-start">
+          <CheckCircle className="h-5 w-5 mr-2 text-brand-blue flex-shrink-0 mt-0.5" />
+          <span className="text-sm">No calls from random contractors</span>
+        </div>
+        <div className="flex items-start">
+          <CheckCircle className="h-5 w-5 mr-2 text-brand-blue flex-shrink-0 mt-0.5" />
+          <span className="text-sm">Transparent pricing — no surprises</span>
+        </div>
+      </div>
       
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
@@ -136,7 +151,6 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ location = "", service = "" }) =>
               <SelectItem value="sidewalk">Sidewalk/Walkway</SelectItem>
               <SelectItem value="foundation">Foundation Work</SelectItem>
               <SelectItem value="decorative">Decorative/Stamped Concrete</SelectItem>
-              <SelectItem value="commercial">Commercial Concrete Project</SelectItem>
               <SelectItem value="other">Other Concrete Work</SelectItem>
             </SelectContent>
           </Select>
@@ -149,26 +163,23 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ location = "", service = "" }) =>
             value={formData.projectDetails}
             onChange={handleChange}
             className="w-full"
-            rows={4}
+            rows={3}
           />
         </div>
 
-        <div className="text-sm text-gray-500">
-          <p className="flex items-start">
-            <CheckCircle className="h-5 w-5 mr-2 text-brand-blue flex-shrink-0 mt-0.5" />
-            <span>
-              By submitting this form, you'll be connected with local, licensed concrete contractors. We respect your privacy.
-            </span>
-          </p>
-        </div>
-        
         <Button 
           type="submit" 
-          className="cta-button w-full text-lg py-4"
+          className="cta-button w-full text-lg py-4 font-bold"
           disabled={isSubmitting}
         >
           {isSubmitting ? 'Submitting...' : 'Get Free Quotes Now'}
         </Button>
+        
+        <div className="text-sm text-center text-gray-500 mt-2">
+          <p>
+            🔒 No spam. No pressure. Just real quotes from real concreters.
+          </p>
+        </div>
       </form>
     </div>
   );

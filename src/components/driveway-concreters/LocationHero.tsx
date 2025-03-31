@@ -19,25 +19,29 @@ const LocationHero: React.FC<LocationHeroProps> = ({ locationContent }) => {
               <MapPin className="h-5 w-5 mr-2" />
               <span className="text-lg">{locationContent.fullLocation}</span>
             </div>
-            <h1 className="text-white mb-6">{locationContent.title}</h1>
-            <p className="text-lg text-gray-200 mb-8">{locationContent.serviceIntro}</p>
+            <h1 className="text-white mb-4">
+              Cracked Driveway? Patchy Asphalt? Let's Fix That. Fast.
+            </h1>
+            <p className="text-lg text-gray-200 mb-6">
+              Your driveway is the first impression your home makes. Our {locationContent.fullLocation} concreters turn eyesores into assets — with durable, affordable driveways built for local weather conditions.
+            </p>
             <div className="space-y-4 mb-8">
               <div className="flex items-start">
                 <CheckCircle className="h-5 w-5 mr-3 text-brand-blue flex-shrink-0 mt-1" />
-                <span>Free quotes from pre-screened local contractors</span>
+                <span>Vetted & Licensed Pros — Ready to Start</span>
               </div>
               <div className="flex items-start">
                 <CheckCircle className="h-5 w-5 mr-3 text-brand-blue flex-shrink-0 mt-1" />
-                <span>Compare prices and services with no obligation</span>
+                <span>Transparent Quotes — No Guesswork</span>
               </div>
               <div className="flex items-start">
                 <CheckCircle className="h-5 w-5 mr-3 text-brand-blue flex-shrink-0 mt-1" />
-                <span>Only work with licensed and insured professionals</span>
+                <span>Fast Turnaround — Some Jobs Start in 48 Hrs</span>
               </div>
             </div>
             <a href="#quote-form">
-              <Button className="cta-button text-lg" size="lg">
-                Get Your Free Quote
+              <Button className="cta-button text-lg font-bold" size="lg">
+                🎯 Get 3 Fast Quotes From Local Concreters
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </a>
