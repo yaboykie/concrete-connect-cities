@@ -24,4 +24,8 @@ export interface LocationContentType {
   services: Service[];
   testimonials: Testimonial[];
   fullLocation: string;
+  latitude: number | null;
+  longitude: number | null;
+  schemaData: any;
+  metaDescription: string;
 }

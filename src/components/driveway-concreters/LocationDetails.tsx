@@ -8,12 +8,16 @@ import LocationHero from './LocationHero';
 import LocalConsiderations from './LocalConsiderations';
 import ConcreterDifference from './ConcreterDifference';
 import FinalCTA from './FinalCTA';
+import GoogleMap from './GoogleMap';
 
 interface LocationDetailsProps {
   locationContent: LocationContentType;
 }
 
 const LocationDetails: React.FC<LocationDetailsProps> = ({ locationContent }) => {
+  // Extract city and state from full location
+  const [city, state] = locationContent.fullLocation.split(', ');
+  
   return (
     <main className="flex-grow">
       <LocationHero locationContent={locationContent} />
@@ -22,6 +26,28 @@ const LocationDetails: React.FC<LocationDetailsProps> = ({ locationContent }) =>
         weatherConsiderations={locationContent.weatherConsiderations} 
         fullLocation={locationContent.fullLocation} 
       />
+      
+      {/* Google Map Section */}
+      <section className="section bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl font-bold mb-6">Concrete Driveway Services in {locationContent.fullLocation}</h2>
+            <p className="text-lg mb-8">
+              Our network of experienced driveway concreters covers all areas of {locationContent.fullLocation} and surrounding suburbs. 
+              Contact us today to get connected with the best local concrete professionals for your driveway project.
+            </p>
+            <GoogleMap 
+              latitude={locationContent.latitude} 
+              longitude={locationContent.longitude}
+              city={city}
+              state={state}
+            />
+            <div className="mt-6 text-gray-600 text-sm">
+              <p>Serving all areas of {locationContent.fullLocation} including surrounding suburbs and neighborhoods.</p>
+            </div>
+          </div>
+        </div>
+      </section>
       
       <ConcreterDifference />
       
