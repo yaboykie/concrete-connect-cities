@@ -35,13 +35,15 @@ const LocationHero: React.FC<LocationHeroProps> = ({ locationContent }) => {
                 <span>Only work with licensed and insured professionals</span>
               </div>
             </div>
-            <Button className="cta-button text-lg" size="lg">
-              Get Your Free Quote
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
+            <a href="#quote-form">
+              <Button className="cta-button text-lg" size="lg">
+                Get Your Free Quote
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </a>
           </div>
           
-          <div className="lg:w-2/5">
+          <div className="lg:w-2/5" id="quote-form">
             <QuoteForm location={locationContent.fullLocation} service="driveway-concreters" />
           </div>
         </div>

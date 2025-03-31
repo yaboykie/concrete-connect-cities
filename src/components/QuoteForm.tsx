@@ -5,6 +5,13 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
 import { CheckCircle } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface QuoteFormProps {
   location?: string;
@@ -23,9 +30,13 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ location = "", service = "" }) =>
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSelectChange = (value: string, fieldName: string) => {
+    setFormData(prev => ({ ...prev, [fieldName]: value }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -51,10 +62,15 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ location = "", service = "" }) =>
     }, 1500);
   };
 
+  // Convert service string to title case for display
+  const getFormattedServiceName = (serviceStr: string) => {
+    return serviceStr ? serviceStr.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Concrete';
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-xl p-6 md:p-8">
       <h3 className="text-2xl font-bold text-center mb-6">
-        Get Your Free {service ? service.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Concrete'} Quote
+        Get Your Free {getFormattedServiceName(service)} Quote
         {location ? ` in ${location}` : ''}
       </h3>
       
@@ -106,21 +122,24 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ location = "", service = "" }) =>
         </div>
         
         <div>
-          <select
-            name="serviceType"
+          <Select 
             value={formData.serviceType}
-            onChange={handleChange}
-            required
-            className="w-full p-2 border border-gray-300 rounded-md"
+            onValueChange={(value) => handleSelectChange(value, 'serviceType')}
           >
-            <option value="">Select Service Type</option>
-            <option value="concrete-driveways">Concrete Driveway</option>
-            <option value="concrete-patio">Concrete Patio</option>
-            <option value="concrete-slab">Concrete Slab</option>
-            <option value="concrete-repair">Concrete Repair</option>
-            <option value="decorative-concrete">Decorative Concrete</option>
-            <option value="other">Other Concrete Work</option>
-          </select>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select Project Type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="new-driveway">New Driveway Installation</SelectItem>
+              <SelectItem value="driveway-repair">Driveway Repair/Resurfacing</SelectItem>
+              <SelectItem value="patio">Concrete Patio</SelectItem>
+              <SelectItem value="sidewalk">Sidewalk/Walkway</SelectItem>
+              <SelectItem value="foundation">Foundation Work</SelectItem>
+              <SelectItem value="decorative">Decorative/Stamped Concrete</SelectItem>
+              <SelectItem value="commercial">Commercial Concrete Project</SelectItem>
+              <SelectItem value="other">Other Concrete Work</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
         
         <div>
