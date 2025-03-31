@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Check, ArrowRight } from 'lucide-react';
@@ -83,44 +84,63 @@ const LocationsList = () => {
   
   return (
     <main className="flex-grow">
-      {/* Quote Form Section - Moved to top for better CRO */}
-      <section className="py-12 pt-10 bg-white">
+      {/* Hero Section with Quote Form */}
+      <section className="py-12 bg-gray-50 border-b">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center mb-10">
-            <h1 className="text-4xl font-bold mb-4">Get Matched With Vetted Driveway Concreters Near You</h1>
-            <p className="text-xl text-gray-700 mb-6 max-w-3xl mx-auto">
-              Trusted local contractors. Response time within 2 business hours. One simple form to get competitive quotes – no pushy salespeople, no hassle.
-            </p>
-            <div className="flex flex-wrap gap-4 justify-center mb-6">
-              <div className="flex items-center text-sm text-gray-600">
-                <Check className="h-5 w-5 text-brand-blue mr-2" />
-                <span>All concreters are licensed and insured.</span>
+          <div className="flex flex-col lg:flex-row items-start gap-8">
+            {/* Left Column: Headline and Trust Signals */}
+            <div className="lg:w-1/2 space-y-6">
+              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
+                Get Free Quotes From Top-Rated Local Driveway Concreters
+              </h1>
+              
+              <p className="text-xl text-gray-700">
+                Matched instantly with trusted local pros. Most respond within 2 business hours — no spam, 
+                no pressure, just real quotes from verified driveway concreters.
+              </p>
+              
+              <div className="space-y-3 pt-2">
+                <div className="flex items-center gap-2">
+                  <Check className="h-5 w-5 text-brand-blue flex-shrink-0" />
+                  <span className="text-gray-700">All concreters are licensed, insured, and thoroughly vetted</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="h-5 w-5 text-brand-blue flex-shrink-0" />
+                  <span className="text-gray-700">We only work with professionals rated 4.5 stars and above</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="h-5 w-5 text-brand-blue flex-shrink-0" />
+                  <span className="text-gray-700">Free service with zero obligation to hire</span>
+                </div>
               </div>
-              <div className="flex items-center text-sm text-gray-600">
-                <Check className="h-5 w-5 text-brand-blue mr-2" />
-                <span>We only work with professionals rated 4.5 stars and above.</span>
-              </div>
-              <div className="flex items-center text-sm text-gray-600">
-                <Check className="h-5 w-5 text-brand-blue mr-2" />
-                <span>No spam. No obligation. Just real local quotes.</span>
+              
+              {/* Mobile-only CTA button (hidden on desktop) */}
+              <div className="lg:hidden pt-4">
+                <Button className="cta-button text-lg" size="lg">
+                  Get My Free Driveway Quote
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
               </div>
             </div>
-          </div>
-          
-          <div className="max-w-lg mx-auto">
-            <QuoteForm service="concrete-driveway" />
-            <p className="text-center text-sm font-medium text-gray-600 mt-4">
-              We'll match you with a concreter within 2 business hours.
-            </p>
+            
+            {/* Right Column: Quote Form */}
+            <div className="lg:w-1/2 w-full mt-8 lg:mt-0">
+              <div className="bg-white rounded-lg shadow-xl p-6">
+                <QuoteForm service="concrete-driveway" />
+                <p className="text-center text-sm font-medium text-gray-600 mt-4">
+                  We'll match you with local concreters within 2 business hours.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
       
-      {/* Hero Section - Value Proposition (moved below the form) */}
+      {/* Value Proposition Section */}
       <section className="bg-gradient-to-br from-[#1E3A8A] to-[#3B82F6] text-white py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold mb-6">Transform Your Home With a Professional Concrete Driveway</h2>
+            <h2 className="text-3xl font-bold mb-6">Why Choose Professional Driveway Concreters?</h2>
             <p className="text-xl text-gray-200 mb-8">
               A new concrete driveway does more than just complete your home's exterior — it enhances curb appeal, 
               adds property value, and provides decades of low-maintenance durability that other materials simply can't match.
@@ -145,7 +165,7 @@ const LocationsList = () => {
             </div>
             
             <div className="mb-10">
-              <h3 className="text-xl font-semibold mb-4">Why Choose a Professional Concrete Driveway:</h3>
+              <h3 className="text-xl font-semibold mb-4">Benefits of Professional Driveway Installation:</h3>
               <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <li className="flex items-start">
                   <Check className="h-5 w-5 text-brand-yellow mr-2 mt-1 flex-shrink-0" />
@@ -188,7 +208,7 @@ const LocationsList = () => {
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="max-w-5xl mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-12">Find Concrete Driveway Contractors Near You</h2>
+            <h2 className="text-3xl font-bold text-center mb-12">Find Driveway Concreters Near You</h2>
             
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {uniqueStates.map((state, index) => (
@@ -206,7 +226,7 @@ const LocationsList = () => {
             <div className="bg-gray-50 p-8 rounded-lg mt-16">
               <h3 className="text-2xl font-bold mb-4">Why Choose ConcreterQuotes.com?</h3>
               <p className="mb-6">
-                At ConcreterQuotes.com, we simplify the process of finding reliable concrete professionals. Our network of vetted 
+                At ConcreterQuotes.com, we simplify the process of finding reliable driveway concreters. Our network of vetted 
                 contractors specialize in driveways for residential and commercial properties of all sizes.
               </p>
               
@@ -219,7 +239,7 @@ const LocationsList = () => {
                   </div>
                   <div>
                     <h4 className="font-semibold mb-1">Verified Professionals</h4>
-                    <p className="text-gray-600">Every contractor in our network is pre-screened and qualified</p>
+                    <p className="text-gray-600">Every driveway concreter in our network is pre-screened and qualified</p>
                   </div>
                 </div>
                 
@@ -231,7 +251,7 @@ const LocationsList = () => {
                   </div>
                   <div>
                     <h4 className="font-semibold mb-1">Free Quotes</h4>
-                    <p className="text-gray-600">No fees or obligations to get estimates for your project</p>
+                    <p className="text-gray-600">No fees or obligations to get estimates for your driveway project</p>
                   </div>
                 </div>
                 
@@ -243,7 +263,7 @@ const LocationsList = () => {
                   </div>
                   <div>
                     <h4 className="font-semibold mb-1">Local Expertise</h4>
-                    <p className="text-gray-600">Contractors who understand your area's specific requirements</p>
+                    <p className="text-gray-600">Driveway concreters who understand your area's specific requirements</p>
                   </div>
                 </div>
                 
@@ -255,7 +275,7 @@ const LocationsList = () => {
                   </div>
                   <div>
                     <h4 className="font-semibold mb-1">Fast Response</h4>
-                    <p className="text-gray-600">Get matched with available contractors within 24-48 hours</p>
+                    <p className="text-gray-600">Get matched with available driveway concreters within 2 hours</p>
                   </div>
                 </div>
               </div>

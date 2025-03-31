@@ -49,13 +49,13 @@ const DrivewayConcreterLocations = () => {
       <HelmetProvider>
         <div className="min-h-screen flex flex-col">
           <SEOHead 
-            title="Affordable Driveway Concreters Locations" 
-            description="Find professional and affordable concrete driveway contractors in your area. Our network of experienced local contractors provides free quotes for all driveway projects."
+            title="Get Free Quotes From Top-Rated Local Driveway Concreters" 
+            description="Find professional and affordable driveway concreters near you. Get free quotes from trusted local pros within 2 hours. Licensed, insured, and highly-rated contractors."
             schemaData={{
               "@context": "https://schema.org",
               "@type": "Organization",
               "name": "Concreter Quotes",
-              "description": "Find affordable driveway contractors across the USA"
+              "description": "Find affordable driveway concreters across the USA"
             }}
           />
           <Header />
@@ -72,13 +72,13 @@ const DrivewayConcreterLocations = () => {
       <HelmetProvider>
         <div className="min-h-screen flex flex-col">
           <SEOHead 
-            title={`Driveway Concreters in ${state.toUpperCase()} - Find Local Contractors`}
-            description={`Connect with top driveway concrete contractors in ${state.toUpperCase()}. Get free quotes from reliable professionals in your area.`}
+            title={`Top Driveway Concreters in ${state.toUpperCase()} - Get Free Local Quotes`}
+            description={`Connect with top driveway concreters in ${state.toUpperCase()}. Get free quotes from reliable professionals in your area within 2 hours.`}
             schemaData={{
               "@context": "https://schema.org",
               "@type": "Organization",
               "name": "Concreter Quotes",
-              "description": `Find affordable driveway contractors in ${state.toUpperCase()}`
+              "description": `Find affordable driveway concreters in ${state.toUpperCase()}`
             }}
           />
           <Header />
@@ -136,9 +136,9 @@ const DrivewayConcreterLocations = () => {
     <HelmetProvider>
       <div className="min-h-screen flex flex-col">
         <SEOHead 
-          title={`Affordable ${locationContent.title}`}
-          description={locationContent.metaDescription}
-          schemaData={locationContent.schemaData}
+          title={`Top ${locationContent?.title || 'Driveway Concreters'}`}
+          description={locationContent?.metaDescription || `Find professional driveway concreters in ${city}, ${state}. Get free quotes from trusted local pros for your concrete driveway project.`}
+          schemaData={locationContent?.schemaData}
           canonicalUrl={canonicalUrl}
         />
         <Header />
