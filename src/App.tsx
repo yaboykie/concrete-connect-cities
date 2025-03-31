@@ -22,19 +22,25 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/locations/:state/:city/:service" element={<LocationService />} />
+            
+            {/* Driveway concreter routes */}
             <Route path="/driveway-concreters/locations" element={<DrivewayConcreterLocations />} />
+            <Route path="/driveway-concreters/locations/:state" element={<DrivewayConcreterLocations />} />
             <Route path="/driveway-concreters/locations/:state/:city" element={<DrivewayConcreterLocations />} />
             
-            {/* New routes for concrete contractors */}
+            {/* Concrete contractor routes */}
             <Route path="/concrete-contractor/locations" element={<DrivewayConcreterLocations />} />
+            <Route path="/concrete-contractor/locations/:state" element={<DrivewayConcreterLocations />} />
             <Route path="/concrete-contractor/locations/:state/:city" element={<DrivewayConcreterLocations />} />
             
-            {/* New routes for concrete patios */}
+            {/* Concrete patios routes */}
             <Route path="/concrete-patios/locations" element={<DrivewayConcreterLocations />} />
+            <Route path="/concrete-patios/locations/:state" element={<DrivewayConcreterLocations />} />
             <Route path="/concrete-patios/locations/:state/:city" element={<DrivewayConcreterLocations />} />
             
             {/* Example direct route to Austin, TX */}
             <Route path="/driveway-concreters/austin-tx" element={<DrivewayConcreterLocations />} />
+            
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

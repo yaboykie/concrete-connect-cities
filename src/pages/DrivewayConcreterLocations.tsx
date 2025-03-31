@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
@@ -10,6 +11,7 @@ import LocationDetails from '@/components/driveway-concreters/LocationDetails';
 import SEOHead from '@/components/driveway-concreters/SEOHead';
 import { LocationContentType } from '@/components/driveway-concreters/types';
 import { Skeleton } from '@/components/ui/skeleton';
+import StateLocations from '@/components/driveway-concreters/StateLocations';
 
 const DrivewayConcreterLocations = () => {
   const { state, city } = useParams<{ state: string; city: string }>();
@@ -18,29 +20,31 @@ const DrivewayConcreterLocations = () => {
   const [error, setError] = useState<string | null>(null);
   
   useEffect(() => {
-    if (!state || !city) {
+    // If we have both state and city parameters, fetch city-specific content
+    if (state && city) {
+      const fetchLocationContent = async () => {
+        try {
+          setIsLoading(true);
+          const content = await getLocationContent(state, city);
+          setLocationContent(content);
+          setError(null);
+        } catch (err) {
+          console.error("Error fetching location content:", err);
+          setError("Failed to load location data. Please try again later.");
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      
+      fetchLocationContent();
+    } else {
+      // If we only have a state parameter or no parameters, don't need to fetch city content
       setIsLoading(false);
-      return;
     }
-    
-    const fetchLocationContent = async () => {
-      try {
-        setIsLoading(true);
-        const content = await getLocationContent(state, city);
-        setLocationContent(content);
-        setError(null);
-      } catch (err) {
-        console.error("Error fetching location content:", err);
-        setError("Failed to load location data. Please try again later.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
-    fetchLocationContent();
   }, [state, city]);
   
-  if (!state || !city) {
+  // If no parameters, show the main locations list
+  if (!state && !city) {
     return (
       <HelmetProvider>
         <div className="min-h-screen flex flex-col">
@@ -56,6 +60,29 @@ const DrivewayConcreterLocations = () => {
           />
           <Header />
           <LocationsList />
+          <Footer />
+        </div>
+      </HelmetProvider>
+    );
+  }
+  
+  // If only state parameter is present, show cities in that state
+  if (state && !city) {
+    return (
+      <HelmetProvider>
+        <div className="min-h-screen flex flex-col">
+          <SEOHead 
+            title={`Driveway Concreters in ${state.toUpperCase()} - Find Local Contractors`}
+            description={`Connect with top driveway concrete contractors in ${state.toUpperCase()}. Get free quotes from reliable professionals in your area.`}
+            schemaData={{
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              "name": "Concreter Quotes",
+              "description": `Find affordable driveway contractors in ${state.toUpperCase()}`
+            }}
+          />
+          <Header />
+          <StateLocations state={state} />
           <Footer />
         </div>
       </HelmetProvider>
