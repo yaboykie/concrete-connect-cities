@@ -1,7 +1,7 @@
 
-import { FAQ, Service, Testimonial } from './types';
+import { FAQ, Service, Testimonial, LocationContentType } from './types';
 
-export const getLocationContent = (state: string, city: string) => {
+export const getLocationContent = (state: string, city: string): LocationContentType => {
   // Find matching location from our data
   const locationMatch = { state, city };
   
@@ -20,11 +20,15 @@ export const getLocationContent = (state: string, city: string) => {
   const faqs: FAQ[] = [
     {
       question: `How much does a concrete driveway cost in ${formattedCity}?`,
-      answer: `Concrete driveway costs in ${formattedCity} typically range from $6-$12 per square foot for standard installations. Factors affecting price include size, thickness, decorative elements, and site preparation. Most homeowners invest between $3,000-$7,000 for a complete driveway. Contact us for a free, customized quote for your specific project.`
+      answer: `Concrete driveway costs in ${formattedCity} typically start from just $4-$6 per square foot for standard installations. For an average driveway, many homeowners invest between $2,500-$5,000 for a complete project. Factors affecting price include size, thickness, and site preparation. Our contractors often offer seasonal discounts and flexible payment options to make your driveway project affordable. Contact us today for a free, no-obligation quote tailored to your specific requirements.`
     },
     {
       question: `How long will a new concrete driveway last in ${formattedState}?`,
-      answer: `With proper installation and maintenance, concrete driveways in ${formattedState} typically last 25-30 years or more. Our local contractors understand ${formattedState}'s specific climate challenges and use appropriate concrete mixes and installation techniques to maximize durability and longevity.`
+      answer: `With proper installation and basic maintenance, concrete driveways in ${formattedState} typically last 30-50 years or more. This exceptional longevity makes concrete one of the most cost-effective driveway options available. Our local contractors understand ${formattedState}'s specific climate challenges and use appropriate concrete mixes and installation techniques to maximize durability, ensuring your investment stands the test of time.`
+    },
+    {
+      question: "What maintenance is required for a concrete driveway?",
+      answer: `Concrete driveways require minimal maintenance compared to other materials. Basic care includes occasional cleaning with a pressure washer, sealing every 2-5 years, and addressing small cracks before they expand. Our ${formattedCity} contractors can provide simple maintenance tips specific to your installation that will keep your driveway looking great for decades with minimal expense and effort.`
     },
     {
       question: "How long does it take to install a concrete driveway?",
@@ -37,6 +41,10 @@ export const getLocationContent = (state: string, city: string) => {
     {
       question: "Do I need a permit to replace my driveway in your area?",
       answer: `Permit requirements vary across ${formattedState}. In ${formattedCity}, most driveway replacements require a permit, especially if changing the dimensions or affecting drainage. Our local contractors are familiar with ${formattedCity}'s specific permitting requirements and can either assist with the process or handle it entirely as part of your project.`
+    },
+    {
+      question: `What's the best time of year to install a concrete driveway in ${formattedCity}?`,
+      answer: `While our ${formattedCity} contractors can install driveways year-round, spring and fall typically offer ideal temperature and humidity conditions for concrete curing. That said, professional contractors have techniques to successfully pour concrete in both hot and cold weather. Many homeowners find better pricing and availability during off-peak seasons. Contact us to learn about current availability and any seasonal specials!`
     }
   ];
   

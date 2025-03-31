@@ -15,8 +15,8 @@ const FinalCTA: React.FC<FinalCTAProps> = ({ fullLocation }) => {
           Ready to Get Started with Your Concrete Driveway Project?
         </h2>
         <p className="text-xl text-gray-700 mb-8 max-w-3xl mx-auto">
-          Take the first step toward your new concrete driveway today. Our network of professional 
-          contractors in {fullLocation} is ready to help!
+          Take the first step toward your new affordable concrete driveway today. Our network of professional 
+          contractors in {fullLocation} is ready to help with free, no-obligation quotes!
         </p>
         <Button className="cta-button text-lg" size="lg">
           Get Your Free Driveway Quote in {fullLocation}
