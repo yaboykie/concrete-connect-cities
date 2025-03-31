@@ -29,3 +29,16 @@ export interface LocationContentType {
   schemaData: any;
   metaDescription: string;
 }
+
+// Interface for database location data
+export interface LocationData {
+  city: string | null;
+  state: string | null;
+  state_abbreviation: string | null;
+  full_name: string | null;
+  service: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  meta_description: string | null;
+  schema_data: any;
+}

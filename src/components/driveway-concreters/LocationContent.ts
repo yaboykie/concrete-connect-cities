@@ -1,5 +1,5 @@
 
-import { FAQ, Service, Testimonial, LocationContentType } from './types';
+import { FAQ, Service, Testimonial, LocationContentType, LocationData } from './types';
 import { supabase } from "@/integrations/supabase/client";
 
 export const getLocationContent = async (state: string, city: string): Promise<LocationContentType> => {
@@ -17,7 +17,7 @@ export const getLocationContent = async (state: string, city: string): Promise<L
     }
 
     // Use fetched data or fall back to generated content
-    const locationMatch = locationData || { 
+    const locationMatch: Partial<LocationData> = locationData || { 
       state: state, 
       city: city,
       state_abbreviation: state.toUpperCase(),
