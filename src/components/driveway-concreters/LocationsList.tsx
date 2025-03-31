@@ -99,6 +99,25 @@ const LocationsList = () => {
                 no pressure, just real quotes from verified driveway concreters.
               </p>
               
+              <div className="bg-white/80 backdrop-blur-sm p-5 rounded-lg border border-gray-100 shadow-sm">
+                <p className="text-gray-800 leading-relaxed">
+                  A new driveway isn't just functional — it's the <strong>first thing people see</strong> when they visit your home. 
+                  Real estate agents confirm that an attractive, well-installed concrete driveway can <strong>increase property value by $3,000 to $10,000</strong> depending 
+                  on your area and home price.
+                </p>
+                
+                <p className="text-gray-800 leading-relaxed mt-3">
+                  Most homeowners recoup <strong>50–80% of the installation cost</strong> if they sell. A clean, modern concrete 
+                  driveway gives buyers that crucial positive first impression—showing your home is well-maintained 
+                  and move-in ready, which is especially important in today's competitive real estate markets.
+                </p>
+                
+                <p className="text-gray-800 leading-relaxed mt-3 font-medium">
+                  Get your free quote now and discover how a new concrete driveway could add serious value to your home — 
+                  with no pressure or obligation to hire.
+                </p>
+              </div>
+              
               <div className="space-y-3 pt-2">
                 <div className="flex items-center gap-2">
                   <Check className="h-5 w-5 text-brand-blue flex-shrink-0" />
