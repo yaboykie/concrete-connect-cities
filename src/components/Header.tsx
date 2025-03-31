@@ -75,47 +75,6 @@ const Header = () => {
                     </div>
                   </NavigationMenuContent>
                 </NavigationMenuItem>
-                
-                {/* Locations Dropdown */}
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger>Locations</NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <div className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-                      <div className="space-y-2">
-                        <div className="font-medium leading-none">Popular Cities</div>
-                        <div className="space-y-2 mt-2">
-                          <Link to="/driveway-concreters/locations/ny/new-york-city" className="block p-2 hover:bg-gray-100 rounded-md">
-                            New York City
-                          </Link>
-                          <Link to="/driveway-concreters/locations/ca/los-angeles" className="block p-2 hover:bg-gray-100 rounded-md">
-                            Los Angeles
-                          </Link>
-                          <Link to="/driveway-concreters/locations/tx/houston" className="block p-2 hover:bg-gray-100 rounded-md">
-                            Houston
-                          </Link>
-                          <Link to="/driveway-concreters/locations" className="flex items-center p-2 hover:bg-gray-100 rounded-md">
-                            More Cities
-                            <ChevronRight className="h-4 w-4 ml-1" />
-                          </Link>
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <div className="font-medium leading-none">By Region</div>
-                        <div className="space-y-2 mt-2">
-                          <Link to="/driveway-concreters/locations/ca" className="block p-2 hover:bg-gray-100 rounded-md">
-                            California
-                          </Link>
-                          <Link to="/driveway-concreters/locations/tx" className="block p-2 hover:bg-gray-100 rounded-md">
-                            Texas
-                          </Link>
-                          <Link to="/driveway-concreters/locations/fl" className="block p-2 hover:bg-gray-100 rounded-md">
-                            Florida
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
             
@@ -165,22 +124,6 @@ const Header = () => {
                   </Link>
                   <Link to="/concrete-patios/locations" className="block py-1 text-gray-600 hover:text-brand-blue">
                     Concrete Patios
-                  </Link>
-                </div>
-              </div>
-              
-              {/* Mobile Locations */}
-              <div className="py-2">
-                <p className="font-medium mb-2">Popular Locations</p>
-                <div className="pl-4 space-y-2">
-                  <Link to="/driveway-concreters/locations/ny/new-york-city" className="block py-1 text-gray-600 hover:text-brand-blue">
-                    New York City
-                  </Link>
-                  <Link to="/driveway-concreters/locations/ca/los-angeles" className="block py-1 text-gray-600 hover:text-brand-blue">
-                    Los Angeles
-                  </Link>
-                  <Link to="/driveway-concreters/locations" className="block py-1 text-gray-600 hover:text-brand-blue">
-                    All Locations
                   </Link>
                 </div>
               </div>
