@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ArrowRight, Clock, CheckCircle, Shield } from 'lucide-react';
+import { ArrowRight, Clock, CheckCircle, Shield, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface FinalCTAProps {
@@ -17,49 +17,53 @@ const FinalCTA: React.FC<FinalCTAProps> = ({ fullLocation }) => {
   const isNYC = displayLocation.toLowerCase() === 'new york city';
 
   return (
-    <section className="section bg-gradient-to-b from-brand-yellow to-brand-yellow/20 py-16">
+    <section className="section bg-gradient-to-b from-brand-blue/90 to-brand-navy py-16 text-white">
       <div className="container mx-auto px-4 text-center">
-        <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-800">
-          {isNYC ? "Transform Your NYC Driveway Without the Hassle" : `Ready for a Better Driveway in ${displayLocation}?`}
+        <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">
+          {isNYC ? "Get Your Free NYC Driveway Quotes Today" : `Ready for Expert Driveway Service in ${displayLocation}?`}
         </h2>
-        <p className="text-xl text-gray-700 mb-8 max-w-3xl mx-auto font-medium">
+        <p className="text-xl text-gray-100 mb-8 max-w-3xl mx-auto font-medium">
           {isNYC ? 
-            "Our network of trusted NYC concrete pros can handle everything from permits to finishing touches, creating a durable driveway that stands up to NYC traffic and weather." :
-            `Our network of trusted contractors in ${displayLocation} is ready to transform your home's first impression with a beautiful, durable concrete driveway.`
+            "Our network of vetted NYC concrete pros handle everything from DOB permits to finishing touches, creating driveways that withstand NYC's tough conditions." :
+            `Our professional concreters in ${displayLocation} deliver beautiful, durable concrete driveways with exceptional service and craftsmanship.`
           }
         </p>
         
-        <div className="flex flex-col md:flex-row justify-center gap-6 mb-8">
-          <div className="flex items-center justify-center">
-            <CheckCircle className="h-5 w-5 mr-2 text-green-600" />
-            <span className="text-gray-700">Free, no-obligation quotes</span>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
+            <div className="flex items-center justify-center text-brand-yellow mb-3">
+              <Clock className="h-8 w-8" />
+            </div>
+            <h3 className="text-lg font-bold mb-2">24-Hour Response</h3>
+            <p className="text-gray-100">Get quotes from available pros within 24 hours of your request</p>
           </div>
-          <div className="flex items-center justify-center">
-            <CheckCircle className="h-5 w-5 mr-2 text-green-600" />
-            <span className="text-gray-700">Licensed & insured contractors</span>
+          
+          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
+            <div className="flex items-center justify-center text-brand-yellow mb-3">
+              <Shield className="h-8 w-8" />
+            </div>
+            <h3 className="text-lg font-bold mb-2">Verified Professionals</h3>
+            <p className="text-gray-100">
+              {isNYC ? "All contractors licensed with NYC Department of Consumer Affairs" : "All contractors meet strict licensing requirements"}
+            </p>
           </div>
-          <div className="flex items-center justify-center">
-            <Clock className="h-5 w-5 mr-2 text-brand-blue" />
-            <span className="text-gray-700">24-hour response guaranteed</span>
+          
+          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
+            <div className="flex items-center justify-center text-brand-yellow mb-3">
+              <Star className="h-8 w-8" />
+            </div>
+            <h3 className="text-lg font-bold mb-2">Quality Guaranteed</h3>
+            <p className="text-gray-100">Our network includes only proven professionals with excellent reviews</p>
           </div>
         </div>
         
-        <div className="bg-white py-3 px-6 rounded-lg shadow inline-block mb-8">
-          <div className="flex items-center justify-center">
-            <Shield className="h-5 w-5 mr-2 text-brand-blue" />
-            <span className="text-gray-700 font-medium">
-              {isNYC ? "All contractors are fully licensed with NYC Department of Consumer Affairs" : "All contractors meet local licensing requirements"}
-            </span>
-          </div>
-        </div>
-        
-        <Button className="cta-button text-lg font-bold bg-brand-blue hover:bg-brand-blue/90 shadow-lg hover:shadow-xl transition-all" size="lg">
+        <Button className="cta-button text-lg font-bold bg-brand-yellow hover:bg-brand-yellow/90 text-brand-navy shadow-lg hover:shadow-xl transition-all" size="lg">
           Get Your 3 Free Quotes Today
           <ArrowRight className="ml-2 h-5 w-5" />
         </Button>
         
-        <p className="text-sm text-gray-800 mt-4 bg-white/70 inline-block px-4 py-2 rounded-full shadow-sm">
-          🎯 We only match you with pros who are actually available in {displayLocation} with 24-hour response time
+        <p className="text-sm text-gray-100 mt-4 bg-white/10 backdrop-blur-sm inline-block px-6 py-3 rounded-full">
+          Exclusively matching you with available professionals in {displayLocation} • Fast 24-hour response guaranteed
         </p>
       </div>
     </section>

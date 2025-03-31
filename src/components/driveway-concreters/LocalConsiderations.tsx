@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { CheckCircle, Shield } from 'lucide-react';
+import { CheckCircle, Shield, Award, Star } from 'lucide-react';
 
 interface LocalConsiderationsProps {
   weatherConsiderations: string;
@@ -17,29 +17,82 @@ const LocalConsiderations: React.FC<LocalConsiderationsProps> = ({
     <section className="section bg-white">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold mb-6">Local Knowledge = Better Results in {city}</h2>
-          <p className="text-lg mb-6">{weatherConsiderations}</p>
+          <h2 className="text-3xl font-bold mb-6">Expert Driveway Pros for {city} Homeowners</h2>
+          
+          <div className="bg-gradient-to-r from-brand-navy/5 to-brand-blue/5 p-6 rounded-lg shadow-sm mb-8">
+            <p className="text-lg font-medium leading-relaxed">
+              Don't trust your valuable property to just anyone. Our network includes only the most qualified concrete contractors in {city}—professionals who understand the unique challenges of NYC's climate, strict building codes, and distinctive urban environment.
+            </p>
+          </div>
+          
+          <h3 className="text-xl font-semibold mb-4 flex items-center">
+            <Award className="h-6 w-6 mr-2 text-brand-blue" />
+            Our Rigorous Vetting Process Ensures Excellence
+          </h3>
+          
+          <div className="grid md:grid-cols-2 gap-6 mb-8">
+            <div className="bg-white rounded-lg p-5 shadow-md border border-gray-100">
+              <div className="flex items-start">
+                <Star className="h-5 w-5 mr-3 text-yellow-500 flex-shrink-0 mt-1" />
+                <div>
+                  <h4 className="font-semibold mb-1">License Verification</h4>
+                  <p className="text-gray-700">Every contractor is verified with the NYC Department of Buildings and carries proper insurance</p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-white rounded-lg p-5 shadow-md border border-gray-100">
+              <div className="flex items-start">
+                <Star className="h-5 w-5 mr-3 text-yellow-500 flex-shrink-0 mt-1" />
+                <div>
+                  <h4 className="font-semibold mb-1">Quality Workmanship</h4>
+                  <p className="text-gray-700">We inspect past projects and verify customer satisfaction before approving contractors</p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-white rounded-lg p-5 shadow-md border border-gray-100">
+              <div className="flex items-start">
+                <Star className="h-5 w-5 mr-3 text-yellow-500 flex-shrink-0 mt-1" />
+                <div>
+                  <h4 className="font-semibold mb-1">Response Time</h4>
+                  <p className="text-gray-700">All our NYC contractors commit to 24-hour response times for quotes and inquiries</p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-white rounded-lg p-5 shadow-md border border-gray-100">
+              <div className="flex items-start">
+                <Star className="h-5 w-5 mr-3 text-yellow-500 flex-shrink-0 mt-1" />
+                <div>
+                  <h4 className="font-semibold mb-1">Customer Feedback</h4>
+                  <p className="text-gray-700">Continuous monitoring of reviews and projects to ensure ongoing quality</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
           <div className="bg-concrete-light rounded-lg p-6 shadow-md">
             <h3 className="text-xl font-semibold mb-4 flex items-center">
               <Shield className="h-5 w-5 mr-2 text-brand-blue" />
-              Why Local Concreters Beat Big Builders Every Time
+              Why Our Local {city} Pros Deliver Superior Results
             </h3>
             <div className="grid md:grid-cols-2 gap-4">
               <div className="flex items-start">
                 <CheckCircle className="h-5 w-5 mr-3 text-brand-blue flex-shrink-0 mt-1" />
-                <p>Local pros understand regional soil conditions and drainage requirements</p>
+                <p>Deep understanding of NYC's unique soil conditions and drainage requirements</p>
               </div>
               <div className="flex items-start">
                 <CheckCircle className="h-5 w-5 mr-3 text-brand-blue flex-shrink-0 mt-1" />
-                <p>Familiarity with local building codes and permit processes</p>
+                <p>Expertise navigating complex NYC permits and DOB regulations</p>
               </div>
               <div className="flex items-start">
                 <CheckCircle className="h-5 w-5 mr-3 text-brand-blue flex-shrink-0 mt-1" />
-                <p>Knowledge of climate-appropriate concrete mixes that last</p>
+                <p>Knowledge of climate-appropriate concrete mixes that withstand NYC freeze-thaw cycles</p>
               </div>
               <div className="flex items-start">
                 <CheckCircle className="h-5 w-5 mr-3 text-brand-blue flex-shrink-0 mt-1" />
-                <p>Quicker response times for questions or warranty service</p>
+                <p>Local presence ensures faster response for warranty service if ever needed</p>
               </div>
             </div>
           </div>

@@ -23,20 +23,20 @@ const LocationHero: React.FC<LocationHeroProps> = ({ locationContent }) => {
         <Breadcrumb className="mb-4">
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink as={Link} to="/" className="text-gray-300 hover:text-white">
-                Home
+              <BreadcrumbLink asChild>
+                <Link to="/" className="text-gray-300 hover:text-white">Home</Link>
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink as={Link} to="/driveway-concreters/locations" className="text-gray-300 hover:text-white">
-                Driveway Concreters
+              <BreadcrumbLink asChild>
+                <Link to="/driveway-concreters/locations" className="text-gray-300 hover:text-white">Driveway Concreters</Link>
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink as={Link} to={`/driveway-concreters/locations/${formattedState}`} className="text-gray-300 hover:text-white">
-                {state}
+              <BreadcrumbLink asChild>
+                <Link to={`/driveway-concreters/locations/${formattedState}`} className="text-gray-300 hover:text-white">{state}</Link>
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
