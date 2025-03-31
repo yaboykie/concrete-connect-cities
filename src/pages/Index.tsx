@@ -20,6 +20,14 @@ const Index = () => {
       cta: 'Get Driveway Quotes'
     },
     { 
+      service: 'concrete-patios', 
+      title: 'Concrete Patios', 
+      description: 'Create an outdoor living space that's beautiful, durable, and low-maintenance.',
+      icon: <House className="h-10 w-10 mb-2 text-brand-blue" />,
+      path: '/concrete-patios/locations',
+      cta: 'Find Patio Contractors'
+    },
+    { 
       service: 'concrete-slab', 
       title: 'Concrete Slabs', 
       description: 'Foundations, patios, sheds — all professionally poured.',

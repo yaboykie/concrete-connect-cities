@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import LocationService from "./pages/LocationService";
 import DrivewayConcreterLocations from "./pages/DrivewayConcreterLocations";
+import ServicePage from "./pages/ServicePage";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +38,15 @@ const App = () => (
             <Route path="/concrete-patios/locations" element={<DrivewayConcreterLocations />} />
             <Route path="/concrete-patios/locations/:state" element={<DrivewayConcreterLocations />} />
             <Route path="/concrete-patios/locations/:state/:city" element={<DrivewayConcreterLocations />} />
+            
+            {/* Service pages */}
+            <Route path="/concrete-driveways" element={<ServicePage />} />
+            <Route path="/concrete-patios" element={<ServicePage />} />
+            <Route path="/concrete-slab" element={<ServicePage />} />
+            <Route path="/concrete-garage" element={<ServicePage />} />
+            <Route path="/decorative-concrete" element={<ServicePage />} />
+            <Route path="/commercial-concrete" element={<ServicePage />} />
+            <Route path="/:service" element={<ServicePage />} />
             
             {/* Example direct route to Austin, TX */}
             <Route path="/driveway-concreters/austin-tx" element={<DrivewayConcreterLocations />} />
