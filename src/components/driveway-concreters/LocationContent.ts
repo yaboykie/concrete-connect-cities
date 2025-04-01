@@ -67,12 +67,12 @@ export const getLocationContent = async (state: string, city: string): Promise<L
     
     // Google Map embed from Supabase if available
     // Handle either property naming convention from database
-    const googleMapEmbed = mapData?.googleMapEmbed || mapData?.GoogleMapEmbed || null;
+    const googleMapEmbed = mapData?.GoogleMapEmbed || null;
     
     // Get latitude and longitude values from the map data or location data
     // Handle either property naming convention from database
-    const latitude = mapData?.latitude || mapData?.Latitude || locationData?.latitude || null;
-    const longitude = mapData?.longitude || mapData?.Longitude || locationData?.longitude || null;
+    const latitude = mapData?.Latitude || locationData?.latitude || null;
+    const longitude = mapData?.Longitude || locationData?.longitude || null;
     
     // Schema data for SEO
     const schemaData = generateSchemaData(
@@ -87,22 +87,31 @@ export const getLocationContent = async (state: string, city: string): Promise<L
     // Meta description for SEO
     const metaDescription = generateMetaDescription(fullLocation, locationMatch.meta_description);
     
+    // Add debug log to help diagnose data issues
+    console.log('Fetched location content:', {
+      locationData,
+      mapData,
+      latitude,
+      longitude,
+      googleMapEmbed
+    });
+    
     // Update performance metrics
     updatePerformanceMetrics(locationKey, performance.now() - startTime);
     
     return {
-      title: serviceTitle,
-      serviceIntro,
-      weatherConsiderations,
-      faqs,
-      services,
-      testimonials,
-      fullLocation,
-      latitude,
-      longitude,
-      googleMapEmbed,
-      schemaData,
-      metaDescription
+      title: serviceTitle || "Driveway Concreters",
+      serviceIntro: serviceIntro || "Looking for trusted contractors?",
+      weatherConsiderations: weatherConsiderations || "",
+      faqs: faqs || [],
+      services: services || [],
+      testimonials: testimonials || [],
+      fullLocation: fullLocation || `${formattedCity}, ${formattedState}`,
+      latitude: latitude ?? 0,
+      longitude: longitude ?? 0,
+      googleMapEmbed: googleMapEmbed ?? "https://maps.google.com",
+      schemaData: schemaData || {},
+      metaDescription: metaDescription || "Find driveway concreters near you"
     };
   } catch (error) {
     console.error(`Unexpected error in getLocationContent for ${city}, ${state}:`, error);

@@ -49,14 +49,19 @@ export const fetchLocationFromSupabase = async (
 
     console.log(`Cache miss or expired - fetching fresh data for ${city}, ${stateUpper}`);
 
-    // Cast the parameters to any to avoid TypeScript errors with RPC
+    // Using a type assertion to bypass the TypeScript error with RPC
     const { data, error } = await supabase.rpc('get_location_with_map_data', {
       p_state: stateUpper,
       p_city_slug: citySlug,
     } as any);
 
-    if (error || !data || data.length === 0) {
-      console.warn(`RPC failed or empty, using fallback for ${city}, ${stateUpper}`);
+    if (error) {
+      console.error(`RPC error for ${city}, ${stateUpper}:`, error);
+      return await fallbackLocationFetch(stateUpper, citySlug);
+    }
+
+    if (!data || !Array.isArray(data) || data.length === 0) {
+      console.warn(`RPC returned empty data for ${city}, ${stateUpper}, using fallback`);
       return await fallbackLocationFetch(stateUpper, citySlug);
     }
 
