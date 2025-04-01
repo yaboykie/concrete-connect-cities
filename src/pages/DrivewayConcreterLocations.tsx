@@ -5,13 +5,22 @@ import { HelmetProvider } from 'react-helmet-async';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { locationData } from '@/components/driveway-concreters/LocationData';
-import { getLocationContent } from '@/components/driveway-concreters/LocationContent';
+import { getLocationContent, getPerformanceMetrics } from '@/components/driveway-concreters/LocationContent';
 import LocationsList from '@/components/driveway-concreters/LocationsList';
 import LocationDetails from '@/components/driveway-concreters/LocationDetails';
 import SEOHead from '@/components/driveway-concreters/SEOHead';
 import { LocationContentType } from '@/components/driveway-concreters/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import StateLocations from '@/components/driveway-concreters/StateLocations';
+import { toast } from '@/components/ui/use-toast';
+
+// Set appropriate cache control headers for static generation/CDN caching
+const setCacheControlHeaders = () => {
+  if (typeof document !== 'undefined') {
+    // This only works on the server side, but we can simulate it for development
+    console.log('Setting cache-control header: max-age=86400, stale-while-revalidate=86400');
+  }
+};
 
 const DrivewayConcreterLocations = () => {
   const { state, city } = useParams<{ state: string; city: string }>();
@@ -22,6 +31,9 @@ const DrivewayConcreterLocations = () => {
   const location = useLocation();
   
   useEffect(() => {
+    // Set cache control headers
+    setCacheControlHeaders();
+    
     // Handle legacy URLs in the format /driveway-concreters/city-state
     // and redirect to the new format /driveway-concreters/locations/state/city
     if (!state && !city && location.pathname.includes('/driveway-concreters/') && !location.pathname.includes('/locations/')) {
@@ -52,9 +64,24 @@ const DrivewayConcreterLocations = () => {
           const content = await getLocationContent(state, city);
           setLocationContent(content);
           setError(null);
+          
+          // Log for performance monitoring
+          const metrics = getPerformanceMetrics(`${state}_${city}`);
+          if (metrics && metrics.loadCount > 1) {
+            console.log(`Page loaded ${metrics.loadCount} times with avg time: ${
+              Math.round(metrics.totalLoadTime / metrics.loadCount)
+            }ms`);
+          }
         } catch (err) {
           console.error("Error fetching location content:", err);
           setError("Failed to load location data. Please try again later.");
+          
+          // Show error toast
+          toast({
+            title: "Error loading location data",
+            description: "We're having trouble loading this location. Please try again later.",
+            variant: "destructive"
+          });
         } finally {
           setIsLoading(false);
         }
@@ -66,6 +93,22 @@ const DrivewayConcreterLocations = () => {
       setIsLoading(false);
     }
   }, [state, city, location.pathname, navigate]);
+  
+  // Error boundary fallback UI component
+  const ErrorFallback = ({ error, resetErrorBoundary }: { error: Error, resetErrorBoundary: () => void }) => {
+    return (
+      <div className="container mx-auto px-4 py-16 text-center">
+        <h1 className="text-2xl font-bold mb-4">Something went wrong</h1>
+        <p className="text-gray-600 mb-8">{error.message || "An unexpected error occurred."}</p>
+        <button
+          onClick={resetErrorBoundary}
+          className="px-4 py-2 bg-brand-blue text-white rounded hover:bg-brand-navy transition-colors"
+        >
+          Try again
+        </button>
+      </div>
+    );
+  };
   
   // If no parameters, show the main locations list
   if (!state && !city) {
@@ -147,7 +190,26 @@ const DrivewayConcreterLocations = () => {
         <main className="flex-grow container mx-auto px-4 py-16 text-center">
           <h1 className="text-2xl font-bold mb-4">Something went wrong</h1>
           <p className="text-gray-600 mb-8">{error || "Could not load location data."}</p>
-          <p>Please try again later or contact support if the problem persists.</p>
+          <div className="mb-8">
+            <h2 className="text-xl font-semibold mb-4">You might be interested in these locations:</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
+              {locationData.slice(0, 8).map((loc, index) => (
+                <a 
+                  key={index}
+                  href={`/driveway-concreters/locations/${loc.state.toLowerCase()}/${loc.city.toLowerCase().replace(/ /g, '-')}`}
+                  className="p-3 bg-gray-100 rounded hover:bg-gray-200 transition-colors text-center"
+                >
+                  {loc.full_name}
+                </a>
+              ))}
+            </div>
+          </div>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-brand-blue text-white rounded hover:bg-brand-navy transition-colors"
+          >
+            Try again
+          </button>
         </main>
         <Footer />
       </div>

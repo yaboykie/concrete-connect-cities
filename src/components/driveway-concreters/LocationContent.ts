@@ -1,6 +1,6 @@
 
 import { LocationContentType, LocationData } from './types';
-import { fetchLocationFromSupabase } from './utils/locationDataFetcher';
+import { fetchLocationFromSupabase, clearLocationCache } from './utils/locationDataFetcher';
 import { formatCityName, formatStateName, createFullLocation } from './utils/locationFormatter';
 import { generateLocationFaqs } from './utils/faqGenerator';
 import { generateLocationServices } from './utils/servicesGenerator';
@@ -8,16 +8,31 @@ import { generateLocationTestimonials } from './utils/testimonialsGenerator';
 import { generateSchemaData, generateMetaDescription } from './utils/schemaGenerator';
 import { getFallbackLocationContent } from './utils/fallbackContentGenerator';
 
+// Performance monitoring
+const perfMetrics = new Map<string, {
+  loadCount: number, 
+  totalLoadTime: number,
+  lastLoadTime: number,
+  errors: number
+}>();
+
 /**
  * Main function to get location content for a specific city and state
  */
 export const getLocationContent = async (state: string, city: string): Promise<LocationContentType> => {
+  const startTime = performance.now();
+  const locationKey = `${state}_${city}`;
+  
   try {
-    // Fetch data from Supabase
+    // Fetch data from Supabase with caching
     const { locationData, mapData, error } = await fetchLocationFromSupabase(state, city);
     
     if (error) {
-      console.error("Error fetching location data:", error);
+      console.error(`Error fetching location data for ${city}, ${state}:`, error);
+      
+      // Update metrics
+      updatePerformanceMetrics(locationKey, performance.now() - startTime, true);
+      
       // If there's an error, use fallback content
       return getFallbackLocationContent(state, city);
     }
@@ -70,6 +85,9 @@ export const getLocationContent = async (state: string, city: string): Promise<L
     // Meta description for SEO
     const metaDescription = generateMetaDescription(fullLocation, locationMatch.meta_description);
     
+    // Update performance metrics
+    updatePerformanceMetrics(locationKey, performance.now() - startTime);
+    
     return {
       title: serviceTitle,
       serviceIntro,
@@ -85,8 +103,78 @@ export const getLocationContent = async (state: string, city: string): Promise<L
       metaDescription
     };
   } catch (error) {
-    console.error("Error in getLocationContent:", error);
+    console.error(`Unexpected error in getLocationContent for ${city}, ${state}:`, error);
+    
+    // Update metrics with error
+    updatePerformanceMetrics(locationKey, performance.now() - startTime, true);
+    
     // Return fallback content
     return getFallbackLocationContent(state, city);
   }
+};
+
+/**
+ * Update performance metrics for a location
+ */
+const updatePerformanceMetrics = (
+  locationKey: string, 
+  loadTime: number,
+  isError: boolean = false
+) => {
+  const existing = perfMetrics.get(locationKey) || {
+    loadCount: 0,
+    totalLoadTime: 0,
+    lastLoadTime: 0,
+    errors: 0
+  };
+  
+  perfMetrics.set(locationKey, {
+    loadCount: existing.loadCount + 1,
+    totalLoadTime: existing.totalLoadTime + loadTime,
+    lastLoadTime: loadTime,
+    errors: isError ? existing.errors + 1 : existing.errors
+  });
+  
+  // Log performance for monitoring
+  console.log(`Performance for ${locationKey}: ${Math.round(loadTime)}ms (avg: ${Math.round(
+    (existing.totalLoadTime + loadTime) / (existing.loadCount + 1)
+  )}ms, errors: ${isError ? existing.errors + 1 : existing.errors})`);
+};
+
+/**
+ * Get performance metrics for all locations or a specific location
+ */
+export const getPerformanceMetrics = (locationKey?: string) => {
+  if (locationKey) {
+    return perfMetrics.get(locationKey);
+  }
+  
+  // Get most popular locations by visit count
+  const popular = Array.from(perfMetrics.entries())
+    .sort((a, b) => b[1].loadCount - a[1].loadCount)
+    .slice(0, 10);
+  
+  // Get slowest locations by average load time
+  const slowest = Array.from(perfMetrics.entries())
+    .sort((a, b) => (b[1].totalLoadTime / b[1].loadCount) - (a[1].totalLoadTime / a[1].loadCount))
+    .slice(0, 10);
+  
+  // Get locations with most errors
+  const mostErrors = Array.from(perfMetrics.entries())
+    .sort((a, b) => b[1].errors - a[1].errors)
+    .slice(0, 10);
+  
+  return {
+    totalLocations: perfMetrics.size,
+    popular,
+    slowest,
+    mostErrors
+  };
+};
+
+/**
+ * Clear all performance metrics
+ */
+export const clearPerformanceMetrics = () => {
+  perfMetrics.clear();
 };
