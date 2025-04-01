@@ -6,11 +6,8 @@ import ServiceListing from '@/components/ServiceListing';
 import TestimonialSection from '@/components/TestimonialSection';
 import GoogleMap from './GoogleMap';
 import QuoteForm from '@/components/QuoteForm';
-import LocationHero from './LocationHero';
-import LocalConsiderations from './LocalConsiderations';
-import ConcreterDifference from './ConcreterDifference';
-import FinalCTA from './FinalCTA';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { CheckIcon } from 'lucide-react';
 
 interface LocationDetailsProps {
   locationContent: LocationContentType;
@@ -44,7 +41,7 @@ const LocationDetails: React.FC<LocationDetailsProps> = ({ locationContent }) =>
                     🏡 <span className="font-bold">Your Driveway, Your First Impression</span>
                   </p>
                   <p className="text-lg text-gray-700">
-                    Make the best first impression with a beautiful concrete driveway that elevates your home's curb appeal and adds long-term value.
+                    A beautifully designed concrete driveway doesn't just add curb appeal—it makes a bold statement about how well your home is cared for.
                   </p>
                   
                   <p className="text-lg text-gray-700 font-medium">
@@ -81,14 +78,76 @@ const LocationDetails: React.FC<LocationDetailsProps> = ({ locationContent }) =>
         </div>
       </section>
       
-      {/* Local Considerations - Trimmed down */}
-      <section className="section bg-white">
+      {/* Process Timeline */}
+      <section className="py-12 bg-white">
+        <div className="container mx-auto px-4">
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-10">
+            How It Works - Get Your Driveway Quote in 4 Simple Steps
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 relative">
+            {/* Timeline connector line (visible on desktop only) */}
+            <div className="hidden md:block absolute top-16 left-[10%] right-[10%] h-0.5 bg-blue-200 z-0"></div>
+            
+            {/* Step 1 */}
+            <div className="relative z-10 flex flex-col items-center text-center">
+              <div className="w-14 h-14 rounded-full bg-brand-blue text-white flex items-center justify-center mb-4 font-bold text-xl">1</div>
+              <h3 className="text-lg font-bold mb-2">Submit Request</h3>
+              <p className="text-gray-600">Fill out our quick form with your project details in just 10 seconds</p>
+            </div>
+            
+            {/* Step 2 */}
+            <div className="relative z-10 flex flex-col items-center text-center">
+              <div className="w-14 h-14 rounded-full bg-brand-blue text-white flex items-center justify-center mb-4 font-bold text-xl">2</div>
+              <h3 className="text-lg font-bold mb-2">Get Matched</h3>
+              <p className="text-gray-600">We instantly connect you with top-rated concreters in {city}</p>
+            </div>
+            
+            {/* Step 3 */}
+            <div className="relative z-10 flex flex-col items-center text-center">
+              <div className="w-14 h-14 rounded-full bg-brand-blue text-white flex items-center justify-center mb-4 font-bold text-xl">3</div>
+              <h3 className="text-lg font-bold mb-2">Receive Quotes</h3>
+              <p className="text-gray-600">Get personalized quotes from local pros within 1-2 business hours</p>
+            </div>
+            
+            {/* Step 4 */}
+            <div className="relative z-10 flex flex-col items-center text-center">
+              <div className="w-14 h-14 rounded-full bg-brand-blue text-white flex items-center justify-center mb-4 font-bold text-xl">4</div>
+              <h3 className="text-lg font-bold mb-2">Choose Your Pro</h3>
+              <p className="text-gray-600">Compare quotes and select the best contractor for your project</p>
+            </div>
+          </div>
+          
+          <div className="text-center mt-10">
+            <a href="#quote-form" className="cta-button inline-block">
+              Get Started Now - Free Quotes
+            </a>
+          </div>
+        </div>
+      </section>
+      
+      {/* Main SEO Content Section */}
+      <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-2xl md:text-3xl font-bold text-center mb-6">
-              Professional Driveways in {locationContent.fullLocation}
+            <h2 className="text-2xl md:text-3xl font-bold mb-6">
+              Why Homeowners in {city} are Choosing Concrete Driveways
             </h2>
             <div className="prose prose-lg max-w-none">
+              <p>
+                Homeowners in {locationContent.fullLocation} are increasingly investing in concrete driveways due to the unpredictable New England weather. Freezing temperatures, snow, and ice can cause wear on asphalt driveways, leading to cracks and deterioration. A concrete driveway offers more durability and resistance to extreme weather conditions. Plus, it adds curb appeal, which is important for {city}'s charming historic neighborhoods.
+              </p>
+              
+              <h3 className="text-xl font-bold mt-6 mb-3">The Cost-Effectiveness of Concrete Driveways</h3>
+              <p>
+                While a concrete driveway might have a higher initial cost compared to asphalt, it's far more cost-effective in the long run. Homeowners can save money on maintenance and repairs, especially in {city}'s climate, where asphalt requires more upkeep due to cracks caused by temperature shifts.
+              </p>
+              
+              <h3 className="text-xl font-bold mt-6 mb-3">How to Choose the Best Concrete Driveway Contractor in {city}</h3>
+              <p>
+                Selecting a reliable, experienced concrete contractor is essential for ensuring quality work. Look for professionals who are licensed, insured, and have good reviews from local customers. When you use our service, you get access to only the best, vetted professionals, so you can feel confident in your choice.
+              </p>
+              
               <p>
                 {locationContent.serviceIntro}
               </p>
@@ -96,12 +155,18 @@ const LocationDetails: React.FC<LocationDetailsProps> = ({ locationContent }) =>
                 {locationContent.weatherConsiderations}
               </p>
             </div>
+            
+            <div className="mt-8 text-center">
+              <a href="#quote-form" className="cta-button inline-block">
+                Get 3 Free Quotes from Local Concrete Pros
+              </a>
+            </div>
           </div>
         </div>
       </section>
       
       {/* Services Section */}
-      <section className="section bg-gray-50">
+      <section className="section bg-white py-12">
         <ServiceListing 
           title={`Our Concrete Driveway Services in ${locationContent.fullLocation}`} 
           subtitle="We offer comprehensive concrete solutions tailored to your needs"
@@ -109,46 +174,11 @@ const LocationDetails: React.FC<LocationDetailsProps> = ({ locationContent }) =>
         />
       </section>
       
-      {/* Concreter Difference - Using a lighter background for readability */}
-      <section className="section bg-white">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">
-              Why Choose Professional Driveway Concreters in {city}?
-            </h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-              <div className="bg-blue-50 p-5 rounded-lg border border-blue-100">
-                <h3 className="text-xl font-semibold mb-3 text-blue-900">Built to Last</h3>
-                <p className="text-gray-700">
-                  Professional concrete driveways can last 30+ years with minimal maintenance, outperforming asphalt 
-                  and gravel alternatives by decades.
-                </p>
-              </div>
-              
-              <div className="bg-blue-50 p-5 rounded-lg border border-blue-100">
-                <h3 className="text-xl font-semibold mb-3 text-blue-900">Design Flexibility</h3>
-                <p className="text-gray-700">
-                  From stamped patterns to decorative aggregates and color options, concrete offers unmatched 
-                  design versatility for any home style.
-                </p>
-              </div>
-            </div>
-            
-            <div className="text-center mt-8">
-              <a href="#quote-form" className="cta-button inline-block">
-                Get Matched with Local Concrete Pros
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-      
       {/* Testimonials Section */}
       <TestimonialSection testimonials={locationContent.testimonials} />
       
       {/* FAQ Section */}
-      <section className="section bg-white">
+      <section className="section bg-white py-12">
         <FaqSection 
           title={`Common Questions About Concrete Driveways in ${locationContent.fullLocation}`}
           faqs={locationContent.faqs} 
@@ -156,7 +186,7 @@ const LocationDetails: React.FC<LocationDetailsProps> = ({ locationContent }) =>
       </section>
       
       {/* Secondary CTA Section */}
-      <section className="section bg-gray-50">
+      <section className="section bg-gray-50 py-12">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-2xl md:text-3xl font-bold mb-6">
             Ready to Transform Your Driveway?
@@ -177,7 +207,7 @@ const LocationDetails: React.FC<LocationDetailsProps> = ({ locationContent }) =>
       </section>
       
       {/* Map Section - At the bottom as requested */}
-      <section className="section bg-white" id="map-section">
+      <section className="section bg-white py-12" id="map-section">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">
             Our Service Area in {locationContent.fullLocation}
