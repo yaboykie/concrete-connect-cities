@@ -8,6 +8,15 @@ type CacheEntry = {
   timestamp: number;
 };
 
+// Define the structure of data returned from Supabase
+export interface LocationRow {
+  City: string;
+  State: string;
+  GoogleMapEmbed: string;
+  Latitude?: number;
+  Longitude?: number;
+}
+
 // Cache configuration
 const CACHE_TTL = 3600000; // 1 hour in milliseconds
 const locationCache = new Map<string, CacheEntry>();
@@ -126,7 +135,7 @@ const fallbackLocationFetch = async (
       .select("*")
       .eq("state_abbreviation", stateUpper)
       .ilike("city", formattedCity)
-      .maybeSingle();
+      .maybeSingle<LocationRow>();
 
     if (error) {
       console.error("Error fetching from All locations:", error);
@@ -139,7 +148,7 @@ const fallbackLocationFetch = async (
       .select("*")
       .eq("State", stateUpper)
       .ilike("City", formattedCity)
-      .maybeSingle();
+      .maybeSingle<LocationRow>();
 
     if (mapError) {
       console.error("Error fetching map data:", mapError);
