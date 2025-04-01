@@ -1,4 +1,3 @@
-
 const fs = require('fs');
 const path = require('path');
 
@@ -29,7 +28,7 @@ const generateSitemap = () => {
     // Add more pages as needed
   ];
 
-  // Create sitemap XML content
+  // Create sitemap XML content - NO WHITESPACE BEFORE XML DECLARATION
   let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
   sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
 
@@ -45,7 +44,7 @@ const generateSitemap = () => {
 
   sitemap += '</urlset>';
 
-  // Write sitemap to file
+  // Write sitemap to file, making sure there's no BOM or whitespace before XML declaration
   fs.writeFileSync(path.join(__dirname, '../public/sitemap.xml'), sitemap);
   console.log('Sitemap generated successfully!');
 };
