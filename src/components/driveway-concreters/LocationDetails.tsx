@@ -57,6 +57,13 @@ const LocationDetails: React.FC<LocationDetailsProps> = ({ locationContent }) =>
                   <p className="text-lg text-gray-700">
                     Get your free, no-obligation quotes in under 10 seconds, with a typical response time of just 1-2 business hours.
                   </p>
+
+                  <p className="text-lg text-gray-700 font-medium">
+                    🚀 <span className="font-bold">The Convenience of Our Service</span>
+                  </p>
+                  <p className="text-lg text-gray-700">
+                    Forget about endless calls and days of waiting for quotes. In just 10 seconds, you can post your job, and the best local concrete professionals will offer bids for your project. Our service makes it simple, quick, and easy to get the right concrete company for you.
+                  </p>
                 </div>
               </div>
               
