@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
@@ -67,7 +66,7 @@ const DrivewayConcreterLocations = () => {
           
           // Log for performance monitoring
           const metrics = getPerformanceMetrics(`${state}_${city}`);
-          if (metrics && metrics.loadCount > 1) {
+          if (metrics && 'loadCount' in metrics && metrics.loadCount > 1) {
             console.log(`Page loaded ${metrics.loadCount} times with avg time: ${
               Math.round(metrics.totalLoadTime / metrics.loadCount)
             }ms`);
