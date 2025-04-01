@@ -1,3 +1,4 @@
+
 const fs = require('fs');
 const path = require('path');
 
@@ -34,27 +35,20 @@ const generateSitemap = () => {
   // Get unique states from locationData
   const states = [...new Set(locationData.map(location => location.state))];
   
-  // Add state pages
+  // Add state pages with the format /driveway-concreters/locations/{state}
   const statePages = states.map(state => ({
-    url: `/driveway-concreters/${state.toLowerCase()}`,
+    url: `/driveway-concreters/locations/${state.toLowerCase()}`,
     priority: '0.7'
   }));
 
-  // Add city pages - only include major cities to keep sitemap manageable
+  // Add city pages with the format /driveway-concreters/locations/{state}/{city}
   const cityPages = locationData
     .filter(location => {
-      // Filter for significant cities - this is an example, adjust as needed
-      const majorCities = [
-        'New York City', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix',
-        'Philadelphia', 'San Antonio', 'San Diego', 'Dallas', 'San Jose',
-        'Austin', 'Jacksonville', 'Fort Worth', 'Columbus', 'Indianapolis',
-        'Charlotte', 'San Francisco', 'Seattle', 'Denver', 'Boston',
-        'Atlanta', 'Miami', 'Detroit', 'Portland', 'Las Vegas'
-      ];
-      return majorCities.includes(location.city);
+      // Include all locations or filter as needed
+      return true;
     })
     .map(location => ({
-      url: `/driveway-concreters/${location.city.toLowerCase().replace(/ /g, '-')}-${location.state.toLowerCase()}`,
+      url: `/driveway-concreters/locations/${location.state.toLowerCase()}/${location.city.toLowerCase().replace(/ /g, '-')}`,
       priority: '0.7'
     }));
 
@@ -76,6 +70,13 @@ const generateSitemap = () => {
   });
 
   sitemap += '</urlset>';
+
+  // Validate the XML content has no whitespace before the declaration
+  if (sitemap.charAt(0) !== '<') {
+    console.error('ERROR: Whitespace detected before XML declaration!');
+    // Trim any whitespace
+    sitemap = sitemap.trim();
+  }
 
   // Write sitemap to file, making sure there's no BOM or whitespace before XML declaration
   fs.writeFileSync(path.join(__dirname, '../public/sitemap.xml'), sitemap);

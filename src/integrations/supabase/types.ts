@@ -33,6 +33,33 @@ export type Database = {
         }
         Relationships: []
       }
+      "Location Data for Location pages": {
+        Row: {
+          City: string | null
+          GoogleMapEmbed: string | null
+          ID: number
+          Latitude: number | null
+          Longitude: number | null
+          State: string | null
+        }
+        Insert: {
+          City?: string | null
+          GoogleMapEmbed?: string | null
+          ID: number
+          Latitude?: number | null
+          Longitude?: number | null
+          State?: string | null
+        }
+        Update: {
+          City?: string | null
+          GoogleMapEmbed?: string | null
+          ID?: number
+          Latitude?: number | null
+          Longitude?: number | null
+          State?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

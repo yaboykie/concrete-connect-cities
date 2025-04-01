@@ -26,6 +26,7 @@ export interface LocationContentType {
   fullLocation: string;
   latitude: number | null;
   longitude: number | null;
+  googleMapEmbed: string | null;
   schemaData: any;
   metaDescription: string;
 }

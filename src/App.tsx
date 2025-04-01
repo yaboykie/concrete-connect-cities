@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -25,6 +26,7 @@ const App = () => (
             <Route path="/locations/:state/:city/:service" element={<LocationService />} />
             
             {/* Driveway concreter routes */}
+            <Route path="/driveway-concreters" element={<DrivewayConcreterLocations />} />
             <Route path="/driveway-concreters/locations" element={<DrivewayConcreterLocations />} />
             <Route path="/driveway-concreters/locations/:state" element={<DrivewayConcreterLocations />} />
             <Route path="/driveway-concreters/locations/:state/:city" element={<DrivewayConcreterLocations />} />
@@ -48,8 +50,8 @@ const App = () => (
             <Route path="/commercial-concrete" element={<ServicePage />} />
             <Route path="/:service" element={<ServicePage />} />
             
-            {/* Example direct route to Austin, TX */}
-            <Route path="/driveway-concreters/austin-tx" element={<DrivewayConcreterLocations />} />
+            {/* Example direct routes to locations - using redirect in DrivewayConcreterLocations */}
+            <Route path="/driveway-concreters/:city-:state" element={<DrivewayConcreterLocations />} />
             
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="/contact" element={<Contact />} />

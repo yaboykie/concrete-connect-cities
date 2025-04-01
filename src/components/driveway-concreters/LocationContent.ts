@@ -1,30 +1,49 @@
 import { FAQ, Service, Testimonial, LocationContentType, LocationData } from './types';
-import { supabase } from "@/integrations/supabase/client";
+import { supabase, handleSupabaseError } from "@/integrations/supabase/client";
 
 export const getLocationContent = async (state: string, city: string): Promise<LocationContentType> => {
   try {
-    // Try to get location data from Supabase
+    console.log(`Fetching location data for ${city}, ${state}`);
+    
+    // Format city name for database query (capitalize first letter of each word)
+    const formattedCity = city.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    const stateUpper = state.toUpperCase();
+    
+    // Try to get location data from Supabase - first from the All locations table
     const { data: locationData, error } = await supabase
       .from("All locations")
       .select("*")
-      .eq("state_abbreviation", state.toUpperCase())
-      .ilike("city", city.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()))
+      .eq("state_abbreviation", stateUpper)
+      .ilike("city", formattedCity)
       .maybeSingle();
 
     if (error) {
-      console.error("Error fetching location data:", error);
+      console.error("Error fetching from All locations:", error);
     }
+
+    // Also try to get from the Location Data table which has map embeds
+    const { data: mapData, error: mapError } = await supabase
+      .from("Location Data for Location pages")
+      .select("*")
+      .eq("State", stateUpper)
+      .ilike("City", formattedCity)
+      .maybeSingle();
+
+    if (mapError) {
+      console.error("Error fetching map data:", mapError);
+    }
+
+    console.log("Supabase location data:", locationData);
+    console.log("Supabase map data:", mapData);
 
     // Use fetched data or fall back to generated content
     const locationMatch: Partial<LocationData> = locationData || { 
       state: state, 
       city: city,
-      state_abbreviation: state.toUpperCase(),
-      latitude: state === 'tx' && city === 'austin' ? 30.2672 : null,
-      longitude: state === 'tx' && city === 'austin' ? -97.7431 : null,
+      state_abbreviation: stateUpper,
+      latitude: null,
+      longitude: null,
     };
-    
-    const formattedCity = city.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
     
     // Properly format the state name (title case instead of all caps)
     let formattedState;
@@ -128,6 +147,9 @@ export const getLocationContent = async (state: string, city: string): Promise<L
       }
     ];
 
+    // Google Map embed from Supabase if available
+    const googleMapEmbed = mapData?.GoogleMapEmbed || null;
+    
     // Schema data for SEO
     const schemaData = locationMatch.schema_data || {
       "@context": "https://schema.org",
@@ -142,8 +164,8 @@ export const getLocationContent = async (state: string, city: string): Promise<L
       },
       "geo": {
         "@type": "GeoCoordinates",
-        "latitude": locationMatch.latitude,
-        "longitude": locationMatch.longitude
+        "latitude": mapData?.Latitude || locationMatch.latitude,
+        "longitude": mapData?.Longitude || locationMatch.longitude
       },
       "priceRange": "$$$",
       "telephone": "(555) 123-4567"
@@ -161,8 +183,9 @@ export const getLocationContent = async (state: string, city: string): Promise<L
       services,
       testimonials,
       fullLocation,
-      latitude: locationMatch.latitude,
-      longitude: locationMatch.longitude,
+      latitude: mapData?.Latitude || locationMatch.latitude,
+      longitude: mapData?.Longitude || locationMatch.longitude,
+      googleMapEmbed,
       schemaData,
       metaDescription
     };
@@ -212,6 +235,7 @@ const getFallbackLocationContent = (state: string, city: string): LocationConten
     fullLocation,
     latitude: null,
     longitude: null,
+    googleMapEmbed: null,
     schemaData: {
       "@context": "https://schema.org",
       "@type": "LocalBusiness",
