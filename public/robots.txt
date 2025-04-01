@@ -1,3 +1,8 @@
+
+User-agent: *
+Allow: /
+
+# Allow all search engine bots to access the entire site
 User-agent: Googlebot
 Allow: /
 
@@ -10,5 +15,5 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
-User-agent: *
-Allow: /
+# Reference to sitemap
+Sitemap: https://www.concreterquotes.com/sitemap.xml
