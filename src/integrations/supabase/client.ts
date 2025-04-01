@@ -3,8 +3,8 @@ import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
 // Use environment variables for Supabase connection
-const SUPABASE_URL = import.meta.env.VITE_PUBLIC_SUPABASE_URL || process.env.PUBLIC_SUPABASE_URL;
-const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_PUBLIC_SUPABASE_KEY || process.env.PUBLIC_SUPABASE_KEY;
+const SUPABASE_URL = import.meta.env.VITE_PUBLIC_SUPABASE_URL || '';
+const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_PUBLIC_SUPABASE_KEY || '';
 
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
