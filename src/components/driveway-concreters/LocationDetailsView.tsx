@@ -25,7 +25,7 @@ const LocationDetailsView: React.FC<LocationDetailsViewProps> = ({
       <div className="min-h-screen flex flex-col">
         <SEOHead 
           title={`Get 3 Free Quotes From Top ${city} Driveway Concreters`}
-          description={`Get instant quotes for your concrete driveway in ${city}, ${state}. Local concreters ready to provide free quotes in under 10 seconds with typical response times of 1-2 business hours.`}
+          description={locationContent?.metaDescription || `Get instant quotes for your concrete driveway in ${city}, ${state}. Local concreters ready to provide free quotes in under 10 seconds with typical response times of 1-2 business hours.`}
           schemaData={locationContent?.schemaData}
           canonicalUrl={canonicalUrl}
         />

@@ -50,7 +50,9 @@ const DrivewayConcreterLocations = () => {
     
     try {
       setIsLoading(true);
+      console.log(`Fetching content for ${state}/${city}...`);
       const content = await getLocationContent(state, city);
+      console.log('Content fetched successfully:', content);
       setLocationContent(content);
       setError(null);
       
