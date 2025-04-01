@@ -66,11 +66,11 @@ export const getLocationContent = async (state: string, city: string): Promise<L
     const testimonials = generateLocationTestimonials(formattedCity);
     
     // Google Map embed from Supabase if available
-    const googleMapEmbed = mapData?.GoogleMapEmbed || null;
+    const googleMapEmbed = mapData?.googleMapEmbed || null;
     
     // Get latitude and longitude values from the map data or location data
-    const latitude = mapData?.Latitude || null;
-    const longitude = mapData?.Longitude || null;
+    const latitude = mapData?.latitude || locationData?.latitude || null;
+    const longitude = mapData?.longitude || locationData?.longitude || null;
     
     // Schema data for SEO
     const schemaData = generateSchemaData(
