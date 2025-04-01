@@ -49,8 +49,8 @@ export const fetchLocationFromSupabase = async (
 
     console.log(`Cache miss or expired - fetching fresh data for ${city}, ${stateUpper}`);
 
-    // Fixed: Properly specify the return type as an array
-    const { data, error } = await supabase.rpc<LocationMapDataResponse[]>('get_location_with_map_data', {
+    // Fixed: Properly specify the return type with both data and row types
+    const { data, error } = await supabase.rpc<LocationMapDataResponse[], LocationMapDataResponse>('get_location_with_map_data', {
       p_state: stateUpper,
       p_city_slug: citySlug,
     });
