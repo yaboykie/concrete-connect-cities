@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { LocationContentType } from './types';
 import FaqSection from '@/components/FaqSection';
@@ -8,6 +7,7 @@ import GoogleMap from './GoogleMap';
 import QuoteForm from '@/components/QuoteForm';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { CheckIcon } from 'lucide-react';
+import LocationBreadcrumb from './LocationBreadcrumb';
 
 interface LocationDetailsProps {
   locationContent: LocationContentType;
@@ -17,11 +17,16 @@ const LocationDetails: React.FC<LocationDetailsProps> = ({ locationContent }) =>
   const [city, state] = locationContent.fullLocation.split(', ');
   const isMobile = useIsMobile();
   
+  const stateCode = state.length === 2 ? state.toLowerCase() : state.substring(0, 2).toLowerCase();
+  const citySlug = city.toLowerCase().replace(/\s+/g, '-');
+  
   return (
     <main className="flex-grow">
       {/* Hero Section with Form */}
       <section className="py-8 md:py-12 bg-gray-50 border-b">
         <div className="container mx-auto px-4">
+          <LocationBreadcrumb state={stateCode} city={citySlug} />
+          
           <div className="flex flex-col lg:flex-row items-start gap-8">
             {/* Left Column: Headline and Content */}
             <div className="lg:w-1/2 space-y-5 md:space-y-6">

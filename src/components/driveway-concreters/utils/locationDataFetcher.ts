@@ -49,8 +49,8 @@ export const fetchLocationFromSupabase = async (
 
     console.log(`Cache miss or expired - fetching fresh data for ${city}, ${stateUpper}`);
 
-    // Fix: Properly specify both generic types for rpc
-    const { data, error } = await supabase.rpc<LocationMapDataResponse, { p_state: string; p_city_slug: string }>('get_location_with_map_data', {
+    // Fixed: Properly specify the return type as an array
+    const { data, error } = await supabase.rpc<LocationMapDataResponse[]>('get_location_with_map_data', {
       p_state: stateUpper,
       p_city_slug: citySlug,
     });
@@ -60,13 +60,14 @@ export const fetchLocationFromSupabase = async (
       return await fallbackLocationFetch(stateUpper, citySlug);
     }
 
-    // Fix: Add null check and properly validate the array
+    // Improved validation: Check if data is an array and not empty
     if (!data || !Array.isArray(data) || data.length === 0) {
-      console.warn(`RPC returned empty data for ${city}, ${stateUpper}, using fallback`);
+      console.warn(`No valid data returned for ${city}, ${stateUpper}. Using fallback.`);
       return await fallbackLocationFetch(stateUpper, citySlug);
     }
 
-    const response = data[0] as LocationMapDataResponse;
+    // Fixed: Get the first item from the array and handle it
+    const response: LocationMapDataResponse = data[0];
     const result: LocationFetchResult = {
       locationData: response.location_data ?? null,
       mapData: response.map_data ?? null,
