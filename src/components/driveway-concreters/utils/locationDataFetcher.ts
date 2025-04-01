@@ -49,8 +49,8 @@ export const fetchLocationFromSupabase = async (
 
     console.log(`Cache miss or expired - fetching fresh data for ${city}, ${stateUpper}`);
 
-    // Use correct TypeScript generic typing for RPC call
-    const { data, error } = await supabase.rpc<LocationMapDataResponse[]>('get_location_with_map_data', {
+    // Fix the TypeScript error by adding proper generic type
+    const { data, error } = await supabase.rpc<LocationMapDataResponse>('get_location_with_map_data', {
       p_state: stateUpper,
       p_city_slug: citySlug,
     });

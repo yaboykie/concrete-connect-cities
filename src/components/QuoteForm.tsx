@@ -76,7 +76,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ location = "", service = "" }) =>
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-xl p-6 md:p-8">
+    <div className="bg-white rounded-lg shadow-xl p-6 md:p-8" id="quote-form">
       <h3 className="text-2xl font-bold text-center mb-4 text-gray-800">
         Get 3 Free {getFormattedServiceName(service)} Quotes
         {location ? ` in ${formatLocation(location)}` : ''}
@@ -181,7 +181,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ location = "", service = "" }) =>
           className="cta-button w-full text-lg py-6 font-bold mt-2"
           disabled={isSubmitting}
         >
-          {isSubmitting ? 'Submitting...' : 'Get My Free Quotes Now'}
+          {isSubmitting ? 'Submitting...' : 'Get Matched with Local Concrete Pros'}
         </Button>
         
         <div className="text-sm text-center text-gray-500 mt-2">

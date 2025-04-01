@@ -16,6 +16,9 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ latitude, longitude, googleMapEmb
   // Use the googleMapEmbed from Supabase if available, otherwise use the default
   const mapUrl = googleMapEmbed || defaultMapUrl;
   
+  console.log('Map URL being used:', mapUrl);
+  console.log('Map data:', { latitude, longitude, googleMapEmbed, city, state });
+  
   return (
     <div className="w-full rounded-lg overflow-hidden border border-gray-300 shadow-md">
       <iframe
