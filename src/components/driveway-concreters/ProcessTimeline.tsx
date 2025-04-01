@@ -19,28 +19,28 @@ const ProcessTimeline: React.FC<ProcessTimelineProps> = ({ city }) => {
           
           {/* Step 1 */}
           <div className="relative z-10 flex flex-col items-center text-center">
-            <div className="w-14 h-14 rounded-full bg-brand-blue text-white flex items-center justify-center mb-4 font-bold text-xl">1</div>
+            <div className="w-14 h-14 rounded-full bg-brand-blue text-white flex items-center justify-center mb-4 font-bold text-xl shadow-lg">1</div>
             <h3 className="text-lg font-bold mb-2">Submit Request</h3>
             <p className="text-gray-600">Fill out our quick form with your project details in just 10 seconds</p>
           </div>
           
           {/* Step 2 */}
           <div className="relative z-10 flex flex-col items-center text-center">
-            <div className="w-14 h-14 rounded-full bg-brand-blue text-white flex items-center justify-center mb-4 font-bold text-xl">2</div>
+            <div className="w-14 h-14 rounded-full bg-brand-blue text-white flex items-center justify-center mb-4 font-bold text-xl shadow-lg">2</div>
             <h3 className="text-lg font-bold mb-2">Get Matched</h3>
             <p className="text-gray-600">We instantly connect you with top-rated concreters in {city}</p>
           </div>
           
           {/* Step 3 */}
           <div className="relative z-10 flex flex-col items-center text-center">
-            <div className="w-14 h-14 rounded-full bg-brand-blue text-white flex items-center justify-center mb-4 font-bold text-xl">3</div>
+            <div className="w-14 h-14 rounded-full bg-brand-blue text-white flex items-center justify-center mb-4 font-bold text-xl shadow-lg">3</div>
             <h3 className="text-lg font-bold mb-2">Receive Quotes</h3>
             <p className="text-gray-600">Get personalized quotes from local pros within 1-2 business hours</p>
           </div>
           
           {/* Step 4 */}
           <div className="relative z-10 flex flex-col items-center text-center">
-            <div className="w-14 h-14 rounded-full bg-brand-blue text-white flex items-center justify-center mb-4 font-bold text-xl">4</div>
+            <div className="w-14 h-14 rounded-full bg-brand-blue text-white flex items-center justify-center mb-4 font-bold text-xl shadow-lg">4</div>
             <h3 className="text-lg font-bold mb-2">Choose Your Pro</h3>
             <p className="text-gray-600">Compare quotes and select the best contractor for your project</p>
           </div>

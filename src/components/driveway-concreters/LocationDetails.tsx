@@ -3,12 +3,12 @@ import React from 'react';
 import { LocationContentType } from './types';
 import FaqSection from '@/components/FaqSection';
 import ServiceListing from '@/components/ServiceListing';
-import TestimonialSection from '@/components/TestimonialSection';
-import HeroSection from './HeroSection';
+import LocationHeader from './LocationHeader';
 import ProcessTimeline from './ProcessTimeline';
-import MainContentSection from './MainContentSection';
+import LocationDescription from './LocationDescription';
 import SecondaryCtaSection from './SecondaryCtaSection';
-import MapSection from './MapSection';
+import LocationMapEmbed from './LocationMapEmbed';
+import LocationTestimonials from './LocationTestimonials';
 import FinalCta from './FinalCta';
 import MobileCta from './MobileCta';
 
@@ -19,23 +19,24 @@ interface LocationDetailsProps {
 const LocationDetails: React.FC<LocationDetailsProps> = ({ locationContent }) => {
   const [city, state] = locationContent.fullLocation.split(', ');
   
-  const stateCode = state.length === 2 ? state.toLowerCase() : state.substring(0, 2).toLowerCase();
-  const citySlug = city.toLowerCase().replace(/\s+/g, '-');
-  
   return (
     <main className="flex-grow">
-      {/* Hero Section with Form */}
-      <HeroSection 
+      {/* Header Section with Title and Introduction */}
+      <LocationHeader 
         locationContent={locationContent} 
-        stateCode={stateCode} 
-        citySlug={citySlug} 
+        city={city} 
+        state={state} 
       />
       
       {/* Process Timeline */}
       <ProcessTimeline city={city} />
       
-      {/* Main SEO Content Section */}
-      <MainContentSection locationContent={locationContent} city={city} />
+      {/* Main Content Section */}
+      <LocationDescription 
+        locationContent={locationContent} 
+        city={city} 
+        state={state} 
+      />
       
       {/* Services Section */}
       <section className="section bg-white py-12">
@@ -47,7 +48,10 @@ const LocationDetails: React.FC<LocationDetailsProps> = ({ locationContent }) =>
       </section>
       
       {/* Testimonials Section */}
-      <TestimonialSection testimonials={locationContent.testimonials} />
+      <LocationTestimonials 
+        testimonials={locationContent.testimonials} 
+        city={city} 
+      />
       
       {/* FAQ Section */}
       <section className="section bg-white py-12">
@@ -61,7 +65,11 @@ const LocationDetails: React.FC<LocationDetailsProps> = ({ locationContent }) =>
       <SecondaryCtaSection city={city} fullLocation={locationContent.fullLocation} />
       
       {/* Map Section */}
-      <MapSection locationContent={locationContent} city={city} state={state} />
+      <LocationMapEmbed 
+        locationContent={locationContent} 
+        city={city} 
+        state={state} 
+      />
       
       {/* Final CTA */}
       <FinalCta city={city} />
