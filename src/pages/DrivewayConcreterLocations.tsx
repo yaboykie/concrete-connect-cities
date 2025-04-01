@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
@@ -49,8 +48,8 @@ const DrivewayConcreterLocations = () => {
       <HelmetProvider>
         <div className="min-h-screen flex flex-col">
           <SEOHead 
-            title="Get Free Quotes From Top-Rated Local Driveway Concreters" 
-            description="Looking for trusted driveway concreters near you? Get free quotes in under 10 seconds from top-rated local pros. Licensed, insured, and vetted for quality."
+            title="Get Matched with Top Concrete Driveway Professionals" 
+            description="Get instant quotes for your concrete driveway. Local concreters ready to provide free quotes in under 10 seconds with typical response times of 1-2 business hours."
             schemaData={{
               "@context": "https://schema.org",
               "@type": "Organization",
@@ -72,8 +71,8 @@ const DrivewayConcreterLocations = () => {
       <HelmetProvider>
         <div className="min-h-screen flex flex-col">
           <SEOHead 
-            title={`Top Driveway Concreters in ${state.toUpperCase()} - Get Free Local Quotes`}
-            description={`Looking for trusted driveway concreters in ${state.toUpperCase()}? Get free quotes in under 10 seconds from top-rated local pros. Licensed, insured, and vetted for quality.`}
+            title={`Get 3 Free Quotes From Top ${state.toUpperCase()} Driveway Concreters`}
+            description={`Get instant quotes for your concrete driveway in ${state.toUpperCase()}. Local concreters ready to provide free quotes in under 10 seconds with typical response times of 1-2 business hours.`}
             schemaData={{
               "@context": "https://schema.org",
               "@type": "Organization",
@@ -137,7 +136,7 @@ const DrivewayConcreterLocations = () => {
       <div className="min-h-screen flex flex-col">
         <SEOHead 
           title={`Get 3 Free Quotes From Top ${city} Driveway Concreters`}
-          description={`Looking for trusted driveway concreters in ${city}, ${state}? Get free quotes in under 10 seconds from top-rated local pros. Licensed, insured, and vetted for quality.`}
+          description={`Get instant quotes for your concrete driveway in ${city}, ${state}. Local concreters ready to provide free quotes in under 10 seconds with typical response times of 1-2 business hours.`}
           schemaData={locationContent?.schemaData}
           canonicalUrl={canonicalUrl}
         />

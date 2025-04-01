@@ -76,7 +76,7 @@ const LocationHero: React.FC<LocationHeroProps> = ({ locationContent }) => {
             </div>
             <a href="#quote-form">
               <Button className="cta-button text-lg font-bold" size="lg">
-                🎯 Get 3 Free Driveway Quotes in 24 Hours
+                🎯 Get Matched with Local Concrete Pros
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </a>
