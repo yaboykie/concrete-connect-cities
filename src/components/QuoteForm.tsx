@@ -24,9 +24,9 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ location = "", service = "" }) =>
     name: '',
     email: '',
     phone: '',
-    address: '',
+    zipCode: '',
+    jobType: '',
     projectDetails: '',
-    serviceType: service || '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -35,8 +35,8 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ location = "", service = "" }) =>
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSelectChange = (value: string, fieldName: string) => {
-    setFormData(prev => ({ ...prev, [fieldName]: value }));
+  const handleSelectChange = (value: string) => {
+    setFormData(prev => ({ ...prev, jobType: value }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -55,9 +55,9 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ location = "", service = "" }) =>
         name: '',
         email: '',
         phone: '',
-        address: '',
+        zipCode: '',
+        jobType: '',
         projectDetails: '',
-        serviceType: service || '',
       });
     }, 1500);
   };
@@ -136,38 +136,33 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ location = "", service = "" }) =>
           />
         </div>
         
-        <div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Select 
+            value={formData.jobType}
+            onValueChange={handleSelectChange}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Job Type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="driveway">New Driveway</SelectItem>
+              <SelectItem value="repair">Driveway Repair</SelectItem>
+              <SelectItem value="extension">Driveway Extension</SelectItem>
+              <SelectItem value="resurfacing">Resurfacing</SelectItem>
+              <SelectItem value="decorative">Decorative Concrete</SelectItem>
+              <SelectItem value="other">Other</SelectItem>
+            </SelectContent>
+          </Select>
+          
           <Input
             type="text"
-            name="address"
-            placeholder="Property Address"
-            value={formData.address}
+            name="zipCode"
+            placeholder="Zip Code"
+            value={formData.zipCode}
             onChange={handleChange}
             required
             className="w-full"
           />
-        </div>
-        
-        <div>
-          <Select 
-            value={formData.serviceType}
-            onValueChange={(value) => handleSelectChange(value, 'serviceType')}
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select Project Type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="concrete-driveway">Concrete Driveway</SelectItem>
-              <SelectItem value="concrete-patio">Concrete Patio</SelectItem>
-              <SelectItem value="concrete-sidewalk">Concrete Sidewalk/Path</SelectItem>
-              <SelectItem value="concrete-foundation">Foundation Work</SelectItem>
-              <SelectItem value="concrete-repair">Concrete Repair</SelectItem>
-              <SelectItem value="stamped-concrete">Decorative/Stamped Concrete</SelectItem>
-              <SelectItem value="concrete-steps">Concrete Steps/Stairs</SelectItem>
-              <SelectItem value="concrete-slab">Concrete Slab</SelectItem>
-              <SelectItem value="other">Other Concrete Work</SelectItem>
-            </SelectContent>
-          </Select>
         </div>
         
         <div>
@@ -183,10 +178,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ location = "", service = "" }) =>
 
         <Button 
           type="submit" 
-          className="cta-button w-full text-lg py-4 font-bold"
+          className="cta-button w-full text-lg py-6 font-bold mt-2"
           disabled={isSubmitting}
         >
-          {isSubmitting ? 'Submitting...' : 'Compare My Free Quotes Now'}
+          {isSubmitting ? 'Submitting...' : 'Get My Free Quotes Now'}
         </Button>
         
         <div className="text-sm text-center text-gray-500 mt-2">

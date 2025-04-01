@@ -24,29 +24,15 @@ const LocationDetails: React.FC<LocationDetailsProps> = ({ locationContent }) =>
       {/* Hero Section */}
       <LocationHero locationContent={locationContent} />
       
-      {/* Quote and Map Section */}
+      {/* Quote Form Section */}
       <section className="section bg-white">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl md:text-3xl font-bold text-center mb-12">
             Get Free Driveway Quotes in {locationContent.fullLocation}
           </h2>
           
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            <div>
-              <h3 className="text-xl font-semibold mb-6">Fill Out This Quick Form</h3>
-              <QuoteForm location={locationContent.fullLocation} service="concrete-driveways" />
-            </div>
-            
-            <div>
-              <h3 className="text-xl font-semibold mb-6">Our Service Area</h3>
-              <GoogleMap 
-                latitude={locationContent.latitude} 
-                longitude={locationContent.longitude}
-                googleMapEmbed={locationContent.googleMapEmbed}
-                city={city}
-                state={state}
-              />
-            </div>
+          <div className="max-w-xl mx-auto">
+            <QuoteForm location={locationContent.fullLocation} service="concrete-driveways" />
           </div>
         </div>
       </section>
@@ -75,6 +61,24 @@ const LocationDetails: React.FC<LocationDetailsProps> = ({ locationContent }) =>
           title={`Common Questions About Concrete Driveways in ${locationContent.fullLocation}`}
           faqs={locationContent.faqs} 
         />
+      </section>
+      
+      {/* Map Section - Moved to bottom as requested */}
+      <section className="section bg-gray-50">
+        <div className="container mx-auto px-4">
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">
+            Our Service Area in {locationContent.fullLocation}
+          </h2>
+          <div className="max-w-5xl mx-auto">
+            <GoogleMap 
+              latitude={locationContent.latitude} 
+              longitude={locationContent.longitude}
+              googleMapEmbed={locationContent.googleMapEmbed}
+              city={city}
+              state={state}
+            />
+          </div>
+        </div>
       </section>
       
       {/* Final CTA */}
