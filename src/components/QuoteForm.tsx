@@ -82,6 +82,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ location = "", service = "" }) =>
         {location ? ` in ${formatLocation(location)}` : ''}
       </h3>
       
+      <p className="text-center text-gray-600 mb-4">
+        Matched instantly with top-rated concreters. Most reply in 1–2 business hours.
+      </p>
+      
       <div className="mb-6 space-y-2">
         <div className="flex items-start">
           <CheckCircle className="h-5 w-5 mr-2 text-brand-blue flex-shrink-0 mt-0.5" />
@@ -182,7 +186,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ location = "", service = "" }) =>
           className="cta-button w-full text-lg py-4 font-bold"
           disabled={isSubmitting}
         >
-          {isSubmitting ? 'Submitting...' : 'Get Free Quotes Now'}
+          {isSubmitting ? 'Submitting...' : 'Compare My Free Quotes Now'}
         </Button>
         
         <div className="text-sm text-center text-gray-500 mt-2">

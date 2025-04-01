@@ -136,8 +136,8 @@ const DrivewayConcreterLocations = () => {
     <HelmetProvider>
       <div className="min-h-screen flex flex-col">
         <SEOHead 
-          title={`Top ${locationContent?.title || 'Driveway Concreters'}`}
-          description={locationContent?.metaDescription || `Looking for trusted driveway concreters in ${city}, ${state}? Get free quotes in under 10 seconds from top-rated local pros. Licensed, insured, and vetted for quality.`}
+          title={`Get 3 Free Quotes From Top ${city} Driveway Concreters`}
+          description={`Looking for trusted driveway concreters in ${city}, ${state}? Get free quotes in under 10 seconds from top-rated local pros. Licensed, insured, and vetted for quality.`}
           schemaData={locationContent?.schemaData}
           canonicalUrl={canonicalUrl}
         />

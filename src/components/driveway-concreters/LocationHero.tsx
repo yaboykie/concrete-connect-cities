@@ -55,7 +55,7 @@ const LocationHero: React.FC<LocationHeroProps> = ({ locationContent }) => {
               <span className="text-lg">{city}</span>
             </div>
             <h1 className="text-white mb-4">
-              Get 3 Free Quotes From Top {city} Driveway Contractors Today
+              Get 3 Free Quotes From Top {city} Driveway Concreters
             </h1>
             <p className="text-lg text-gray-200 mb-6">
               Looking for reliable driveway contractors in {city}? We connect {state} homeowners with trusted local concrete pros who understand local building codes, regulations, and the unique challenges of {city} driveways.
@@ -63,7 +63,7 @@ const LocationHero: React.FC<LocationHeroProps> = ({ locationContent }) => {
             <div className="space-y-4 mb-8">
               <div className="flex items-start">
                 <CheckCircle className="h-5 w-5 mr-3 text-brand-blue flex-shrink-0 mt-1" />
-                <span>24-Hour Response Guaranteed — No Waiting</span>
+                <span>24-Hour Response Guarantee — No Waiting</span>
               </div>
               <div className="flex items-start">
                 <CheckCircle className="h-5 w-5 mr-3 text-brand-blue flex-shrink-0 mt-1" />
