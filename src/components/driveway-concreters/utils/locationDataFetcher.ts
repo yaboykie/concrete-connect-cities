@@ -26,6 +26,12 @@ export const clearLocationCache = (state?: string, city?: string) => {
   }
 };
 
+// Define types for the RPC function response
+interface LocationMapDataResponse {
+  location_data?: Partial<LocationData>;
+  map_data?: any;
+}
+
 /**
  * Fetches location data from the Supabase database with caching
  */
@@ -62,16 +68,17 @@ export const fetchLocationFromSupabase = async (
       return { locationData: null, mapData: null, error: error.message };
     }
     
-    if (!data || data.length === 0) {
+    if (!data || !Array.isArray(data) || data.length === 0) {
       console.warn(`No data found for location: ${city}, ${stateUpper}`);
       // Fallback to the old method if the new method fails
       return await fallbackLocationFetch(stateUpper, city);
     }
     
     // Transform the response data to match expected format
+    const responseData = data[0] as LocationMapDataResponse;
     const result = {
-      locationData: data[0]?.location_data || null,
-      mapData: data[0]?.map_data || null,
+      locationData: responseData?.location_data || null,
+      mapData: responseData?.map_data || null,
       error: null
     };
     
