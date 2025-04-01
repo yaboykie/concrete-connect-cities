@@ -3,12 +3,15 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, CheckCircle, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { LocationContentType } from './types';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import ContactForm from '@/components/ContactForm';
 
-interface LocationHeroProps {
-  locationContent: LocationContentType;
+export interface LocationHeroProps {
+  locationContent: {
+    fullLocation: string;
+    title: string;
+    serviceIntro: string;
+  };
 }
 
 const LocationHero: React.FC<LocationHeroProps> = ({ locationContent }) => {

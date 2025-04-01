@@ -22,11 +22,7 @@ const LocationDetails: React.FC<LocationDetailsProps> = ({ locationContent }) =>
   return (
     <main className="flex-grow">
       {/* Hero Section */}
-      <LocationHero 
-        title={locationContent.title}
-        subtitle={locationContent.serviceIntro}
-        location={locationContent.fullLocation}
-      />
+      <LocationHero locationContent={locationContent} />
       
       {/* Quote and Map Section */}
       <section className="section bg-white">
@@ -56,10 +52,7 @@ const LocationDetails: React.FC<LocationDetailsProps> = ({ locationContent }) =>
       </section>
       
       {/* Local Considerations */}
-      <LocalConsiderations 
-        title={`Local Driveway Concrete Considerations in ${locationContent.fullLocation}`}
-        content={locationContent.weatherConsiderations}
-      />
+      <LocalConsiderations locationContent={locationContent} />
       
       {/* Services Section */}
       <section className="section bg-white">
@@ -85,11 +78,7 @@ const LocationDetails: React.FC<LocationDetailsProps> = ({ locationContent }) =>
       </section>
       
       {/* Final CTA */}
-      <FinalCTA 
-        title={`Ready to Start Your Concrete Driveway Project in ${locationContent.fullLocation}?`}
-        subtitle="Get connected with top-rated local contractors today"
-        location={locationContent.fullLocation}
-      />
+      <FinalCTA locationContent={locationContent} />
     </main>
   );
 };
