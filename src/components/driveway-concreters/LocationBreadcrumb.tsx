@@ -3,7 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 
-interface LocationBreadcrumbProps {
+export interface LocationBreadcrumbProps {
   state: string;
   city: string;
 }

@@ -16,7 +16,6 @@ const LocationHeader: React.FC<LocationHeaderProps> = ({ locationContent, city, 
         <LocationBreadcrumb 
           city={city} 
           state={state} 
-          fullLocation={locationContent.fullLocation} 
         />
         
         <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">

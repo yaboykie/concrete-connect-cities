@@ -1,3 +1,4 @@
+
 import { createClient } from '@supabase/supabase-js';
 
 interface LocationMapDataResponse {
@@ -11,6 +12,20 @@ interface LocationFetchResult {
   error: string | null;
 }
 
+// Simple in-memory cache to avoid repeated database calls
+const locationCache = new Map<string, LocationFetchResult>();
+
+export function clearLocationCache(state?: string, city?: string) {
+  if (state && city) {
+    const key = `${state.toUpperCase()}_${city.replace(/-/g, ' ')}`;
+    locationCache.delete(key);
+    console.log(`Cache cleared for ${key}`);
+  } else {
+    locationCache.clear();
+    console.log('All location cache cleared');
+  }
+}
+
 async function fallbackLocationFetch(state: string, city: string): Promise<LocationFetchResult> {
   console.warn(`Fallback fetch triggered for ${city}, ${state}. Returning null data.`);
   return {
@@ -20,13 +35,20 @@ async function fallbackLocationFetch(state: string, city: string): Promise<Locat
   };
 }
 
-export async function fetchLocationMapData(
+export async function fetchLocationFromSupabase(
   state: string,
   city: string
 ): Promise<LocationFetchResult> {
   try {
     const stateUpper = state.toUpperCase();
     const citySlug = city.replace(/-/g, ' ');
+    const cacheKey = `${stateUpper}_${citySlug}`;
+    
+    // Check if we have a cached result
+    if (locationCache.has(cacheKey)) {
+      console.log(`Using cached data for ${citySlug}, ${stateUpper}`);
+      return locationCache.get(cacheKey)!;
+    }
     
     console.log(`Fetching location map data for ${citySlug}, ${stateUpper}...`);
     
@@ -64,6 +86,9 @@ export async function fetchLocationMapData(
       error: null,
     };
 
+    // Cache the result
+    locationCache.set(cacheKey, result);
+
     return result;
   } catch (err) {
     console.error('Unexpected error in fetchLocationMapData:', err);
@@ -75,32 +100,12 @@ export async function fetchLocationMapData(
   }
 }
 
-export const getLocationContent = async (state: string, city: string) => {
-  try {
-    const { locationData, mapData, error } = await fetchLocationMapData(state, city);
-    
-    if (error) {
-      console.error("Error fetching data:", error);
-      throw new Error(error);
-    }
-    
-    if (!locationData) {
-      console.warn("No location data received from Supabase.");
-      throw new Error("No location data received.");
-    }
-    
-    // Merge locationData and mapData
-    const locationContent = {
-      ...locationData,
-      ...mapData,
-    };
-    
-    return locationContent;
-  } catch (error) {
-    console.error("Error in getLocationContent:", error);
-    throw error;
-  }
-};
+export async function fetchLocationMapData(
+  state: string,
+  city: string
+): Promise<LocationFetchResult> {
+  return fetchLocationFromSupabase(state, city);
+}
 
 export const getPerformanceMetrics = (key: string) => {
   if (typeof window === 'undefined') return null;

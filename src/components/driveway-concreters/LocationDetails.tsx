@@ -9,7 +9,8 @@ import LocationDescription from './LocationDescription';
 import SecondaryCtaSection from './SecondaryCtaSection';
 import LocationMapEmbed from './LocationMapEmbed';
 import LocationTestimonials from './LocationTestimonials';
-import FinalCta from './FinalCta';
+// Using the FinalCTA component with capital CTA to match the actual file name
+import FinalCTA from './FinalCTA';
 import MobileCta from './MobileCta';
 
 interface LocationDetailsProps {
@@ -71,8 +72,8 @@ const LocationDetails: React.FC<LocationDetailsProps> = ({ locationContent }) =>
         state={state} 
       />
       
-      {/* Final CTA */}
-      <FinalCta city={city} />
+      {/* Final CTA - Using the FinalCTA component with capital CTA */}
+      <FinalCTA locationContent={locationContent} />
       
       {/* Sticky CTA Button for Mobile */}
       <MobileCta />
