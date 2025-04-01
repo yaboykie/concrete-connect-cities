@@ -4,10 +4,19 @@ import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
 // Use environment variables for Supabase connection
-const SUPABASE_URL = import.meta.env.VITE_PUBLIC_SUPABASE_URL;
-const SUPABASE_KEY = import.meta.env.VITE_PUBLIC_SUPABASE_KEY;
+// Add fallback values for development in case the environment variables are not set
+const SUPABASE_URL = import.meta.env.VITE_PUBLIC_SUPABASE_URL || "https://aiyzpzibgrgqslsoulgj.supabase.co";
+const SUPABASE_KEY = import.meta.env.VITE_PUBLIC_SUPABASE_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFpeXpwemliZ3JncXNsc291bGdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM0MjMyMTYsImV4cCI6MjA1ODk5OTIxNn0.haluELacZINIK1dJ7sVwBraK0jcQAlMjrjvlp58RJRQ";
+
+// Debug log to verify environment variables are available
+console.log("Supabase URL available:", !!SUPABASE_URL);
+console.log("Supabase Key available:", !!SUPABASE_KEY && SUPABASE_KEY.length > 0);
 
 if (!SUPABASE_URL || !SUPABASE_KEY) {
+  console.error("⚠️ Supabase environment variables missing or empty.");
+  console.error("VITE_PUBLIC_SUPABASE_URL:", SUPABASE_URL ? "Set" : "Missing");
+  console.error("VITE_PUBLIC_SUPABASE_KEY:", SUPABASE_KEY ? "Set" : "Missing");
+  
   throw new Error(
     '❌ Supabase environment variables are missing. Make sure VITE_PUBLIC_SUPABASE_URL and VITE_PUBLIC_SUPABASE_KEY are defined in Lovable.dev > Settings > Secrets.'
   );
@@ -35,9 +44,7 @@ let queryStats = {
   lastSuccessTime: null as number | null
 };
 
-/**
- * Reset query stats
- */
+// Reset query stats
 export const resetQueryStats = () => {
   queryStats = {
     successful: 0,
@@ -47,9 +54,7 @@ export const resetQueryStats = () => {
   };
 };
 
-/**
- * Get Supabase query statistics
- */
+// Get Supabase query statistics
 export const getQueryStats = () => {
   return {
     ...queryStats,
@@ -59,9 +64,7 @@ export const getQueryStats = () => {
   };
 };
 
-/**
- * Wrapper for Supabase queries to track performance and errors
- */
+// Wrapper for Supabase queries to track performance and errors
 export const trackedQuery = async <T>(
   queryFn: () => Promise<T>,
   operation: string
