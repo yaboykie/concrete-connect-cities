@@ -12,6 +12,7 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import QuoteFormModal from './QuoteFormModal';
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -82,10 +83,7 @@ const Header = () => {
               <MapPin className="h-5 w-5 mr-2 text-brand-blue" />
               <span>Serving the USA</span>
             </div>
-            <Button className="cta-button flex items-center">
-              <Phone className="h-4 w-4 mr-2" />
-              Get Free Quote
-            </Button>
+            <QuoteFormModal />
           </div>
           
           <div className="md:hidden flex items-center">
@@ -128,10 +126,7 @@ const Header = () => {
                 </div>
               </div>
               
-              <Button className="cta-button w-full">
-                <Phone className="h-4 w-4 mr-2" />
-                Get Free Quote
-              </Button>
+              <QuoteFormModal buttonClassName="cta-button w-full" />
             </nav>
           </div>
         )}

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
@@ -7,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowRight, MapPin, Hammer, Construction, Shovel, Building, Truck, House, Clock, Shield, Users, DollarSign } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
+import QuoteFormModal from '@/components/QuoteFormModal';
 
 const Index = () => {
   // Example service categories with simplified linking
@@ -109,10 +109,7 @@ const Index = () => {
                 </div>
               </div>
               
-              <Button className="cta-button text-lg" size="lg">
-                Get My Free Quotes
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
+              <QuoteFormModal buttonText="Get My Free Quotes" buttonClassName="cta-button text-lg" />
             </div>
           </div>
         </section>
@@ -177,10 +174,7 @@ const Index = () => {
             <p className="text-xl text-gray-200 mb-8 max-w-2xl mx-auto">
               Get matched with trusted local concreters and compare free quotes — no pressure, just fast help for your project.
             </p>
-            <Button className="cta-button text-lg" size="lg">
-              Get Free Concrete Quotes
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
+            <QuoteFormModal buttonText="Get Free Concrete Quotes" buttonClassName="cta-button text-lg" />
           </div>
         </section>
       </main>

@@ -3,9 +3,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, CheckCircle, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import QuoteForm from '@/components/QuoteForm';
 import { LocationContentType } from './types';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import ContactForm from '@/components/ContactForm';
 
 interface LocationHeroProps {
   locationContent: LocationContentType;
@@ -83,7 +83,15 @@ const LocationHero: React.FC<LocationHeroProps> = ({ locationContent }) => {
           </div>
           
           <div className="lg:w-2/5" id="quote-form">
-            <QuoteForm location={locationContent.fullLocation} service="driveway-concreters" />
+            <div className="bg-white rounded-lg p-6">
+              <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                Get 3 Free Driveway Quotes in {city}
+              </h2>
+              <p className="text-gray-600 mb-6">
+                Matched instantly with top-rated concreters. Most reply in 1–2 business hours.
+              </p>
+              <ContactForm />
+            </div>
           </div>
         </div>
       </div>

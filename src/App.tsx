@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -10,6 +9,7 @@ import NotFound from "./pages/NotFound";
 import LocationService from "./pages/LocationService";
 import DrivewayConcreterLocations from "./pages/DrivewayConcreterLocations";
 import ServicePage from "./pages/ServicePage";
+import Contact from '@/pages/Contact';
 
 const queryClient = new QueryClient();
 
@@ -52,6 +52,7 @@ const App = () => (
             <Route path="/driveway-concreters/austin-tx" element={<DrivewayConcreterLocations />} />
             
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="/contact" element={<Contact />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
