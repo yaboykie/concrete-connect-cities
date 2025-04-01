@@ -160,31 +160,35 @@ const LocationsList = () => {
               )}
               
               <div className="space-y-4">
-                <p className="text-lg text-gray-700">
-                  Your driveway says a lot about your home — and a brand-new concrete driveway makes a bold, clean statement.
-                  Whether you're welcoming guests or pulling in after a long day, a professionally poured concrete driveway is something to be proud of.
-                </p>
-                
-                <p className="text-lg text-gray-700">
-                  It's not just durable. It's visually impressive. It adds curb appeal, shows your home is well cared for, and makes it feel move-in ready.
-                </p>
-                
-                <p className="text-lg text-gray-700">
-                  And when it's time to sell? Real estate agents estimate that a beautiful driveway can add <strong>$10,000 to $20,000</strong> in perceived value, depending on your home and market.
-                </p>
-                
-                <p className="text-lg text-gray-700">
-                  But honestly, most homeowners just love how it looks.
-                </p>
-                
-                <p className="text-lg text-gray-700">
-                  Your time is valuable. That's why we built this form to take under 10 seconds.
-                  Once submitted, you're instantly matched with top-rated local concreters — pros who typically respond within 1 to 2 business hours.
-                </p>
-                
-                <p className="text-lg text-gray-700">
-                  No spam. No pressure. Just free quotes from real concreters who've been vetted on their quality of work, reviews, and reliability.
-                </p>
+                <div className="space-y-4">
+                  <p className="text-lg text-gray-700 font-medium">
+                    🏡 <span className="font-bold">Your Driveway, Your First Impression</span>
+                  </p>
+                  <p className="text-lg text-gray-700">
+                    Make the best first impression with a beautiful concrete driveway that elevates your home's curb appeal and adds long-term value. Whether you're coming home after a long day or welcoming guests, a well-installed concrete driveway sets the tone for your entire property, instantly making it look more polished and well-maintained.
+                  </p>
+                  
+                  <p className="text-lg text-gray-700 font-medium">
+                    ⚒️ <span className="font-bold">Get Matched With Top Concrete Pros in Your Area</span>
+                  </p>
+                  <p className="text-lg text-gray-700">
+                    We instantly match you with vetted, local concreters who specialize in concrete driveways—ensuring that you're working with the most skilled and reliable professionals in your area. No middlemen, just the real experts who know how to deliver high-quality results.
+                  </p>
+                  
+                  <p className="text-lg text-gray-700 font-medium">
+                    ⏱️ <span className="font-bold">Instant Quotes. Real Professionals.</span>
+                  </p>
+                  <p className="text-lg text-gray-700">
+                    Get your free, no-obligation quotes in under 10 seconds, with a typical response time of just 1-2 business hours. Your time is valuable, and we make the process quick, easy, and hassle-free, without the long waits and pushy sales calls.
+                  </p>
+                  
+                  <p className="text-lg text-gray-700 font-medium">
+                    💲 <span className="font-bold">Add Long-Term Value to Your Home</span>
+                  </p>
+                  <p className="text-lg text-gray-700">
+                    A professionally installed concrete driveway isn't just about curb appeal—it's an investment. Real estate agents estimate that a beautiful, well-maintained driveway can add between $10,000 and $20,000 in perceived value to your home, depending on your market and property type. It's a simple way to increase your home's value, making it more attractive to potential buyers while improving the overall look of your property.
+                  </p>
+                </div>
               </div>
             </div>
             
