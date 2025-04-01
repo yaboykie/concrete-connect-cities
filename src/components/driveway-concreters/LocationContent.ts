@@ -14,7 +14,13 @@ import { getFallbackLocationContent } from './utils/fallbackContentGenerator';
 export const getLocationContent = async (state: string, city: string): Promise<LocationContentType> => {
   try {
     // Fetch data from Supabase
-    const { locationData, mapData } = await fetchLocationFromSupabase(state, city);
+    const { locationData, mapData, error } = await fetchLocationFromSupabase(state, city);
+    
+    if (error) {
+      console.error("Error fetching location data:", error);
+      // If there's an error, use fallback content
+      return getFallbackLocationContent(state, city);
+    }
     
     // Format location names
     const formattedCity = formatCityName(city);

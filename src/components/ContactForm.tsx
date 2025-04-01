@@ -21,8 +21,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Loader2 } from 'lucide-react';
-import { createClient } from '@supabase/supabase-js';
+import { Loader2, AlertTriangle } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 // Define form schema with validation
 const formSchema = z.object({
@@ -42,11 +42,8 @@ interface ContactFormProps {
 
 const ContactForm = ({ onSuccess, closeModal }: ContactFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [connectionError, setConnectionError] = useState<string | null>(null);
   const { toast } = useToast();
-  const supabase = createClient(
-    import.meta.env.VITE_SUPABASE_URL,
-    import.meta.env.VITE_SUPABASE_ANON_KEY
-  );
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -61,6 +58,7 @@ const ContactForm = ({ onSuccess, closeModal }: ContactFormProps) => {
 
   const onSubmit = async (data: FormValues) => {
     setIsSubmitting(true);
+    setConnectionError(null);
     
     try {
       // Call the Supabase edge function
@@ -89,6 +87,8 @@ const ContactForm = ({ onSuccess, closeModal }: ContactFormProps) => {
       }
     } catch (error) {
       console.error('Error submitting form:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unable to submit your request';
+      setConnectionError(errorMessage);
       toast({
         title: "Something went wrong",
         description: "Unable to submit your request. Please try again later.",
@@ -100,8 +100,20 @@ const ContactForm = ({ onSuccess, closeModal }: ContactFormProps) => {
     }
   };
 
+  if (connectionError) {
+    console.error('Supabase connection error in ContactForm:', connectionError);
+  }
+
   return (
     <div className="w-full max-w-md mx-auto">
+      {connectionError && (
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md text-red-700 flex items-center">
+          <AlertTriangle className="mr-2 h-5 w-5 flex-shrink-0" />
+          <span>
+            Connection error: Please try again later.
+          </span>
+        </div>
+      )}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
