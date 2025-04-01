@@ -20,6 +20,9 @@ const LocationDetailsView: React.FC<LocationDetailsViewProps> = ({
 }) => {
   const canonicalUrl = `https://concreterquotes.com/driveway-concreters/locations/${state}/${city}`;
   
+  // Add detailed console logging to debug the component rendering
+  console.log('LocationDetailsView rendering with props:', { locationContent, state, city });
+  
   return (
     <HelmetProvider>
       <div className="min-h-screen flex flex-col">

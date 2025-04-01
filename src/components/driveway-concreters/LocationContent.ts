@@ -24,8 +24,12 @@ export const getLocationContent = async (state: string, city: string): Promise<L
   const locationKey = `${state}_${city}`;
   
   try {
+    console.log(`Starting getLocationContent for ${city}, ${state}`);
+    
     // Fetch data from Supabase with caching
     const { locationData, mapData, error } = await fetchLocationFromSupabase(state, city);
+    
+    console.log(`Supabase fetch complete with result:`, { locationData, mapData, error });
     
     if (error) {
       console.error(`Error fetching location data for ${city}, ${state}:`, error);
@@ -34,6 +38,7 @@ export const getLocationContent = async (state: string, city: string): Promise<L
       updatePerformanceMetrics(locationKey, performance.now() - startTime, true);
       
       // If there's an error, use fallback content
+      console.log(`Using fallback content for ${city}, ${state} due to error`);
       return getFallbackLocationContent(state, city);
     }
     
@@ -99,7 +104,8 @@ export const getLocationContent = async (state: string, city: string): Promise<L
     // Update performance metrics
     updatePerformanceMetrics(locationKey, performance.now() - startTime);
     
-    return {
+    // Create the final location content object
+    const finalContent: LocationContentType = {
       title: serviceTitle || "Driveway Concreters",
       serviceIntro: serviceIntro || "Looking for trusted contractors?",
       weatherConsiderations: weatherConsiderations || "",
@@ -107,12 +113,15 @@ export const getLocationContent = async (state: string, city: string): Promise<L
       services: services || [],
       testimonials: testimonials || [],
       fullLocation: fullLocation || `${formattedCity}, ${formattedState}`,
-      latitude: latitude ?? 0,
-      longitude: longitude ?? 0,
-      googleMapEmbed: googleMapEmbed ?? "https://maps.google.com",
+      latitude: latitude ?? null,
+      longitude: longitude ?? null,
+      googleMapEmbed: googleMapEmbed ?? null,
       schemaData: schemaData || {},
-      metaDescription: metaDescription || "Find driveway concreters near you"
+      metaDescription: metaDescription || `Find driveway concreters in ${fullLocation}`
     };
+    
+    console.log('Final location content created:', finalContent);
+    return finalContent;
   } catch (error) {
     console.error(`Unexpected error in getLocationContent for ${city}, ${state}:`, error);
     
@@ -120,6 +129,7 @@ export const getLocationContent = async (state: string, city: string): Promise<L
     updatePerformanceMetrics(locationKey, performance.now() - startTime, true);
     
     // Return fallback content
+    console.log(`Using fallback content for ${city}, ${state} due to unexpected error`);
     return getFallbackLocationContent(state, city);
   }
 };

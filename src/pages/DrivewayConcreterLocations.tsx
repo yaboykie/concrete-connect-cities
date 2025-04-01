@@ -36,6 +36,8 @@ const DrivewayConcreterLocations = () => {
       return;
     }
     
+    console.log(`Route params: state=${state}, city=${city}`);
+    
     // If we have both state and city parameters, fetch city-specific content
     if (state && city) {
       fetchLocationContent();
@@ -99,8 +101,8 @@ const DrivewayConcreterLocations = () => {
   return (
     <LocationDetailsView 
       locationContent={locationContent} 
-      state={state} 
-      city={city} 
+      state={state || ''} 
+      city={city || ''} 
     />
   );
 };
