@@ -1,4 +1,3 @@
-
 import { createClient } from '@supabase/supabase-js';
 
 interface LocationMapDataResponse {
@@ -59,7 +58,7 @@ export async function fetchLocationFromSupabase(
     );
 
     // Fix the type arguments by specifying both return type and error type
-    const { data, error } = await supabase.rpc<LocationMapDataResponse[]>('get_location_with_map_data', {
+    const { data, error } = await supabase.rpc<LocationMapDataResponse[], any>('get_location_with_map_data', {
       p_state: stateUpper,
       p_city_slug: citySlug,
     });

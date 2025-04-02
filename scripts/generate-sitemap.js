@@ -97,7 +97,15 @@ const generateSitemap = () => {
   fs.writeFileSync(path.join(__dirname, '../public/sitemap.xml'), sitemap);
   console.log('Sitemap generated successfully!');
   console.log(`Total URLs in sitemap: ${allPages.length}`);
+  
+  // Create robots.txt file with reference to sitemap
+  const robotsTxt = `User-agent: *\nAllow: /\n\nSitemap: ${BASE_URL}/sitemap.xml`;
+  fs.writeFileSync(path.join(__dirname, '../public/robots.txt'), robotsTxt);
+  console.log('robots.txt generated successfully with sitemap reference!');
 };
 
 // Run the function
 generateSitemap();
+
+// Export the function so it can be called from other scripts or build hooks
+module.exports = { generateSitemap };
