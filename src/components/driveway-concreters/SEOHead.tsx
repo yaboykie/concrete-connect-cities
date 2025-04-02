@@ -33,6 +33,9 @@ const SEOHead: React.FC<SEOHeadProps> = ({
       {/* Canonical URL */}
       {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
       
+      {/* Ensure the page is indexable */}
+      <meta name="robots" content="index, follow" />
+      
       {/* JSON-LD Schema Data */}
       <script type="application/ld+json">
         {JSON.stringify(schemaData)}

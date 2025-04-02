@@ -19,7 +19,7 @@ const LocationHeader: React.FC<LocationHeaderProps> = ({ locationContent, city, 
         />
         
         <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
-          Find Top Driveway Concreters in {locationContent.fullLocation}
+          Best Driveway Concreters in {locationContent.fullLocation} | Fast & Free Quotes
         </h1>
         
         <p className="text-xl text-gray-200 mb-8 max-w-4xl">

@@ -24,6 +24,9 @@ const generateSitemap = () => {
     { url: '/services/concrete-patios', priority: '0.8' },
     { url: '/services/concrete-foundations', priority: '0.8' },
     { url: '/driveway-concreters', priority: '0.9' },
+    { url: '/driveway-concreters/locations', priority: '0.9' },
+    { url: '/concrete-contractors', priority: '0.9' },
+    { url: '/concrete-contractors/locations', priority: '0.9' },
     { url: '/concrete-driveways', priority: '0.8' },
     { url: '/concrete-patios', priority: '0.8' },
     { url: '/concrete-slab', priority: '0.8' },
@@ -35,22 +38,34 @@ const generateSitemap = () => {
   // Get unique states from locationData
   const states = [...new Set(locationData.map(location => location.state))];
   
-  // Add state pages with the format /driveway-concreters/locations/{state}
-  const statePages = states.map(state => ({
-    url: `/driveway-concreters/locations/${state.toLowerCase()}`,
-    priority: '0.7'
-  }));
+  // Add state pages for both service categories
+  const statePages = [];
+  states.forEach(state => {
+    statePages.push({
+      url: `/driveway-concreters/locations/${state.toLowerCase()}`,
+      priority: '0.7'
+    });
+    statePages.push({
+      url: `/concrete-contractors/locations/${state.toLowerCase()}`,
+      priority: '0.7'
+    });
+  });
 
-  // Add city pages with the format /driveway-concreters/locations/{state}/{city}
-  const cityPages = locationData
-    .filter(location => {
-      // Include all locations or filter as needed
-      return true;
-    })
-    .map(location => ({
+  // Add city pages for both service categories
+  const cityPages = [];
+  locationData.forEach(location => {
+    // For driveway-concreters
+    cityPages.push({
       url: `/driveway-concreters/locations/${location.state.toLowerCase()}/${location.city.toLowerCase().replace(/ /g, '-')}`,
       priority: '0.7'
-    }));
+    });
+    
+    // For concrete-contractors (using the same locations)
+    cityPages.push({
+      url: `/concrete-contractors/locations/${location.state.toLowerCase()}/${location.city.toLowerCase().replace(/ /g, '-')}`,
+      priority: '0.7'
+    });
+  });
 
   // Combine all pages
   const allPages = [...staticPages, ...statePages, ...cityPages];

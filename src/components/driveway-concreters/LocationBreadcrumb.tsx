@@ -31,6 +31,16 @@ const LocationBreadcrumb: React.FC<LocationBreadcrumbProps> = ({ state, city }) 
         
         <BreadcrumbItem>
           <BreadcrumbLink asChild>
+            <Link to="/concrete-services" className="text-gray-300 hover:text-white">
+              Concrete Services
+            </Link>
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+        
+        <BreadcrumbSeparator />
+        
+        <BreadcrumbItem>
+          <BreadcrumbLink asChild>
             <Link to="/driveway-concreters/locations" className="text-gray-300 hover:text-white">
               Driveway Concreters
             </Link>
