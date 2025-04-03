@@ -1,12 +1,15 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, Check, ArrowRight } from 'lucide-react';
+import { MapPin, Check, ArrowRight, DollarSign } from 'lucide-react';
 import { locationData } from './LocationData';
 import { Button } from '@/components/ui/button';
 import QuoteForm from '@/components/QuoteForm';
 import { Separator } from '@/components/ui/separator';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { toast } from '@/components/ui/use-toast';
 
 // Helper function to get unique states from location data
 const getUniqueStates = () => {
@@ -80,6 +83,142 @@ const getStateName = (code: string) => {
   return stateNames[code] || code;
 };
 
+const SimpleQuoteForm = () => {
+  const [name, setName] = useState('');
+  const [zipCode, setZipCode] = useState('');
+  const [contact, setContact] = useState('');
+  const [details, setDetails] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    // Simulate form submission
+    setTimeout(() => {
+      toast({
+        title: "Quote Request Submitted",
+        description: "We'll match you with local driveway concreters shortly. Thank you!",
+      });
+      setIsSubmitting(false);
+    }, 1500);
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md">
+      <h3 className="text-xl font-bold mb-4 text-center">Get a Free Driveway Quote – No Spam, No Pressure</h3>
+      
+      <div className="space-y-4">
+        <div>
+          <label htmlFor="name" className="block text-sm font-medium mb-1">Full Name</label>
+          <Input 
+            id="name" 
+            value={name} 
+            onChange={(e) => setName(e.target.value)} 
+            required 
+            placeholder="Your name"
+          />
+        </div>
+        
+        <div>
+          <label htmlFor="zipCode" className="block text-sm font-medium mb-1">ZIP Code</label>
+          <Input 
+            id="zipCode" 
+            value={zipCode} 
+            onChange={(e) => setZipCode(e.target.value)} 
+            required 
+            placeholder="Your ZIP code"
+          />
+        </div>
+        
+        <div>
+          <label htmlFor="contact" className="block text-sm font-medium mb-1">Phone or Email</label>
+          <Input 
+            id="contact" 
+            value={contact} 
+            onChange={(e) => setContact(e.target.value)} 
+            required 
+            placeholder="How should we contact you?"
+          />
+        </div>
+        
+        <div>
+          <label htmlFor="details" className="block text-sm font-medium mb-1">Project Details</label>
+          <Textarea 
+            id="details" 
+            value={details} 
+            onChange={(e) => setDetails(e.target.value)} 
+            placeholder="Tell us about your driveway project"
+            rows={3}
+          />
+        </div>
+        
+        <Button type="submit" className="w-full cta-button" disabled={isSubmitting}>
+          {isSubmitting ? "Processing..." : "→ Match Me with a Local Driveway Concreter"}
+        </Button>
+        
+        <p className="text-xs text-gray-500 text-center mt-2">
+          By submitting, you agree to our Terms & Privacy Policy. 
+          We'll connect you with contractors who may contact you.
+        </p>
+      </div>
+    </form>
+  );
+};
+
+const ConcreteStylesSection = () => {
+  const styles = [
+    {
+      title: 'Exposed Aggregate',
+      description: 'Pebble-stone texture, stylish and slip-resistant'
+    },
+    {
+      title: 'Stamped Concrete',
+      description: 'Mimics brick, stone, or pavers'
+    },
+    {
+      title: 'Brushed Finish',
+      description: 'Classic texture with grip'
+    },
+    {
+      title: 'Coloured Concrete',
+      description: 'Match your home with custom colors'
+    },
+    {
+      title: 'Polished Concrete',
+      description: 'Sleek, modern, designer finish'
+    },
+    {
+      title: 'Pave Cut Concrete',
+      description: 'Clean lines, mimics tiles or pavers'
+    }
+  ];
+  
+  return (
+    <section className="py-16 bg-white">
+      <div className="container mx-auto px-4">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-6">Popular Concrete Driveway Styles Homeowners Love</h2>
+          <p className="text-lg text-center text-gray-700 mb-10">
+            Your driveway doesn't have to be plain grey. With so many finishes and styles to choose from, 
+            you can get a custom look that complements your home perfectly — while still being durable, 
+            low-maintenance, and built to last.
+          </p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {styles.map((style, index) => (
+              <div key={index} className="bg-gray-50 p-5 rounded-lg border border-gray-100">
+                <h3 className="text-lg font-semibold mb-2">{style.title}</h3>
+                <p className="text-gray-700">{style.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
 const LocationsList = () => {
   const uniqueStates = getUniqueStates();
   const isMobile = useIsMobile();
@@ -106,7 +245,7 @@ const LocationsList = () => {
               
               <div className="text-lg text-gray-700">
                 Matched instantly with trusted local pros.
-                Most respond within 1–2 business hours — no spam, no pressure, just real quotes from vetted concreters.
+                No spam, no pressure, just real quotes from local concreters you can trust.
               </div>
               
               {/* Mobile layout order: H1, form, trust, sales copy */}
@@ -197,6 +336,11 @@ const LocationsList = () => {
               <div className="lg:w-1/2 w-full">
                 <div className="bg-white rounded-lg shadow-xl p-6" id="quote-form">
                   <QuoteForm service="concrete-driveway" />
+                  <div className="mt-4 text-center">
+                    <p className="text-gray-700">
+                      Vetted concreters. Fast quotes. No pressure. Just real experts ready to take on your project.
+                    </p>
+                  </div>
                 </div>
               </div>
             )}
@@ -237,11 +381,11 @@ const LocationsList = () => {
               <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <li className="flex items-start">
                   <Check className="h-5 w-5 text-brand-yellow mr-2 mt-1 flex-shrink-0" />
-                  <span>Increases property value by up to 10%</span>
+                  <span>Superior strength handles heavy vehicles and prevents cracks</span>
                 </li>
                 <li className="flex items-start">
                   <Check className="h-5 w-5 text-brand-yellow mr-2 mt-1 flex-shrink-0" />
-                  <span>Superior strength handles heavy vehicles</span>
+                  <span>Stamped and decorative finishes available for a custom look</span>
                 </li>
                 <li className="flex items-start">
                   <Check className="h-5 w-5 text-brand-yellow mr-2 mt-1 flex-shrink-0" />
@@ -253,11 +397,11 @@ const LocationsList = () => {
                 </li>
                 <li className="flex items-start">
                   <Check className="h-5 w-5 text-brand-yellow mr-2 mt-1 flex-shrink-0" />
-                  <span>More affordable long-term than other options</span>
+                  <span>Year-round installation in most climates</span>
                 </li>
                 <li className="flex items-start">
                   <Check className="h-5 w-5 text-brand-yellow mr-2 mt-1 flex-shrink-0" />
-                  <span>Year-round installation in most climates</span>
+                  <span>Minimal maintenance required for decades</span>
                 </li>
               </ul>
             </div>
@@ -272,11 +416,31 @@ const LocationsList = () => {
         </div>
       </section>
       
+      {/* Concrete Styles Section */}
+      <ConcreteStylesSection />
+      
+      {/* Nationwide Coverage Quick Form Section */}
+      <section className="py-12 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl font-bold text-center mb-4">We work with top concreters in every state — from major cities to small towns.</h2>
+            <p className="text-lg text-center text-gray-700 mb-8">
+              Fill out the quick form below and we'll match you with the best local pros for your project.
+            </p>
+            
+            <SimpleQuoteForm />
+          </div>
+        </div>
+      </section>
+      
       {/* States Listing Section */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="max-w-5xl mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-12">Find Driveway Concreters Near You</h2>
+            <h2 className="text-3xl font-bold text-center mb-4">We're Local Everywhere</h2>
+            <p className="text-lg text-center text-gray-700 mb-8">
+              Our network of concrete professionals spans all 50 states, ensuring you can find quality service no matter where you live.
+            </p>
             
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {uniqueStates.map((state, index) => (

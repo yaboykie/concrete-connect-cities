@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
@@ -89,9 +90,9 @@ const Index = () => {
         <section className="bg-gradient-to-b from-brand-navy to-blue-900 text-white py-16 md:py-24">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center">
-              <h1 className="text-white mb-6">✅ Find Trusted Concrete Contractors Near You — Fast & Free</h1>
+              <h1 className="text-white mb-6">✅ Get Free Quotes From Trusted Concrete Contractors Near You</h1>
               <p className="text-xl text-gray-200 mb-8">
-                ConcreterQuotes.com connects homeowners with reliable, pre-screened concrete contractors across the USA. Whether you're replacing a driveway, laying a slab, or planning a patio — get fast, free quotes from top-rated local pros.
+                From driveways to slabs, we'll match you with licensed local pros in seconds. ConcreterQuotes.com connects homeowners with reliable, pre-screened concrete contractors across the USA.
               </p>
               
               <div className="flex flex-col md:flex-row justify-center items-center gap-4 mb-8">
@@ -170,11 +171,11 @@ const Index = () => {
         {/* Final CTA Section */}
         <section className="bg-brand-navy text-white py-16">
           <div className="container mx-auto px-4 text-center">
-            <h2 className="text-3xl font-bold text-white mb-4">Ready to Get Started?</h2>
+            <h2 className="text-3xl font-bold text-white mb-4">Trusted Concrete Contractors Across the U.S.</h2>
             <p className="text-xl text-gray-200 mb-8 max-w-2xl mx-auto">
               Get matched with trusted local concreters and compare free quotes — no pressure, just fast help for your project.
             </p>
-            <QuoteFormModal buttonText="Get Free Concrete Quotes" buttonClassName="cta-button text-lg" />
+            <QuoteFormModal buttonText="Get Matched with Local Concrete Experts in Your Area" buttonClassName="cta-button text-lg" />
           </div>
         </section>
       </main>

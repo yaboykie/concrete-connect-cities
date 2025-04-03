@@ -9,33 +9,11 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      "All locations": {
-        Row: {
-          city: string | null
-          full_name: string | null
-          service: string | null
-          state: string | null
-          state_abbreviation: string | null
-        }
-        Insert: {
-          city?: string | null
-          full_name?: string | null
-          service?: string | null
-          state?: string | null
-          state_abbreviation?: string | null
-        }
-        Update: {
-          city?: string | null
-          full_name?: string | null
-          service?: string | null
-          state?: string | null
-          state_abbreviation?: string | null
-        }
-        Relationships: []
-      }
-      "Location Data for Location pages": {
+      "Location Data + URL Structure": {
         Row: {
           City: string | null
+          "Concrete Contractors URL": string | null
+          "Driveway Concreters URL": string | null
           GoogleMapEmbed: string | null
           ID: number
           Latitude: number | null
@@ -44,6 +22,8 @@ export type Database = {
         }
         Insert: {
           City?: string | null
+          "Concrete Contractors URL"?: string | null
+          "Driveway Concreters URL"?: string | null
           GoogleMapEmbed?: string | null
           ID: number
           Latitude?: number | null
@@ -52,6 +32,8 @@ export type Database = {
         }
         Update: {
           City?: string | null
+          "Concrete Contractors URL"?: string | null
+          "Driveway Concreters URL"?: string | null
           GoogleMapEmbed?: string | null
           ID?: number
           Latitude?: number | null
