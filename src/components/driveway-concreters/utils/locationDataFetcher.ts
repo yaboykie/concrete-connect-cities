@@ -1,3 +1,4 @@
+
 import { createClient } from '@supabase/supabase-js';
 
 interface LocationMapDataResponse {
@@ -57,7 +58,7 @@ export async function fetchLocationFromSupabase(
       process.env.VITE_PUBLIC_SUPABASE_KEY as string,
     );
 
-    // Fix the type error by providing both type parameters correctly
+    // Fix the type error by correctly typing the RPC call with both the return type and parameters
     const { data, error } = await supabase.rpc<
       LocationMapDataResponse[], 
       { p_state: string; p_city_slug: string }
