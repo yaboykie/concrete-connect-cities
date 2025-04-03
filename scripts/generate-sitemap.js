@@ -140,40 +140,38 @@ const generateSitemap = async () => {
     // Convert the Map to an array of URLs
     const allPages = [...urlMap.values()];
 
-    // NO WHITESPACE OR CHARACTERS before XML declaration
-    // Create empty buffer first
-    let sitemapContent = '';
-    
-    // Start with XML declaration (must be first character in file)
-    sitemapContent += '<?xml version="1.0" encoding="UTF-8"?>\n';
-    sitemapContent += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+    // Build sitemap XML string with NO whitespace before the XML declaration
+    let sitemap = '';
+    sitemap += '<?xml version="1.0" encoding="UTF-8"?>\n';
+    sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
 
     // Add each page to the sitemap
     allPages.forEach(page => {
-      sitemapContent += '  <url>\n';
-      sitemapContent += `    <loc>${BASE_URL}${page.url}</loc>\n`;
-      sitemapContent += `    <lastmod>${page.lastmod}</lastmod>\n`;
-      sitemapContent += '    <changefreq>monthly</changefreq>\n';
-      sitemapContent += `    <priority>${page.priority}</priority>\n`;
-      sitemapContent += '  </url>\n';
+      sitemap += '  <url>\n';
+      sitemap += `    <loc>${BASE_URL}${page.url}</loc>\n`;
+      sitemap += `    <lastmod>${page.lastmod}</lastmod>\n`;
+      sitemap += '    <changefreq>monthly</changefreq>\n';
+      sitemap += `    <priority>${page.priority}</priority>\n`;
+      sitemap += '  </url>\n';
     });
 
-    sitemapContent += '</urlset>';
+    sitemap += '</urlset>';
 
     const outputPath = path.join(__dirname, '../public/sitemap.xml');
     
-    // Use writeFileSync with a buffer to ensure there's no BOM and no encoding issues
-    fs.writeFileSync(outputPath, Buffer.from(sitemapContent, 'utf8'), { encoding: 'utf8' });
+    // Use the recommended writing logic to avoid BOM or encoding issues
+    fs.writeFileSync(outputPath, Buffer.from(sitemap, 'utf8'), { encoding: 'utf8' });
     
-    // Double-check the first few bytes of the file to ensure it starts correctly
-    const checkBuffer = fs.readFileSync(outputPath, { encoding: null, flag: 'r' }).slice(0, 50);
+    // Verify the start of the file
+    const checkBuffer = fs.readFileSync(outputPath, { encoding: null }).slice(0, 50);
     console.log('First bytes of sitemap.xml (hex):', checkBuffer.toString('hex'));
     console.log('Start of sitemap:', checkBuffer.toString('utf8').substring(0, 20));
     
     if (checkBuffer.toString('utf8').startsWith('<?xml')) {
       console.log('✅ Sitemap XML validation: XML declaration is at the start of the file');
     } else {
-      console.log('❌ Sitemap XML validation failed: Unexpected content before XML declaration');
+      console.error('❌ Sitemap XML validation failed: XML declaration is not at the start of the file');
+      console.error('First 20 characters:', checkBuffer.toString('utf8').substring(0, 20));
     }
     
     console.log('Sitemap generated successfully!');
