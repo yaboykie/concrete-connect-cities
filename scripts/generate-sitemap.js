@@ -165,6 +165,27 @@ const generateSitemap = async () => {
     const robotsTxt = `User-agent: *\nAllow: /\n\n# Allow all search engine bots to access the entire site\nUser-agent: Googlebot\nAllow: /\n\nUser-agent: Bingbot\nAllow: /\n\nUser-agent: Twitterbot\nAllow: /\n\nUser-agent: facebookexternalhit\nAllow: /\n\n# Reference to sitemap\nSitemap: ${BASE_URL}/sitemap.xml\n`;
     fs.writeFileSync(path.join(__dirname, '../public/robots.txt'), robotsTxt);
     console.log('robots.txt generated successfully with sitemap reference!');
+    
+    // Count URLs by type for detailed reporting
+    const staticPages = allPages.filter(page => !page.url.includes('/locations/') && !page.url.match(/\/[^\/]+-[a-z]{2}$/)).length;
+    const statePages = allPages.filter(page => page.url.match(/\/locations\/[a-z]{2}$/)).length;
+    const cityPagesNewFormat = allPages.filter(page => page.url.match(/\/locations\/[a-z]{2}\/[^\/]+$/)).length;
+    const cityPagesLegacyFormat = allPages.filter(page => page.url.match(/\/[^\/]+-[a-z]{2}$/)).length;
+    
+    console.log('\nURL Breakdown:');
+    console.log(`Static pages: ${staticPages}`);
+    console.log(`State-level pages: ${statePages}`);
+    console.log(`City pages (new format /locations/state/city): ${cityPagesNewFormat}`);
+    console.log(`City pages (legacy format /category/city-state): ${cityPagesLegacyFormat}`);
+    console.log(`Location pages total: ${statePages + cityPagesNewFormat + cityPagesLegacyFormat}`);
+    
+    // Verify we have the expected number of URLs
+    if (allPages.length < 630) {
+      console.warn(`\n⚠️ WARNING: Expected 630+ URLs but only generated ${allPages.length}`);
+      console.warn('Check if all location data was properly retrieved from Supabase');
+    } else {
+      console.log(`\n✅ SUCCESS: Generated ${allPages.length} URLs (expected 630+)`);
+    }
   } catch (error) {
     console.error('Error generating sitemap:', error);
   }
