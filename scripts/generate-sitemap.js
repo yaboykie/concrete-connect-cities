@@ -14,61 +14,80 @@ const getCurrentDate = () => {
   return date.toISOString().split('T')[0];
 };
 
+// Helper function to add a URL to the sitemap
+const addUrl = (urls, path, priority) => {
+  if (!urls.has(path)) {
+    urls.set(path, {
+      url: path,
+      priority: priority.toString(),
+      lastmod: getCurrentDate()
+    });
+  }
+};
+
 // Main function to generate sitemap
 const generateSitemap = () => {
-  // Start with static pages
-  const staticPages = [
-    { url: '/', priority: '1.0' },
-    { url: '/contact', priority: '0.8' },
-    { url: '/services/concrete-driveways', priority: '0.8' },
-    { url: '/services/concrete-patios', priority: '0.8' },
-    { url: '/services/concrete-foundations', priority: '0.8' },
-    { url: '/driveway-concreters', priority: '0.9' },
-    { url: '/driveway-concreters/locations', priority: '0.9' },
-    { url: '/concrete-contractors', priority: '0.9' },
-    { url: '/concrete-contractors/locations', priority: '0.9' },
-    { url: '/concrete-driveways', priority: '0.8' },
-    { url: '/concrete-patios', priority: '0.8' },
-    { url: '/concrete-slab', priority: '0.8' },
-    { url: '/concrete-garage', priority: '0.8' },
-    { url: '/decorative-concrete', priority: '0.8' },
-    { url: '/commercial-concrete', priority: '0.8' },
+  // Use a Map to store unique URLs
+  const urlMap = new Map();
+  
+  // Add home page and core pages
+  addUrl(urlMap, '/', '1.0');
+  addUrl(urlMap, '/contact', '0.8');
+  
+  // Primary service pages
+  const services = [
+    'concrete-driveways',
+    'concrete-patios',
+    'concrete-foundations',
+    'concrete-slab',
+    'concrete-garage',
+    'decorative-concrete',
+    'commercial-concrete'
   ];
-
+  
+  services.forEach(service => {
+    // Main service page
+    addUrl(urlMap, `/${service}`, '0.8');
+    
+    // Service details page if exists
+    if (['concrete-driveways', 'concrete-patios', 'concrete-foundations'].includes(service)) {
+      addUrl(urlMap, `/services/${service}`, '0.8');
+    }
+  });
+  
+  // Main category hub pages
+  const categories = [
+    'driveway-concreters',
+    'concrete-contractors'
+  ];
+  
+  categories.forEach(category => {
+    addUrl(urlMap, `/${category}`, '0.9');
+    addUrl(urlMap, `/${category}/locations`, '0.9');
+  });
+  
   // Get unique states from locationData
   const states = [...new Set(locationData.map(location => location.state))];
   
   // Add state pages for both service categories
-  const statePages = [];
   states.forEach(state => {
-    statePages.push({
-      url: `/driveway-concreters/locations/${state.toLowerCase()}`,
-      priority: '0.7'
-    });
-    statePages.push({
-      url: `/concrete-contractors/locations/${state.toLowerCase()}`,
-      priority: '0.7'
+    categories.forEach(category => {
+      addUrl(urlMap, `/${category}/locations/${state.toLowerCase()}`, '0.7');
     });
   });
-
+  
   // Add city pages for both service categories
-  const cityPages = [];
   locationData.forEach(location => {
-    // For driveway-concreters
-    cityPages.push({
-      url: `/driveway-concreters/locations/${location.state.toLowerCase()}/${location.city.toLowerCase().replace(/ /g, '-')}`,
-      priority: '0.7'
-    });
+    const citySlug = location.city.toLowerCase().replace(/ /g, '-');
+    const stateCode = location.state.toLowerCase();
     
-    // For concrete-contractors (using the same locations)
-    cityPages.push({
-      url: `/concrete-contractors/locations/${location.state.toLowerCase()}/${location.city.toLowerCase().replace(/ /g, '-')}`,
-      priority: '0.7'
+    categories.forEach(category => {
+      addUrl(urlMap, `/${category}/locations/${stateCode}/${citySlug}`, '0.7');
     });
   });
 
-  // Combine all pages
-  const allPages = [...staticPages, ...statePages, ...cityPages];
+  // Convert the Map to an array of URLs
+  const allPages = [...urlMap.values()];
 
   // Create sitemap XML content - Ensure no whitespace before XML declaration
   let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
@@ -78,7 +97,7 @@ const generateSitemap = () => {
   allPages.forEach(page => {
     sitemap += '  <url>\n';
     sitemap += `    <loc>${BASE_URL}${page.url}</loc>\n`;
-    sitemap += `    <lastmod>${getCurrentDate()}</lastmod>\n`;
+    sitemap += `    <lastmod>${page.lastmod}</lastmod>\n`;
     sitemap += '    <changefreq>monthly</changefreq>\n';
     sitemap += `    <priority>${page.priority}</priority>\n`;
     sitemap += '  </url>\n';
