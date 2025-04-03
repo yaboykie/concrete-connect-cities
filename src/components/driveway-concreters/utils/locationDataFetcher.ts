@@ -58,11 +58,8 @@ export async function fetchLocationFromSupabase(
       process.env.VITE_PUBLIC_SUPABASE_KEY as string,
     );
 
-    // Fix the type error by correctly typing the RPC call with both the return type and parameters
-    const { data, error } = await supabase.rpc<
-      LocationMapDataResponse[], 
-      { p_state: string; p_city_slug: string }
-    >(
+    // Fixing the type error by correctly typing the RPC call
+    const { data, error } = await supabase.rpc(
       'get_location_with_map_data',
       {
         p_state: stateUpper,
