@@ -59,6 +59,8 @@ const fetchLocationData = async () => {
 // Main function to generate sitemap
 const generateSitemap = async () => {
   try {
+    console.log('Starting sitemap generation process...');
+    
     // Use a Map to store unique URLs
     const urlMap = new Map();
     
@@ -158,20 +160,37 @@ const generateSitemap = async () => {
     sitemap += '</urlset>';
 
     const outputPath = path.join(__dirname, '../public/sitemap.xml');
+    console.log('Saving sitemap to:', outputPath);
     
-    // Use the recommended writing logic to avoid BOM or encoding issues
+    // Use a safer two-step approach to ensure clean file writing
+    // First delete the existing file if it exists
+    if (fs.existsSync(outputPath)) {
+      fs.unlinkSync(outputPath);
+      console.log('Deleted existing sitemap.xml file');
+    }
+    
+    // Now write the new file with clean buffer
     fs.writeFileSync(outputPath, Buffer.from(sitemap, 'utf8'), { encoding: 'utf8' });
+    console.log('Sitemap file written successfully');
     
-    // Verify the start of the file
+    // Verify the start of the file with multiple methods
     const checkBuffer = fs.readFileSync(outputPath, { encoding: null }).slice(0, 50);
     console.log('First bytes of sitemap.xml (hex):', checkBuffer.toString('hex'));
-    console.log('Start of sitemap:', checkBuffer.toString('utf8').substring(0, 20));
+    console.log('First bytes as UTF-8:', checkBuffer.toString('utf8').substring(0, 40));
     
-    if (checkBuffer.toString('utf8').startsWith('<?xml')) {
+    // Strict validation of XML declaration
+    const fileStart = checkBuffer.toString('utf8').substring(0, 5);
+    if (fileStart === '<?xml') {
       console.log('✅ Sitemap XML validation: XML declaration is at the start of the file');
     } else {
       console.error('❌ Sitemap XML validation failed: XML declaration is not at the start of the file');
-      console.error('First 20 characters:', checkBuffer.toString('utf8').substring(0, 20));
+      console.error(`First 5 characters: "${fileStart}" (should be "<?xml")`);
+      
+      // Extra debugging if needed
+      console.log('Character codes of first 10 bytes:');
+      for (let i = 0; i < 10; i++) {
+        console.log(`Byte ${i}: ${checkBuffer[i]} (${String.fromCharCode(checkBuffer[i])})`);
+      }
     }
     
     console.log('Sitemap generated successfully!');
@@ -179,8 +198,11 @@ const generateSitemap = async () => {
     
     // Create robots.txt file with reference to sitemap
     const robotsTxt = `User-agent: *\nAllow: /\n\n# Allow all search engine bots to access the entire site\nUser-agent: Googlebot\nAllow: /\n\nUser-agent: Bingbot\nAllow: /\n\nUser-agent: Twitterbot\nAllow: /\n\nUser-agent: facebookexternalhit\nAllow: /\n\n# Reference to sitemap\nSitemap: ${BASE_URL}/sitemap.xml\n`;
-    fs.writeFileSync(path.join(__dirname, '../public/robots.txt'), robotsTxt);
+    
+    const robotsPath = path.join(__dirname, '../public/robots.txt');
+    fs.writeFileSync(robotsPath, robotsTxt);
     console.log('robots.txt generated successfully with sitemap reference!');
+    console.log('robots.txt saved to:', robotsPath);
     
     // Count URLs by type for detailed reporting
     const staticPages = allPages.filter(page => !page.url.includes('/locations/') && !page.url.match(/\/[^\/]+-[a-z]{2}$/)).length;
@@ -207,8 +229,18 @@ const generateSitemap = async () => {
   }
 };
 
+// Print environment information for debugging
+console.log('Current working directory:', process.cwd());
+console.log('Script directory:', __dirname);
+console.log('Node.js version:', process.version);
+
 // Run the function
-generateSitemap();
+generateSitemap().then(() => {
+  console.log('Sitemap generation completed.');
+}).catch(err => {
+  console.error('Fatal error during sitemap generation:', err);
+  process.exit(1); // Exit with error code
+});
 
 // Export the function so it can be called from other scripts or build hooks
 module.exports = { generateSitemap };
