@@ -14,6 +14,7 @@ const NotFound = () => {
     // For these special files, redirect to the same URL which will
     // cause the browser to request the file directly from the server
     // rather than through the React Router
+    console.log(`Detected special static file request: ${path} - redirecting to server`);
     window.location.href = path;
     return null;
   }

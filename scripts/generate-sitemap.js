@@ -142,7 +142,7 @@ const generateSitemap = async () => {
     // Convert the Map to an array of URLs
     const allPages = [...urlMap.values()];
 
-    // Build sitemap XML string with NO whitespace before the XML declaration
+    // Build sitemap XML string - IMPORTANT: NO whitespace before the XML declaration
     let sitemap = '';
     sitemap += '<?xml version="1.0" encoding="UTF-8"?>\n';
     sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
@@ -162,14 +162,13 @@ const generateSitemap = async () => {
     const outputPath = path.join(__dirname, '../public/sitemap.xml');
     console.log('Saving sitemap to:', outputPath);
     
-    // Use a safer two-step approach to ensure clean file writing
-    // First delete the existing file if it exists
+    // Remove any existing file first
     if (fs.existsSync(outputPath)) {
       fs.unlinkSync(outputPath);
       console.log('Deleted existing sitemap.xml file');
     }
     
-    // Now write the new file with clean buffer
+    // Write with explicit Buffer to ensure no BOM or encoding issues
     fs.writeFileSync(outputPath, Buffer.from(sitemap, 'utf8'), { encoding: 'utf8' });
     console.log('Sitemap file written successfully');
     
@@ -200,7 +199,7 @@ const generateSitemap = async () => {
     const robotsTxt = `User-agent: *\nAllow: /\n\n# Allow all search engine bots to access the entire site\nUser-agent: Googlebot\nAllow: /\n\nUser-agent: Bingbot\nAllow: /\n\nUser-agent: Twitterbot\nAllow: /\n\nUser-agent: facebookexternalhit\nAllow: /\n\n# Reference to sitemap\nSitemap: ${BASE_URL}/sitemap.xml\n`;
     
     const robotsPath = path.join(__dirname, '../public/robots.txt');
-    fs.writeFileSync(robotsPath, robotsTxt);
+    fs.writeFileSync(robotsPath, Buffer.from(robotsTxt, 'utf8'), { encoding: 'utf8' });
     console.log('robots.txt generated successfully with sitemap reference!');
     console.log('robots.txt saved to:', robotsPath);
     
