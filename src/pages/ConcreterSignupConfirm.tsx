@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
@@ -65,32 +64,9 @@ export default function ConcreterSignupConfirm() {
       
       console.log('Updating contractor record with plan selection:', contractorId, leadCount);
       
-      // Update the record with plan selection - only using columns that exist in the schema
-      const { error: updateError } = await supabase
-        .from('contractor_signups')
-        .update({
-          // Remove fields not in schema
-          // selected_plan_leads: leadCount,
-          // billing_status: 'trial',
-        })
-        .eq('id', contractorId);
-      
-      if (updateError) {
-        console.error('Error updating contractor record:', updateError);
-        throw updateError;
-      }
-      
-      // In a real implementation, we would:
-      // 1. Call Stripe to create a checkout session
-      // 2. Redirect to Stripe checkout
-      // 3. Process webhook to update the customer_id and status
-      
-      // For this demo, we'll simulate success and redirect directly
-      // In a real implementation, you would redirect to the Stripe checkout
-      toast({
-        title: "Plan selected!",
-        description: "Moving to payment page...",
-      });
+      // In a real implementation, you would also update fields like:
+      // selected_plan_leads, billing_status, etc.
+      // Here we'll just log the selection for now.
       
       // Simulate a delay for the "payment process"
       setTimeout(() => {

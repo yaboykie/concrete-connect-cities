@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
@@ -46,17 +45,15 @@ export default function ConcreterSignup() {
       // Log data for debugging
       console.log('Submitting contractor signup:', data);
       
-      // Convert job types array to comma-separated string to match database schema
+      // Insert data into Supabase with the correct types
+      // job_types is now a text[] so we pass the array directly
       const { error } = await supabase.from('contractor_signups').insert({
         name: data.name,
         business_name: data.businessName,
         email: data.email,
         phone: data.phone,
         primary_town: data.primaryTown,
-        job_types: data.jobTypes.join(','),
-        // These fields aren't in the Supabase table schema, so we need to remove them
-        // early_bird: true,
-        // billing_status: 'pending',
+        job_types: data.jobTypes, // Pass array directly, don't join
       });
 
       if (error) {

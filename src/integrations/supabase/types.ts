@@ -15,7 +15,7 @@ export type Database = {
           created_at: string | null
           email: string | null
           id: string
-          job_types: string | null
+          job_types: string[] | null
           name: string | null
           phone: string | null
           primary_town: string | null
@@ -26,8 +26,8 @@ export type Database = {
           business_name?: string | null
           created_at?: string | null
           email?: string | null
-          id: string
-          job_types?: string | null
+          id?: string
+          job_types?: string[] | null
           name?: string | null
           phone?: string | null
           primary_town?: string | null
@@ -39,7 +39,7 @@ export type Database = {
           created_at?: string | null
           email?: string | null
           id?: string
-          job_types?: string | null
+          job_types?: string[] | null
           name?: string | null
           phone?: string | null
           primary_town?: string | null
