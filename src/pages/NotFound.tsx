@@ -1,8 +1,22 @@
-import { useLocation } from "react-router-dom";
+
+import { useLocation, Navigate } from "react-router-dom";
 import { useEffect } from "react";
 
 const NotFound = () => {
   const location = useLocation();
+  const path = location.pathname;
+  
+  // Check if the requested path is a special file that should be served from /public
+  // These files should be accessible directly without React Router intercepting them
+  const specialStaticFiles = ['/sitemap.xml', '/robots.txt'];
+  
+  if (specialStaticFiles.includes(path)) {
+    // For these special files, redirect to the same URL which will
+    // cause the browser to request the file directly from the server
+    // rather than through the React Router
+    window.location.href = path;
+    return null;
+  }
 
   useEffect(() => {
     console.error(
