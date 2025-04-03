@@ -140,8 +140,13 @@ const generateSitemap = async () => {
     // Convert the Map to an array of URLs
     const allPages = [...urlMap.values()];
 
-    // Create sitemap XML content - NO WHITESPACE before XML declaration
-    let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+    // Create XML content with NO whitespace, newlines, or BOM before the XML declaration
+    const xmlDeclaration = '<?xml version="1.0" encoding="UTF-8"?>';
+    const urlsetOpen = '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
+    const urlsetClose = '</urlset>';
+    
+    // Start with the XML declaration exactly (no newline before)
+    let sitemap = xmlDeclaration + '\n' + urlsetOpen + '\n';
 
     // Add each page to the sitemap
     allPages.forEach(page => {
@@ -153,11 +158,25 @@ const generateSitemap = async () => {
       sitemap += '  </url>\n';
     });
 
-    sitemap += '</urlset>';
+    sitemap += urlsetClose;
 
-    // Use Buffer to ensure there's no BOM and no unexpected encoding issues
-    const buffer = Buffer.from(sitemap, 'utf8');
-    fs.writeFileSync(path.join(__dirname, '../public/sitemap.xml'), buffer, { encoding: 'utf8' });
+    // Write the file with explicit encoding and no BOM
+    // Use a clean write without any transformations
+    const outputPath = path.join(__dirname, '../public/sitemap.xml');
+    
+    // Use writeFileSync with a buffer to ensure there's no BOM and no unexpected encoding issues
+    fs.writeFileSync(outputPath, Buffer.from(sitemap, 'utf8'), { encoding: 'utf8' });
+    
+    // Double-check the first few bytes of the file to ensure it starts correctly
+    const checkBuffer = fs.readFileSync(outputPath, { encoding: null, flag: 'r' }).slice(0, 50);
+    console.log('First bytes of sitemap.xml:', checkBuffer.toString('hex'));
+    console.log('First characters:', checkBuffer.toString('utf8').substring(0, 20));
+    
+    if (checkBuffer.toString('utf8').startsWith('<?xml')) {
+      console.log('✅ Sitemap XML validation: XML declaration is at the start of the file');
+    } else {
+      console.log('❌ Sitemap XML validation failed: Unexpected content before XML declaration');
+    }
     
     console.log('Sitemap generated successfully!');
     console.log(`Total URLs in sitemap: ${allPages.length}`);
