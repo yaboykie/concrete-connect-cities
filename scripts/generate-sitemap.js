@@ -140,9 +140,8 @@ const generateSitemap = async () => {
     // Convert the Map to an array of URLs
     const allPages = [...urlMap.values()];
 
-    // Create sitemap XML content - Ensure no whitespace before XML declaration
-    let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
-    sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+    // Create sitemap XML content - NO WHITESPACE before XML declaration
+    let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
 
     // Add each page to the sitemap
     allPages.forEach(page => {
@@ -156,8 +155,10 @@ const generateSitemap = async () => {
 
     sitemap += '</urlset>';
 
-    // Write sitemap to file, making sure there's no BOM or whitespace before XML declaration
-    fs.writeFileSync(path.join(__dirname, '../public/sitemap.xml'), sitemap, { encoding: 'utf8' });
+    // Use Buffer to ensure there's no BOM and no unexpected encoding issues
+    const buffer = Buffer.from(sitemap, 'utf8');
+    fs.writeFileSync(path.join(__dirname, '../public/sitemap.xml'), buffer, { encoding: 'utf8' });
+    
     console.log('Sitemap generated successfully!');
     console.log(`Total URLs in sitemap: ${allPages.length}`);
     
