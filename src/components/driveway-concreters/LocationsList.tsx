@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Check, ArrowRight, DollarSign } from 'lucide-react';
@@ -10,6 +9,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/components/ui/use-toast';
+import InlineQuoteForm from './InlineQuoteForm';
 
 // Helper function to get unique states from location data
 const getUniqueStates = () => {
@@ -320,13 +320,6 @@ const LocationsList = () => {
                   <p className="text-lg text-gray-700">
                     Get your free, no-obligation quotes in under 10 seconds, with a typical response time of just 1-2 business hours. Your time is valuable, and we make the process quick, easy, and hassle-free, without the long waits and pushy sales calls.
                   </p>
-                  
-                  <p className="text-lg text-gray-700 font-medium">
-                    💲 <span className="font-bold">Add Long-Term Value to Your Home</span>
-                  </p>
-                  <p className="text-lg text-gray-700">
-                    A professionally installed concrete driveway isn't just about curb appeal—it's an investment. Real estate agents estimate that a beautiful, well-maintained driveway can add between $10,000 and $20,000 in perceived value to your home, depending on your market and property type. It's a simple way to increase your home's value, making it more attractive to potential buyers while improving the overall look of your property.
-                  </p>
                 </div>
               </div>
             </div>
@@ -432,6 +425,9 @@ const LocationsList = () => {
           </div>
         </div>
       </section>
+      
+      {/* Add new inline form section above "We're Local Everywhere" */}
+      <InlineQuoteForm />
       
       {/* States Listing Section */}
       <section className="py-16 bg-white">
