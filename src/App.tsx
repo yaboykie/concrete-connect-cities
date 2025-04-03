@@ -14,6 +14,9 @@ import ServicePage from "./pages/ServicePage";
 import Contact from '@/pages/Contact';
 import PrivacyPolicy from '@/pages/PrivacyPolicy';
 import TermsOfService from '@/pages/TermsOfService';
+import ConcreterSignup from '@/pages/ConcreterSignup';
+import ConcreterSignupConfirm from '@/pages/ConcreterSignupConfirm';
+import ConcreterSignupThankYou from '@/pages/ConcreterSignupThankYou';
 
 // Scroll to top component
 const ScrollToTop = () => {
@@ -64,6 +67,11 @@ const App = () => (
             <Route path="/decorative-concrete" element={<ServicePage />} />
             <Route path="/commercial-concrete" element={<ServicePage />} />
             <Route path="/:service" element={<ServicePage />} />
+            
+            {/* Concreter signup funnel routes */}
+            <Route path="/concretersignup" element={<ConcreterSignup />} />
+            <Route path="/concretersignup/confirm" element={<ConcreterSignupConfirm />} />
+            <Route path="/concretersignup/thank-you" element={<ConcreterSignupThankYou />} />
             
             {/* Example direct routes to locations - using redirect in DrivewayConcreterLocations */}
             <Route path="/driveway-concreters/:city-:state" element={<DrivewayConcreterLocations />} />
