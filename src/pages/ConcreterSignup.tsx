@@ -43,6 +43,10 @@ export default function ConcreterSignup() {
 
   const onSubmit = async (data: ConcreterSignupFormValues) => {
     try {
+      // Log data for debugging
+      console.log('Submitting contractor signup:', data);
+      
+      // Convert job types array to comma-separated string to match database schema
       const { error } = await supabase.from('contractor_signups').insert({
         name: data.name,
         business_name: data.businessName,
@@ -50,11 +54,15 @@ export default function ConcreterSignup() {
         phone: data.phone,
         primary_town: data.primaryTown,
         job_types: data.jobTypes.join(','),
-        early_bird: true,
-        billing_status: 'pending',
+        // These fields aren't in the Supabase table schema, so we need to remove them
+        // early_bird: true,
+        // billing_status: 'pending',
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase insert error:', error);
+        throw error;
+      }
 
       // Store form data in session storage to use on confirmation page
       sessionStorage.setItem('contractor_signup_data', JSON.stringify(data));

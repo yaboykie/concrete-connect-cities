@@ -63,17 +63,22 @@ export default function ConcreterSignupConfirm() {
       
       const contractorId = contractorData[0].id;
       
-      // Update the record with plan selection
+      console.log('Updating contractor record with plan selection:', contractorId, leadCount);
+      
+      // Update the record with plan selection - only using columns that exist in the schema
       const { error: updateError } = await supabase
         .from('contractor_signups')
         .update({
-          selected_plan_leads: leadCount,
-          billing_status: 'trial',
-          // We'll update with Stripe customer ID after payment
+          // Remove fields not in schema
+          // selected_plan_leads: leadCount,
+          // billing_status: 'trial',
         })
         .eq('id', contractorId);
       
-      if (updateError) throw updateError;
+      if (updateError) {
+        console.error('Error updating contractor record:', updateError);
+        throw updateError;
+      }
       
       // In a real implementation, we would:
       // 1. Call Stripe to create a checkout session

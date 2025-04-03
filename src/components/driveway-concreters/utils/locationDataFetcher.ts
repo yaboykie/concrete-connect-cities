@@ -58,11 +58,8 @@ export async function fetchLocationFromSupabase(
       process.env.VITE_PUBLIC_SUPABASE_KEY as string,
     );
 
-    // Fix the type error by using the correct generic type for the function
-    const { data, error } = await supabase.rpc<{
-      location_data: any; 
-      map_data: any;
-    }[]>('get_location_with_map_data', {
+    // Fix the type error by providing both type parameters
+    const { data, error } = await supabase.rpc<LocationMapDataResponse, any[]>('get_location_with_map_data', {
       p_state: stateUpper,
       p_city_slug: citySlug,
     });
