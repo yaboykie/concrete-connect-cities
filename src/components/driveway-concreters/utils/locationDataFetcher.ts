@@ -59,10 +59,13 @@ export async function fetchLocationFromSupabase(
     );
 
     // Fix the type error by providing both type parameters
-    const { data, error } = await supabase.rpc<LocationMapDataResponse, any[]>('get_location_with_map_data', {
-      p_state: stateUpper,
-      p_city_slug: citySlug,
-    });
+    const { data, error } = await supabase.rpc<LocationMapDataResponse, { p_state: string; p_city_slug: string }>(
+      'get_location_with_map_data',
+      {
+        p_state: stateUpper,
+        p_city_slug: citySlug,
+      }
+    );
 
     if (error) {
       console.error('Error fetching location map data:', error);

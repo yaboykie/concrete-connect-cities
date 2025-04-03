@@ -70,7 +70,7 @@ const generateSitemap = () => {
   // Combine all pages
   const allPages = [...staticPages, ...statePages, ...cityPages];
 
-  // Create sitemap XML content - NO WHITESPACE BEFORE XML DECLARATION
+  // Create sitemap XML content - Ensure no whitespace before XML declaration
   let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
   sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
 
@@ -86,15 +86,8 @@ const generateSitemap = () => {
 
   sitemap += '</urlset>';
 
-  // Validate the XML content has no whitespace before the declaration
-  if (sitemap.charAt(0) !== '<') {
-    console.error('ERROR: Whitespace detected before XML declaration!');
-    // Trim any whitespace
-    sitemap = sitemap.trim();
-  }
-
   // Write sitemap to file, making sure there's no BOM or whitespace before XML declaration
-  fs.writeFileSync(path.join(__dirname, '../public/sitemap.xml'), sitemap);
+  fs.writeFileSync(path.join(__dirname, '../public/sitemap.xml'), sitemap, { encoding: 'utf8' });
   console.log('Sitemap generated successfully!');
   console.log(`Total URLs in sitemap: ${allPages.length}`);
   
