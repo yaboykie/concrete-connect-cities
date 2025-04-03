@@ -9,6 +9,45 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      contractor_signups: {
+        Row: {
+          business_name: string | null
+          created_at: string | null
+          email: string | null
+          id: string
+          job_types: string | null
+          name: string | null
+          phone: string | null
+          primary_town: string | null
+          service_radius_km: string | null
+          state: string | null
+        }
+        Insert: {
+          business_name?: string | null
+          created_at?: string | null
+          email?: string | null
+          id: string
+          job_types?: string | null
+          name?: string | null
+          phone?: string | null
+          primary_town?: string | null
+          service_radius_km?: string | null
+          state?: string | null
+        }
+        Update: {
+          business_name?: string | null
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          job_types?: string | null
+          name?: string | null
+          phone?: string | null
+          primary_town?: string | null
+          service_radius_km?: string | null
+          state?: string | null
+        }
+        Relationships: []
+      }
       "Location Data + URL Structure": {
         Row: {
           City: string | null
