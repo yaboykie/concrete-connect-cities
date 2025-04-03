@@ -12,6 +12,8 @@ import LocationService from "./pages/LocationService";
 import DrivewayConcreterLocations from "./pages/DrivewayConcreterLocations";
 import ServicePage from "./pages/ServicePage";
 import Contact from '@/pages/Contact';
+import PrivacyPolicy from '@/pages/PrivacyPolicy';
+import TermsOfService from '@/pages/TermsOfService';
 
 // Scroll to top component
 const ScrollToTop = () => {
@@ -65,6 +67,10 @@ const App = () => (
             
             {/* Example direct routes to locations - using redirect in DrivewayConcreterLocations */}
             <Route path="/driveway-concreters/:city-:state" element={<DrivewayConcreterLocations />} />
+            
+            {/* Legal pages */}
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-of-service" element={<TermsOfService />} />
             
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="/contact" element={<Contact />} />
