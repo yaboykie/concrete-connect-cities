@@ -142,9 +142,9 @@ const generateSitemap = async () => {
     // Convert the Map to an array of URLs
     const allPages = [...urlMap.values()];
 
-    // Build sitemap XML string - IMPORTANT: NO whitespace before the XML declaration
-    let sitemap = '';
-    sitemap += '<?xml version="1.0" encoding="UTF-8"?>\n';
+    // CRITICAL: Build sitemap XML string using Buffer to ensure no BOM or whitespace
+    // Note: XML declaration must be the VERY first character in the file
+    let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
     sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
 
     // Add each page to the sitemap
