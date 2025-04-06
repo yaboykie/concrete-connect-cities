@@ -45,6 +45,7 @@ const ContactForm = ({ onSuccess, closeModal }: ContactFormProps) => {
   const [connectionError, setConnectionError] = useState<string | null>(null);
   const [leadId, setLeadId] = useState<string | null>(null);
   const [matchCount, setMatchCount] = useState<number | null>(null);
+  const [matchedCampaignId, setMatchedCampaignId] = useState<string | null>(null);
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -72,10 +73,11 @@ const ContactForm = ({ onSuccess, closeModal }: ContactFormProps) => {
         throw new Error(error.message);
       }
 
-      // Store lead ID and match count if available
-      if (responseData && responseData.lead_id) {
+      // Store lead ID, match count and campaign ID if available
+      if (responseData) {
         setLeadId(responseData.lead_id);
         setMatchCount(responseData.matched_contractors || 0);
+        setMatchedCampaignId(responseData.matched_campaign_id || null);
       }
 
       toast({
@@ -131,6 +133,9 @@ const ContactForm = ({ onSuccess, closeModal }: ContactFormProps) => {
             <p className="text-sm">Reference ID: {leadId}</p>
             {matchCount !== null && matchCount > 0 && (
               <p className="text-sm">Found {matchCount} contractor{matchCount !== 1 ? 's' : ''} in your area.</p>
+            )}
+            {matchedCampaignId && (
+              <p className="text-sm">Matched with campaign: {matchedCampaignId}</p>
             )}
           </div>
         </div>

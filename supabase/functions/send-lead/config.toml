@@ -1,5 +1,5 @@
 
-project_id = "YOUR_PROJECT_ID"
+project_id = "aiyzpzibgrgqslsoulgj"
 [build]
 command = "deno bundle index.ts"
 [deploy]

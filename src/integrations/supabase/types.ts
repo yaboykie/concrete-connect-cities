@@ -9,6 +9,50 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      campaigns: {
+        Row: {
+          campaign_id: string
+          contractor_id: string | null
+          created_at: string | null
+          is_active: boolean | null
+          job_types: string[]
+          latitude: number
+          longitude: number
+          name: string
+          radius_km: number
+        }
+        Insert: {
+          campaign_id?: string
+          contractor_id?: string | null
+          created_at?: string | null
+          is_active?: boolean | null
+          job_types?: string[]
+          latitude: number
+          longitude: number
+          name: string
+          radius_km?: number
+        }
+        Update: {
+          campaign_id?: string
+          contractor_id?: string | null
+          created_at?: string | null
+          is_active?: boolean | null
+          job_types?: string[]
+          latitude?: number
+          longitude?: number
+          name?: string
+          radius_km?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "campaigns_contractor_id_fkey"
+            columns: ["contractor_id"]
+            isOneToOne: false
+            referencedRelation: "contractor_signups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contractor_signups: {
         Row: {
           business_name: string | null
@@ -47,6 +91,59 @@ export type Database = {
           state?: string | null
         }
         Relationships: []
+      }
+      leads: {
+        Row: {
+          campaign_id: string | null
+          created_at: string | null
+          email: string
+          formatted_job_type: string | null
+          job_type: string
+          lead_id: string
+          matched_contractor_ids: string[] | null
+          name: string
+          phone: string
+          status: string | null
+          updated_at: string | null
+          zip_code: string
+        }
+        Insert: {
+          campaign_id?: string | null
+          created_at?: string | null
+          email: string
+          formatted_job_type?: string | null
+          job_type: string
+          lead_id: string
+          matched_contractor_ids?: string[] | null
+          name: string
+          phone: string
+          status?: string | null
+          updated_at?: string | null
+          zip_code: string
+        }
+        Update: {
+          campaign_id?: string | null
+          created_at?: string | null
+          email?: string
+          formatted_job_type?: string | null
+          job_type?: string
+          lead_id?: string
+          matched_contractor_ids?: string[] | null
+          name?: string
+          phone?: string
+          status?: string | null
+          updated_at?: string | null
+          zip_code?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leads_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "campaigns"
+            referencedColumns: ["campaign_id"]
+          },
+        ]
       }
       "Location Data + URL Structure": {
         Row: {
