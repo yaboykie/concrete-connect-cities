@@ -1,4 +1,3 @@
-
 import React, { useRef } from 'react';
 import SEO from '@/components/SEO';
 import Header from '@/components/Header';
@@ -18,8 +17,8 @@ const formSchema = z.object({
   name: z.string().min(2, { message: "Name is required" }),
   email: z.string().email({ message: "Valid email is required" }),
   phone: z.string().min(10, { message: "Valid phone number is required" }),
-  zipCode: z.string().min(5, { message: "ZIP code is required" }),
-  concreteType: z.string().min(1, { message: "Please select a concrete type" }),
+  zip: z.string().min(5, { message: "ZIP code is required" }),
+  drivewayType: z.string().min(1, { message: "Please select a concrete type" }),
   timeline: z.string().optional(),
 });
 
@@ -33,8 +32,8 @@ const ArizonaCostEstimator = () => {
       name: "",
       email: "",
       phone: "",
-      zipCode: "",
-      concreteType: "",
+      zip: "",
+      drivewayType: "",
       timeline: "",
     },
   });
@@ -47,22 +46,40 @@ const ArizonaCostEstimator = () => {
     quoteFormRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
-    // This would typically send data to your server or email service
-    console.log("Form submitted:", data);
-    
-    // Display success toast
-    toast({
-      title: "Quote Request Submitted!",
-      description: "We'll connect you with top-rated concreters shortly.",
-      duration: 5000,
-    });
-    
-    // Reset form
-    form.reset();
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    try {
+      const formData = new FormData();
+      Object.entries(data).forEach(([key, value]) => {
+        formData.append(key, value?.toString() || '');
+      });
+      
+      const response = await fetch(
+        'https://script.google.com/macros/s/AKfycbyk-bKMOQ9Mk98zHN7kWeMS58Ov0S3IJTvHA84yyTf2j4urEIws2f98L6enbX8aW2TrkQ/exec', 
+        {
+          method: 'POST',
+          body: formData,
+          mode: 'no-cors',
+        }
+      );
+      
+      toast({
+        title: "Quote Request Submitted!",
+        description: "Thanks! Your details have been submitted. You'll hear from top-rated concreters shortly.",
+        duration: 5000,
+      });
+      
+      form.reset();
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast({
+        title: "Submission Error",
+        description: "There was an issue submitting your request. Please try again.",
+        variant: "destructive",
+        duration: 5000,
+      });
+    }
   };
 
-  // Tooltip descriptions for concrete finishes
   const tooltipDescriptions = {
     "Standard Concrete": "Basic, durable grey finish.",
     "Exposed Aggregate": "Pebbled decorative surface, great for slip resistance.",
@@ -82,7 +99,6 @@ const ArizonaCostEstimator = () => {
       <Header />
       <MobileCta scrollTo="#quoteform" buttonText="📍 Get My Free Quotes" />
       
-      {/* Hero Section */}
       <section className="bg-concrete-light py-14 md:py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
@@ -99,7 +115,6 @@ const ArizonaCostEstimator = () => {
         </div>
       </section>
       
-      {/* Calculator Section */}
       <section className="py-12 md:py-20" id="calculator" ref={calculatorRef}>
         <div className="container mx-auto px-4">
           <div className="text-center mb-8">
@@ -120,7 +135,6 @@ const ArizonaCostEstimator = () => {
         </div>
       </section>
       
-      {/* Columns Section with Form */}
       <section className="py-12 md:py-20 bg-concrete-light" id="quoteform" ref={quoteFormRef}>
         <div className="container mx-auto px-4">
           <div className="text-center mb-8">
@@ -128,7 +142,6 @@ const ArizonaCostEstimator = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Text Column */}
             <div>
               <p className="text-lg font-medium mb-6">We connect you with concreters rated 4.5★+ on Google, ready to quote your project today.</p>
               <div className="prose lg:prose-lg">                
@@ -145,7 +158,6 @@ const ArizonaCostEstimator = () => {
               </div>
             </div>
             
-            {/* Form Column */}
             <div>
               <h2 className="text-2xl md:text-3xl font-bold mb-4">Get Matched With Local Concreters</h2>
               <p className="text-lg mb-6">📬 Most homeowners receive their first quote within 1–2 business hours.</p>
@@ -198,7 +210,7 @@ const ArizonaCostEstimator = () => {
                   
                   <FormField
                     control={form.control}
-                    name="zipCode"
+                    name="zip"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>ZIP Code</FormLabel>
@@ -212,7 +224,7 @@ const ArizonaCostEstimator = () => {
                   
                   <FormField
                     control={form.control}
-                    name="concreteType"
+                    name="drivewayType"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Type of Concrete Driveway</FormLabel>
