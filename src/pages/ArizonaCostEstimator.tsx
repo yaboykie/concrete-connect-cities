@@ -62,6 +62,15 @@ const ArizonaCostEstimator = () => {
     form.reset();
   };
 
+  // Tooltip descriptions for concrete finishes
+  const tooltipDescriptions = {
+    "Standard Concrete": "Basic, durable grey finish.",
+    "Exposed Aggregate": "Pebbled decorative surface, great for slip resistance.",
+    "Stamped Concrete": "Patterned look that mimics brick, stone, or tile.",
+    "Decorative": "Custom designs for upscale curb appeal.",
+    "Colored Concrete": "Pigmented mix for modern finish."
+  };
+  
   return (
     <>
       <SEO 
@@ -77,14 +86,14 @@ const ArizonaCostEstimator = () => {
       <section className="bg-concrete-light py-14 md:py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-3xl md:text-5xl font-bold mb-6">See What a New Concrete Driveway Costs in Arizona</h1>
-            <p className="text-lg md:text-xl mb-6">Get a ballpark estimate based on your driveway size and finish. No email required.</p>
+            <h1 className="text-3xl md:text-5xl font-bold mb-6">Estimate Your Concrete Driveway Cost in 10 Seconds</h1>
+            <p className="text-lg md:text-xl mb-6">Get a quick estimate based on your driveway size and concrete finish. All estimates use 2024 Arizona pricing averages.</p>
             
             <div className="bg-white/80 rounded-lg p-3 mb-6 text-sm md:text-base font-medium">
-              ✅ Local Quotes &nbsp;•&nbsp; 🏆 4.5★+ Google Rated &nbsp;•&nbsp; 📍 Arizona-Based Pricing
+              ✅ 4.5★+ Google Rated &nbsp;•&nbsp; 📍 Arizona-Based Pricing &nbsp;•&nbsp; ⏱️ Quotes in 1–2 Hours
             </div>
             
-            <Button onClick={scrollToCalculator} className="cta-button">Start My Estimate</Button>
+            <Button onClick={scrollToCalculator} className="cta-button">Get My Estimate</Button>
             <p className="text-sm mt-3 text-gray-600">No sign-up. No obligation. Just a helpful pricing tool.</p>
           </div>
         </div>
@@ -99,34 +108,35 @@ const ArizonaCostEstimator = () => {
             <p className="text-sm text-gray-600 mt-2">Size guide: Small = 1 Car (~10×18 ft), Medium = 2 Cars (~16×20 ft), Large = 3+ Cars (~20×30 ft)</p>
           </div>
           
-          <ArizonaDrivewayCalculator />
-        </div>
-      </section>
-      
-      {/* Mid-Page CTA */}
-      <section className="py-8 md:py-12 bg-brand-light text-center">
-        <div className="container mx-auto px-4">
-          <h2 className="text-2xl md:text-3xl font-bold mb-3">Estimate in the Ballpark?</h2>
-          <p className="text-lg mb-6 max-w-2xl mx-auto">We can match you with up to 3 local concreters to get real quotes based on your project.</p>
-          <Button onClick={scrollToQuoteForm} className="cta-button">Get Free Quotes From Local Pros</Button>
+          <ArizonaDrivewayCalculator 
+            tooltipDescriptions={tooltipDescriptions}
+            estimateDisclaimer="💬 Final pricing depends on location, access, slab thickness, and site prep. This is a base estimate for a flat site with standard concrete."
+            afterContent={
+              <Button onClick={scrollToQuoteForm} className="cta-button w-full">
+                📬 Like the price? Get 2–3 Free Quotes Now →
+              </Button>
+            }
+          />
         </div>
       </section>
       
       {/* Columns Section with Form */}
       <section className="py-12 md:py-20 bg-concrete-light" id="quoteform" ref={quoteFormRef}>
         <div className="container mx-auto px-4">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl md:text-4xl font-bold">Why Use ConcreterQuotes?</h2>
+          </div>
+          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Text Column */}
             <div>
-              <h2 className="text-2xl md:text-3xl font-bold mb-6">Why Use ConcreterQuotes?</h2>
-              <div className="prose lg:prose-lg">
-                <p className="mb-4">We connect you with concreters rated 4.5★+ on Google, ready to quote your project today.</p>
-                
-                <p className="mb-2">💼 <strong>Verified and insured</strong> — only pre-screened concreters accepted.</p>
+              <p className="text-lg font-medium mb-6">We connect you with concreters rated 4.5★+ on Google, ready to quote your project today.</p>
+              <div className="prose lg:prose-lg">                
+                <p className="mb-2">🔒 <strong>Verified and insured</strong> — only pre-screened concreters accepted.</p>
                 <p className="mb-2">📍 <strong>Arizona based</strong> — get local pricing and fast responses.</p>
-                <p className="mb-2">🔍 <strong>You stay in control</strong> — compare quotes, no pressure.</p>
-                <p className="mb-2">💰 <strong>Boost curb appeal and value</strong> — a quality driveway can add $5,000–$10,000 in resale value.</p>
-                <p className="mb-2">🛠️ <strong>No chasing contractors</strong> — we streamline the process for you.</p>
+                <p className="mb-2">🧠 <strong>You stay in control</strong> — compare quotes, no pressure.</p>
+                <p className="mb-2">🏡 <strong>Boost curb appeal and value</strong> — a quality driveway can add $5,000–$10,000 in resale value.</p>
+                <p className="mb-2">🚫 <strong>No chasing contractors</strong> — we streamline the process for you.</p>
                 
                 <p className="font-semibold mt-6 mb-3">What Homeowners Are Saying:</p>
                 <p className="mb-2">🗣️ "Got 3 quotes in one afternoon. Saved me so much time." – Josh from Tempe</p>
@@ -214,10 +224,10 @@ const ArizonaCostEstimator = () => {
                           </FormControl>
                           <SelectContent>
                             <SelectItem value="Standard Concrete">Standard Concrete</SelectItem>
-                            <SelectItem value="Exposed Aggregate">Exposed Aggregate</SelectItem>
                             <SelectItem value="Stamped Concrete">Stamped Concrete</SelectItem>
-                            <SelectItem value="Decorative">Decorative</SelectItem>
+                            <SelectItem value="Exposed Aggregate">Exposed Aggregate</SelectItem>
                             <SelectItem value="Colored Concrete">Colored Concrete</SelectItem>
+                            <SelectItem value="Decorative Finish">Decorative Finish</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -240,9 +250,9 @@ const ArizonaCostEstimator = () => {
                           <SelectContent>
                             <SelectItem value="ASAP">ASAP</SelectItem>
                             <SelectItem value="Within a week">Within a week</SelectItem>
-                            <SelectItem value="1–2 Weeks">1–2 Weeks</SelectItem>
-                            <SelectItem value="2–4 Weeks">2–4 Weeks</SelectItem>
-                            <SelectItem value="1–2 Months">1–2 Months</SelectItem>
+                            <SelectItem value="1–2 weeks">1–2 weeks</SelectItem>
+                            <SelectItem value="2–4 weeks">2–4 weeks</SelectItem>
+                            <SelectItem value="1–2 months">1–2 months</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -251,12 +261,12 @@ const ArizonaCostEstimator = () => {
                   />
                   
                   <Button type="submit" className="cta-button w-full py-6 text-lg">
-                    📬 Send Me My 3 Free Quotes
+                    📍 Get My Free Quotes
                   </Button>
                   
                   <div className="text-center">
                     <p className="text-sm text-gray-600">
-                      We only connect you with concreters rated 4.5★ or higher. No spam. No pressure. You choose who to speak with.
+                      We only connect you with concreters rated 4.5★ or higher. No spam. No obligation.
                     </p>
                   </div>
                 </form>

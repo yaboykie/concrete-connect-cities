@@ -19,7 +19,7 @@ const MobileCta: React.FC<MobileCtaProps> = ({
     <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 shadow-lg z-50">
       <a 
         href={scrollTo} 
-        className="cta-button block w-full text-center text-lg py-4"
+        className="cta-button block w-full text-center text-lg py-4 rounded-md bg-primary text-primary-foreground hover:bg-primary/90"
       >
         {buttonText}
       </a>

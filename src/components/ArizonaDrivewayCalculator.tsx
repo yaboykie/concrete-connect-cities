@@ -21,7 +21,17 @@ const presets = {
   Large: { width: 20, length: 30, description: "3+ cars: 20×30 ft" }
 };
 
-export default function ArizonaDrivewayCalculator() {
+interface ArizonaDrivewayCalculatorProps {
+  afterContent?: React.ReactNode;
+  estimateDisclaimer?: string;
+  tooltipDescriptions?: Record<string, string>;
+}
+
+export default function ArizonaDrivewayCalculator({
+  afterContent,
+  estimateDisclaimer,
+  tooltipDescriptions
+}: ArizonaDrivewayCalculatorProps) {
   const [sizePreset, setSizePreset] = useState('Medium');
   const [custom, setCustom] = useState({ width: 0, length: 0 });
   const [finish, setFinish] = useState('Standard Concrete');
@@ -91,16 +101,27 @@ export default function ArizonaDrivewayCalculator() {
 
       <div className="my-6">
         <label className="text-sm font-medium block mb-2">Concrete Finish:</label>
-        <Select value={finish} onValueChange={(value) => setFinish(value)}>
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select finish" />
-          </SelectTrigger>
-          <SelectContent>
-            {Object.keys(finishRates).map(f => (
-              <SelectItem key={f} value={f}>{f}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <TooltipProvider>
+          <Select value={finish} onValueChange={(value) => setFinish(value)}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select finish" />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.keys(finishRates).map(f => (
+                <Tooltip key={f}>
+                  <TooltipTrigger asChild>
+                    <SelectItem value={f}>{f}</SelectItem>
+                  </TooltipTrigger>
+                  {tooltipDescriptions && tooltipDescriptions[f] && (
+                    <TooltipContent>
+                      <p>{tooltipDescriptions[f]}</p>
+                    </TooltipContent>
+                  )}
+                </Tooltip>
+              ))}
+            </SelectContent>
+          </Select>
+        </TooltipProvider>
       </div>
 
       {area > 0 && (
@@ -109,8 +130,17 @@ export default function ArizonaDrivewayCalculator() {
             <p className="mb-2">📐 <strong>Estimated Area:</strong> {area} sq ft</p>
             <p className="mb-2 text-lg font-bold">💲 <strong>Estimated Price Range:</strong> ${minCost} – ${maxCost}</p>
             <p className="text-sm text-gray-600">📍 Based on average Arizona prices (updated 2024).</p>
+            {estimateDisclaimer && (
+              <p className="text-sm text-gray-600 mt-2">{estimateDisclaimer}</p>
+            )}
           </CardContent>
         </Card>
+      )}
+
+      {afterContent && (
+        <div className="mt-6">
+          {afterContent}
+        </div>
       )}
     </div>
   );
