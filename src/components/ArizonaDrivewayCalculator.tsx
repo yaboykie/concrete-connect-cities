@@ -4,34 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { ScatterChart, Grid3x3, Square, Palette, Grip, Waves } from 'lucide-react';
-
-const finishRates = {
-  "Exposed Aggregate": { min: 10, max: 13 },
-  "Stamped Concrete": { min: 12, max: 16 },
-  "Plain Grey": { min: 5.5, max: 7.5 },
-  "Coloured Concrete": { min: 9, max: 12 },
-  "Pebble Finish": { min: 8, max: 10 },
-  "Brushed Finish": { min: 6, max: 8 }
-};
-
-const finishOptions = [
-  { id: 'exposed', label: 'Exposed Aggregate', icon: ScatterChart },
-  { id: 'stamped', label: 'Stamped Concrete', icon: Grid3x3 },
-  { id: 'plain', label: 'Plain Grey', icon: Square },
-  { id: 'coloured', label: 'Coloured Concrete', icon: Palette },
-  { id: 'pebble', label: 'Pebble Finish', icon: Grip },
-  { id: 'brushed', label: 'Brushed Finish', icon: Waves }
-];
-
-const finishIdToLabel: Record<string, string> = {
-  'exposed': 'Exposed Aggregate',
-  'stamped': 'Stamped Concrete',
-  'plain': 'Plain Grey',
-  'coloured': 'Coloured Concrete',
-  'pebble': 'Pebble Finish',
-  'brushed': 'Brushed Finish'
-};
+import FinishSelector from '@/components/FinishSelector';
+import { finishRates, finishIdToLabel } from '@/config/finishTypes';
 
 const presets = {
   Small: { width: 10, length: 18, description: "1 car: 10×18 ft" },
@@ -156,30 +130,11 @@ export default function ArizonaDrivewayCalculator({
         </div>
       )}
 
-      <div className="my-6">
-        <label className="text-sm font-medium block mb-2">Concrete Finish:</label>
-        <div className="grid grid-cols-2 gap-3">
-          {finishOptions.map((option) => {
-            const Icon = option.icon;
-            return (
-              <div
-                key={option.id}
-                className={`border rounded-lg p-3 cursor-pointer transition-all ${
-                  finishId === option.id 
-                    ? 'bg-brand-blue/10 border-brand-blue shadow-sm' 
-                    : 'hover:bg-gray-50 border-gray-200'
-                }`}
-                onClick={() => handleFinishChange(option.id)}
-              >
-                <div className="flex flex-col items-center text-center">
-                  <Icon className={`h-8 w-8 mb-2 ${finishId === option.id ? 'text-brand-blue' : 'text-gray-500'}`} />
-                  <span className="text-sm font-medium">{option.label}</span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
+      <FinishSelector 
+        selectedFinishId={finishId}
+        onFinishChange={handleFinishChange}
+        onInteraction={handleInteraction}
+      />
 
       {area > 0 && (
         <Card className="mt-6 bg-brand-yellow/20 border border-brand-yellow mb-4">
