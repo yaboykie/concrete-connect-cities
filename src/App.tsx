@@ -18,6 +18,7 @@ import ConcreterSignup from '@/pages/ConcreterSignup';
 import ConcreterSignupConfirm from '@/pages/ConcreterSignupConfirm';
 import ConcreterSignupThankYou from '@/pages/ConcreterSignupThankYou';
 import ArizonaCostEstimator from '@/pages/ArizonaCostEstimator';
+import StateDrivewayEstimator from '@/pages/StateDrivewayEstimator';
 
 // Scroll to top component
 const ScrollToTop = () => {
@@ -69,8 +70,9 @@ const App = () => (
             <Route path="/commercial-concrete" element={<ServicePage />} />
             <Route path="/:service" element={<ServicePage />} />
             
-            {/* Arizona cost estimator */}
+            {/* Cost estimator pages */}
             <Route path="/arizona-concrete-cost-estimator" element={<ArizonaCostEstimator />} />
+            <Route path="/:state/driveway-cost-estimator" element={<StateDrivewayEstimator />} />
             
             {/* Concreter signup funnel routes */}
             <Route path="/concretersignup" element={<ConcreterSignup />} />
