@@ -42,6 +42,7 @@ const App = () => (
         <BrowserRouter>
           <ScrollToTop />
           <Routes>
+            {/* Static assets like sitemap.xml should not be handled by React Router */}
             <Route path="/" element={<Index />} />
             <Route path="/locations/:state/:city/:service" element={<LocationService />} />
             
