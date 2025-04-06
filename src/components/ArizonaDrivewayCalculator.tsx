@@ -79,7 +79,13 @@ export default function ArizonaDrivewayCalculator({
 
   return (
     <div className="calculator bg-white p-6 rounded-lg shadow-lg max-w-2xl mx-auto">
-      <h3 className="text-xl font-semibold mb-4">Select Driveway Size:</h3>
+      <h3 className="text-2xl font-bold mb-2 text-center md:text-left">
+        Estimate Your Driveway Cost in Arizona Before You Talk to Anyone
+      </h3>
+      <p className="text-gray-700 text-sm mb-6 text-center md:text-left">
+        Get local 2025 pricing based on your driveway size and finish. No signup needed.
+      </p>
+      
       <TooltipProvider>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
           {Object.entries(presets).map(([label, details]) => (
@@ -162,6 +168,9 @@ export default function ArizonaDrivewayCalculator({
             <p className="mb-2">📐 <strong>Estimated Area:</strong> {area} sq ft</p>
             <p className="mb-2 text-lg font-bold">💲 <strong>Estimated Price Range:</strong> ${minCost} – ${maxCost}</p>
             <p className="text-sm text-gray-600">📍 Based on average Arizona prices (updated 2025).</p>
+            <p className="text-sm text-gray-600 mt-1">
+              💬 Final pricing depends on site conditions like concrete depth, access, and prep work. This is a ballpark estimate.
+            </p>
             {estimateDisclaimer && (
               <p className="text-sm text-gray-600 mt-2">{estimateDisclaimer}</p>
             )}
