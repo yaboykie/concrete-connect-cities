@@ -90,22 +90,33 @@ const ArizonaCostEstimator = () => {
       </section>
       
       {/* Columns Section with Form */}
-      <section className="py-12 md:py-20 bg-concrete-light">
+      <section className="py-12 md:py-20 bg-concrete-light" id="quoteform">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Text Column */}
             <div>
               <h2 className="text-2xl md:text-3xl font-bold mb-6">Estimate Looks Good?</h2>
               <div className="prose lg:prose-lg">
-                <p className="mb-4">Use our free service to instantly connect with 2–3 top-rated concreter companies (4.8★+ Google reviews) to receive custom quotes in a timeframe that suits you.</p>
-                <p className="mb-2">🕒 <strong>Save time</strong> chasing quotes — we bring trusted concreters to you.</p>
-                <p>🛡️ <strong>No spam, no pressure</strong> — We only have best rated concreters on our platform.</p>
+                <p className="mb-4">Use our free service to instantly connect with 2–3 top-rated concreter companies (<strong>4.8★+ Google reviews</strong>) to receive custom quotes in a timeframe that suits you.</p>
+                
+                <p className="mb-2">⏱️ <strong>Save time</strong> chasing quotes — we bring trusted concreters to you.</p>
+                <p className="mb-2">🛡️ <strong>No spam, no pressure</strong> — We only have best rated concreters on our platform.</p>
+                <p className="mb-2">🏡 <strong>Boost curb appeal</strong> — a new driveway can transform the look of your home.</p>
+                <p className="mb-2">💰 <strong>Increase property value</strong> — professionally finished driveways can add $5,000–$10,000 in resale value.</p>
+                <p className="mb-4">👀 <strong>Make a strong first impression</strong> — your driveway is the first thing buyers and guests see.</p>
+                
+                <p className="font-semibold mt-6 mb-3">What Homeowners Are Saying:</p>
+                <p className="mb-2">🗣️ "Got 3 quotes in one afternoon. Saved me so much time." – Josh from Tempe</p>
+                <p className="mb-2">📍 "I liked that I could choose who to speak with. Super easy." – Maria from Mesa</p>
+                <p className="mb-2">⭐ "All 3 concreters were highly rated. Felt like a safe choice." – Dan in Scottsdale</p>
               </div>
             </div>
             
             {/* Form Column */}
             <div>
-              <h2 className="text-2xl md:text-3xl font-bold mb-6">Get 2–3 Free Quotes Now</h2>
+              <h2 className="text-2xl md:text-3xl font-bold mb-4">Get 2–3 Free Quotes Now</h2>
+              <p className="text-lg mb-6">⏱️ Most homeowners get their first quote within 1–2 business hours.</p>
+              
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 bg-white p-6 md:p-8 rounded-lg shadow-lg">
                   <FormField
