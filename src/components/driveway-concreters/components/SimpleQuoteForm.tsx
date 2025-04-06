@@ -5,25 +5,88 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 
-const SimpleQuoteForm = () => {
+type SimpleQuoteFormProps = {
+  onSubmit?: (data: any) => Promise<any>;
+  utmParams?: Record<string, string>;
+  stateLocation?: string;
+};
+
+const SimpleQuoteForm = ({ onSubmit, utmParams = {}, stateLocation = '' }: SimpleQuoteFormProps) => {
   const [name, setName] = useState('');
   const [zipCode, setZipCode] = useState('');
   const [contact, setContact] = useState('');
   const [details, setDetails] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const trackInteraction = (eventName: string) => {
+    if (window.gtag) {
+      window.gtag('event', eventName, {
+        form_name: 'simple_quote_form',
+        state: stateLocation
+      });
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Track form submission attempt
+    trackInteraction('form_submit_attempt');
+    
+    // Form validation
+    if (!name || !zipCode || !contact) {
+      toast({
+        title: "Please Complete All Required Fields",
+        description: "Please fill out all required information to get your quotes.",
+        variant: "destructive",
+      });
+      trackInteraction('form_validation_error');
+      return;
+    }
+    
     setIsSubmitting(true);
     
-    // Simulate form submission
-    setTimeout(() => {
-      toast({
-        title: "Quote Request Submitted",
-        description: "We'll match you with local driveway concreters shortly. Thank you!",
-      });
-      setIsSubmitting(false);
-    }, 1500);
+    // Prepare form data with UTM parameters
+    const formData = {
+      name,
+      zipCode,
+      contact,
+      details,
+      ...utmParams
+    };
+    
+    if (onSubmit) {
+      try {
+        // Use the parent component's submit handler
+        await onSubmit(formData);
+        
+        // Reset form on success
+        setName('');
+        setZipCode('');
+        setContact('');
+        setDetails('');
+      } catch (error) {
+        console.error('Error in form submission:', error);
+        // Error is handled by the parent component
+      } finally {
+        setIsSubmitting(false);
+      }
+    } else {
+      // Fallback to default behavior if no onSubmit is provided
+      setTimeout(() => {
+        toast({
+          title: "Quote Request Submitted",
+          description: "We'll match you with local driveway concreters shortly. Thank you!",
+        });
+        setIsSubmitting(false);
+        setName('');
+        setZipCode('');
+        setContact('');
+        setDetails('');
+        
+        trackInteraction('form_submit_success_fallback');
+      }, 1500);
+    }
   };
 
   return (
@@ -39,6 +102,7 @@ const SimpleQuoteForm = () => {
             onChange={(e) => setName(e.target.value)} 
             required 
             placeholder="Your name"
+            onFocus={() => trackInteraction('name_field_focus')}
           />
         </div>
         
@@ -50,6 +114,7 @@ const SimpleQuoteForm = () => {
             onChange={(e) => setZipCode(e.target.value)} 
             required 
             placeholder="Your ZIP code"
+            onFocus={() => trackInteraction('zipcode_field_focus')}
           />
         </div>
         
@@ -61,6 +126,7 @@ const SimpleQuoteForm = () => {
             onChange={(e) => setContact(e.target.value)} 
             required 
             placeholder="How should we contact you?"
+            onFocus={() => trackInteraction('contact_field_focus')}
           />
         </div>
         
@@ -72,6 +138,7 @@ const SimpleQuoteForm = () => {
             onChange={(e) => setDetails(e.target.value)} 
             placeholder="Tell us about your driveway project"
             rows={3}
+            onFocus={() => trackInteraction('details_field_focus')}
           />
         </div>
         

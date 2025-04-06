@@ -1,12 +1,120 @@
 
-import React from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams, useLocation } from 'react-router-dom';
 import StateDrivewayCalculator from '@/components/StateDrivewayCalculator';
 import SEO from '@/components/SEO';
+import SimpleQuoteForm from '@/components/driveway-concreters/components/SimpleQuoteForm';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from '@/components/ui/use-toast';
 
 export default function StateDrivewayEstimator() {
   const { state } = useParams<{ state: string }>();
+  const location = useLocation();
   const stateDisplayName = state ? state.charAt(0).toUpperCase() + state.slice(1) : '';
+  const [utmParams, setUtmParams] = useState<Record<string, string>>({});
+  
+  // Extract UTM parameters from URL
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const utmData: Record<string, string> = {};
+    
+    // Collect all UTM parameters
+    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(param => {
+      const value = queryParams.get(param);
+      if (value) utmData[param] = value;
+    });
+    
+    // Store UTM parameters in state and sessionStorage for cross-page tracking
+    if (Object.keys(utmData).length > 0) {
+      setUtmParams(utmData);
+      sessionStorage.setItem('utm_data', JSON.stringify(utmData));
+    } else {
+      // Check if we have UTM data from a previous page
+      const storedUtmData = sessionStorage.getItem('utm_data');
+      if (storedUtmData) {
+        setUtmParams(JSON.parse(storedUtmData));
+      }
+    }
+  }, [location]);
+
+  // Track page view with GA4
+  useEffect(() => {
+    if (window.gtag) {
+      window.gtag('event', 'page_view', {
+        page_title: `${stateDisplayName} Concrete Driveway Cost Estimator`,
+        page_location: window.location.href,
+        page_path: location.pathname,
+        state: stateDisplayName
+      });
+    }
+  }, [stateDisplayName, location]);
+
+  // Handle form submission with proper error handling and GA4 tracking
+  const handleFormSubmit = async (formData: any) => {
+    try {
+      // Track form submission start
+      if (window.gtag) {
+        window.gtag('event', 'form_start', {
+          form_name: 'concrete_quote_request',
+          state: stateDisplayName
+        });
+      }
+
+      // Add UTM parameters to the form data
+      const enrichedFormData = {
+        ...formData,
+        ...utmParams,
+        state: stateDisplayName
+      };
+      
+      // Submit the form data to the Supabase edge function
+      const { data, error } = await supabase.functions.invoke('send-lead', {
+        body: enrichedFormData
+      });
+      
+      if (error) throw new Error(error.message);
+      
+      // Show success message
+      toast({
+        title: "Quote Request Submitted!",
+        description: "We'll match you with top concrete pros. Most reply within 1-2 business hours.",
+        duration: 5000,
+      });
+      
+      // Track successful form submission with GA4
+      if (window.gtag) {
+        window.gtag('event', 'generate_lead', {
+          form_name: 'concrete_quote_request',
+          state: stateDisplayName,
+          lead_id: data?.lead_id || 'unknown',
+          matched_contractors: data?.matched_contractors || 0
+        });
+      }
+      
+      return data;
+    } catch (error) {
+      console.error('Form submission error:', error);
+      
+      // Show error message
+      toast({
+        title: "Submission Error",
+        description: "There was a problem submitting your request. Please try again.",
+        variant: "destructive",
+        duration: 5000,
+      });
+      
+      // Track form submission failure with GA4
+      if (window.gtag) {
+        window.gtag('event', 'form_error', {
+          form_name: 'concrete_quote_request',
+          error_message: error instanceof Error ? error.message : 'Unknown error',
+          state: stateDisplayName
+        });
+      }
+      
+      return null;
+    }
+  };
   
   return (
     <>
@@ -31,12 +139,7 @@ export default function StateDrivewayEstimator() {
         
         <div id="quote-form" className="max-w-2xl mx-auto mt-16 pt-8">
           <h2 className="text-2xl font-bold mb-4 text-center">Get Free Quotes from {stateDisplayName} Concrete Contractors</h2>
-          {/* Here you would add your actual quote form component */}
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <p className="text-center text-gray-600 mb-4">
-              Fill out the form below to receive free, no-obligation quotes from top-rated concrete contractors in your area.
-            </p>
-          </div>
+          <SimpleQuoteForm onSubmit={handleFormSubmit} utmParams={utmParams} stateLocation={stateDisplayName} />
         </div>
       </main>
     </>

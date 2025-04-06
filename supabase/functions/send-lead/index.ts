@@ -1,4 +1,3 @@
-
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
 import { createClient } from "npm:@supabase/supabase-js@2.39.7";
@@ -26,6 +25,13 @@ interface LeadData {
   phone: string;
   jobType: string;
   zipCode: string;
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
+  utm_term?: string;
+  utm_content?: string;
+  state?: string;
+  [key: string]: any;
 }
 
 // Function to calculate distance between two points using Haversine formula
@@ -58,6 +64,7 @@ async function getCoordinatesFromZipCode(zipCode: string): Promise<[number, numb
     
     // If not found in our db, could add a fallback to a geocoding API here
     // For now, return null if not found
+    console.log(`Zip code ${zipCode} not found in location database`);
     return null;
   } catch (error) {
     console.error("Error getting coordinates from zip code:", error);
@@ -77,13 +84,21 @@ const handler = async (req: Request): Promise<Response> => {
     const leadData: LeadData = await req.json();
     console.log("Received lead data:", leadData);
 
+    // Extract contact information (either email or phone)
+    const contactInfo = leadData.email || leadData.phone || leadData.contact;
+    const phoneInfo = leadData.phone || (leadData.contact?.includes('@') ? null : leadData.contact);
+    const emailInfo = leadData.email || (leadData.contact?.includes('@') ? leadData.contact : null);
+
     // Basic validation
-    if (!leadData.name || !leadData.email || !leadData.phone || !leadData.jobType || !leadData.zipCode) {
-      throw new Error("Missing required fields");
+    if (!leadData.name || !contactInfo || !leadData.zipCode) {
+      throw new Error("Missing required fields: name, contact information, or zip code");
     }
 
+    // Determine job type, with fallbacks
+    const jobType = leadData.jobType || 'driveway';
+    
     // Format job type for readability (convert from slug to title case)
-    const formattedJobType = leadData.jobType
+    const formattedJobType = jobType
       .split('-')
       .map(word => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
@@ -116,7 +131,7 @@ const handler = async (req: Request): Promise<Response> => {
         // Find campaigns that match both location (within radius) and job type
         const matchingCampaigns = activeCampaigns.filter(campaign => {
           // Check if campaign's job types include the lead's job type
-          const jobTypeMatch = campaign.job_types.includes(leadData.jobType);
+          const jobTypeMatch = campaign.job_types.includes(jobType);
           if (!jobTypeMatch) return false;
           
           // Calculate distance between lead and campaign location
@@ -152,7 +167,7 @@ const handler = async (req: Request): Promise<Response> => {
       const { data: matchingContractors, error: matchError } = await supabase
         .from('contractor_signups')
         .select('*')
-        .containsAny('job_types', [leadData.jobType])
+        .containsAny('job_types', [jobType])
         .limit(3);
         
       if (matchError) {
@@ -162,21 +177,34 @@ const handler = async (req: Request): Promise<Response> => {
       matchedContractorIds = matchingContractors?.map(c => c.id) || [];
     }
     
+    // Extract UTM parameters and other tracking data
+    const utmData: Record<string, string> = {};
+    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(param => {
+      if (leadData[param]) utmData[param] = leadData[param];
+    });
+    
     // Store lead in Supabase
     const { data: leadRecord, error: insertError } = await supabase
       .from('leads')
       .insert({
         lead_id: leadId,
         name: leadData.name,
-        email: leadData.email,
-        phone: leadData.phone,
-        job_type: leadData.jobType,
+        email: emailInfo,
+        phone: phoneInfo,
+        job_type: jobType,
         formatted_job_type: formattedJobType,
         zip_code: leadData.zipCode,
         status: matchedContractorIds.length > 0 ? 'matched' : 'new',
         matched_contractor_ids: matchedContractorIds,
         campaign_id: matchedCampaignId,
         created_at: new Date().toISOString(),
+        state: leadData.state || null,
+        utm_source: utmData.utm_source || null,
+        utm_medium: utmData.utm_medium || null,
+        utm_campaign: utmData.utm_campaign || null,
+        utm_term: utmData.utm_term || null,
+        utm_content: utmData.utm_content || null,
+        details: leadData.details || null
       })
       .select();
     
@@ -194,24 +222,32 @@ const handler = async (req: Request): Promise<Response> => {
         <h1>New Concrete Lead</h1>
         <p><strong>Lead ID:</strong> ${leadId}</p>
         <p><strong>Name:</strong> ${leadData.name}</p>
-        <p><strong>Email:</strong> ${leadData.email}</p>
-        <p><strong>Phone:</strong> ${leadData.phone}</p>
+        <p><strong>Email:</strong> ${emailInfo || 'Not provided'}</p>
+        <p><strong>Phone:</strong> ${phoneInfo || 'Not provided'}</p>
         <p><strong>Job Type:</strong> ${formattedJobType}</p>
         <p><strong>Zip Code:</strong> ${leadData.zipCode}</p>
+        <p><strong>State:</strong> ${leadData.state || 'Not specified'}</p>
         <p><strong>Submitted:</strong> ${new Date().toLocaleString()}</p>
         <p><strong>Matched Contractors:</strong> ${matchedContractorIds.length || 0}</p>
         ${matchedCampaignId ? `<p><strong>Matched Campaign:</strong> ${matchedCampaignId}</p>` : ''}
+        ${utmData.utm_source ? `<p><strong>Source:</strong> ${utmData.utm_source}</p>` : ''}
+        ${utmData.utm_campaign ? `<p><strong>Campaign:</strong> ${utmData.utm_campaign}</p>` : ''}
+        ${leadData.details ? `<p><strong>Details:</strong> ${leadData.details}</p>` : ''}
       `,
       text: `
 Lead ID: ${leadId}
 Name: ${leadData.name}
-Email: ${leadData.email}
-Phone: ${leadData.phone}
+Email: ${emailInfo || 'Not provided'}
+Phone: ${phoneInfo || 'Not provided'}
 Job Type: ${formattedJobType}
 Zip Code: ${leadData.zipCode}
+State: ${leadData.state || 'Not specified'}
 Submitted: ${new Date().toLocaleString()}
 Matched Contractors: ${matchedContractorIds.length || 0}
 ${matchedCampaignId ? `Matched Campaign: ${matchedCampaignId}` : ''}
+${utmData.utm_source ? `Source: ${utmData.utm_source}` : ''}
+${utmData.utm_campaign ? `Campaign: ${utmData.utm_campaign}` : ''}
+${leadData.details ? `Details: ${leadData.details}` : ''}
       `,
     });
 

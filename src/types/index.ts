@@ -1,4 +1,3 @@
-
 // Define types used throughout the application
 export interface FAQ {
   question: string;
@@ -41,3 +40,18 @@ export interface ServiceContent {
 export interface ServiceContentMap {
   [key: string]: ServiceContent;
 }
+
+// Define global gtag function for Google Analytics 4
+declare global {
+  interface Window {
+    gtag: (
+      command: string,
+      action: string,
+      params?: {
+        [key: string]: any;
+      }
+    ) => void;
+  }
+}
+
+export {};
