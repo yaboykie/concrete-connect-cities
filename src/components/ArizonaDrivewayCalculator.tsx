@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -24,12 +25,14 @@ interface ArizonaDrivewayCalculatorProps {
   afterContent?: React.ReactNode;
   estimateDisclaimer?: string;
   tooltipDescriptions?: Record<string, string>;
+  onInteraction?: () => void;
 }
 
 export default function ArizonaDrivewayCalculator({
   afterContent,
   estimateDisclaimer,
-  tooltipDescriptions
+  tooltipDescriptions,
+  onInteraction
 }: ArizonaDrivewayCalculatorProps) {
   const [sizePreset, setSizePreset] = useState('Medium');
   const [custom, setCustom] = useState({ width: 0, length: 0 });
@@ -44,12 +47,34 @@ export default function ArizonaDrivewayCalculator({
   const minCost = (area * min).toFixed(0);
   const maxCost = (area * max).toFixed(0);
   
+  const handleInteraction = () => {
+    if (onInteraction) {
+      onInteraction();
+    }
+  };
+  
+  const handleSizeChange = (preset: string) => {
+    setSizePreset(preset);
+    handleInteraction();
+  };
+  
+  const handleFinishChange = (value: string) => {
+    setFinish(value);
+    handleInteraction();
+  };
+  
+  const handleCustomSizeChange = (dimension: 'width' | 'length', value: number) => {
+    setCustom(prev => ({ ...prev, [dimension]: value }));
+    handleInteraction();
+  };
+  
   const handleScrollToQuoteForm = (e: React.MouseEvent) => {
     e.preventDefault();
     const quoteForm = document.querySelector('#quote-form');
     if (quoteForm) {
       quoteForm.scrollIntoView({ behavior: 'smooth' });
     }
+    handleInteraction();
   };
 
   return (
@@ -61,7 +86,7 @@ export default function ArizonaDrivewayCalculator({
             <Tooltip key={label}>
               <TooltipTrigger asChild>
                 <Button
-                  onClick={() => setSizePreset(label)}
+                  onClick={() => handleSizeChange(label)}
                   variant={sizePreset === label ? "default" : "outline"}
                   className="w-full"
                 >
@@ -74,7 +99,7 @@ export default function ArizonaDrivewayCalculator({
             </Tooltip>
           ))}
           <Button
-            onClick={() => setSizePreset('Custom')}
+            onClick={() => handleSizeChange('Custom')}
             variant={sizePreset === 'Custom' ? "default" : "outline"}
             className="w-full"
           >
@@ -91,7 +116,7 @@ export default function ArizonaDrivewayCalculator({
               type="number" 
               min="1"
               value={custom.width || ''}
-              onChange={(e) => setCustom(prev => ({ ...prev, width: parseInt(e.target.value) || 0 }))} 
+              onChange={(e) => handleCustomSizeChange('width', parseInt(e.target.value) || 0)} 
             />
           </div>
           <div className="space-y-2">
@@ -100,7 +125,7 @@ export default function ArizonaDrivewayCalculator({
               type="number" 
               min="1"
               value={custom.length || ''}
-              onChange={(e) => setCustom(prev => ({ ...prev, length: parseInt(e.target.value) || 0 }))} 
+              onChange={(e) => handleCustomSizeChange('length', parseInt(e.target.value) || 0)} 
             />
           </div>
         </div>
@@ -109,7 +134,7 @@ export default function ArizonaDrivewayCalculator({
       <div className="my-6">
         <label className="text-sm font-medium block mb-2">Concrete Finish:</label>
         <TooltipProvider>
-          <Select value={finish} onValueChange={(value) => setFinish(value)}>
+          <Select value={finish} onValueChange={handleFinishChange}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select finish" />
             </SelectTrigger>
@@ -136,7 +161,7 @@ export default function ArizonaDrivewayCalculator({
           <CardContent className="pt-6">
             <p className="mb-2">📐 <strong>Estimated Area:</strong> {area} sq ft</p>
             <p className="mb-2 text-lg font-bold">💲 <strong>Estimated Price Range:</strong> ${minCost} – ${maxCost}</p>
-            <p className="text-sm text-gray-600">📍 Based on average Arizona prices (updated 2024).</p>
+            <p className="text-sm text-gray-600">📍 Based on average Arizona prices (updated 2025).</p>
             {estimateDisclaimer && (
               <p className="text-sm text-gray-600 mt-2">{estimateDisclaimer}</p>
             )}
