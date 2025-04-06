@@ -2,17 +2,35 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { ScatterChart, Grid3x3, Square, Palette, Grip, Waves } from 'lucide-react';
 
 const finishRates = {
-  "Standard Concrete": { min: 5.5, max: 7.5 },
-  "Aggregate": { min: 8, max: 10 },
   "Exposed Aggregate": { min: 10, max: 13 },
-  "Decorative": { min: 11, max: 14 },
   "Stamped Concrete": { min: 12, max: 16 },
-  "Colored Concrete": { min: 9, max: 12 }
+  "Plain Grey": { min: 5.5, max: 7.5 },
+  "Coloured Concrete": { min: 9, max: 12 },
+  "Pebble Finish": { min: 8, max: 10 },
+  "Brushed Finish": { min: 6, max: 8 }
+};
+
+const finishOptions = [
+  { id: 'exposed', label: 'Exposed Aggregate', icon: ScatterChart },
+  { id: 'stamped', label: 'Stamped Concrete', icon: Grid3x3 },
+  { id: 'plain', label: 'Plain Grey', icon: Square },
+  { id: 'coloured', label: 'Coloured Concrete', icon: Palette },
+  { id: 'pebble', label: 'Pebble Finish', icon: Grip },
+  { id: 'brushed', label: 'Brushed Finish', icon: Waves }
+];
+
+const finishIdToLabel: Record<string, string> = {
+  'exposed': 'Exposed Aggregate',
+  'stamped': 'Stamped Concrete',
+  'plain': 'Plain Grey',
+  'coloured': 'Coloured Concrete',
+  'pebble': 'Pebble Finish',
+  'brushed': 'Brushed Finish'
 };
 
 const presets = {
@@ -36,14 +54,15 @@ export default function ArizonaDrivewayCalculator({
 }: ArizonaDrivewayCalculatorProps) {
   const [sizePreset, setSizePreset] = useState('Medium');
   const [custom, setCustom] = useState({ width: 0, length: 0 });
-  const [finish, setFinish] = useState('Standard Concrete');
+  const [finishId, setFinishId] = useState('plain');
 
   const isCustom = sizePreset === 'Custom';
   const width = isCustom ? parseFloat(custom.width.toString() || '0') : presets[sizePreset as keyof typeof presets].width;
   const length = isCustom ? parseFloat(custom.length.toString() || '0') : presets[sizePreset as keyof typeof presets].length;
   const area = width * length;
 
-  const { min, max } = finishRates[finish as keyof typeof finishRates];
+  const finishLabel = finishIdToLabel[finishId];
+  const { min, max } = finishRates[finishLabel as keyof typeof finishRates];
   const minCost = (area * min).toFixed(0);
   const maxCost = (area * max).toFixed(0);
   
@@ -58,8 +77,8 @@ export default function ArizonaDrivewayCalculator({
     handleInteraction();
   };
   
-  const handleFinishChange = (value: string) => {
-    setFinish(value);
+  const handleFinishChange = (id: string) => {
+    setFinishId(id);
     handleInteraction();
   };
   
@@ -139,27 +158,27 @@ export default function ArizonaDrivewayCalculator({
 
       <div className="my-6">
         <label className="text-sm font-medium block mb-2">Concrete Finish:</label>
-        <TooltipProvider>
-          <Select value={finish} onValueChange={handleFinishChange}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select finish" />
-            </SelectTrigger>
-            <SelectContent>
-              {Object.keys(finishRates).map(f => (
-                <Tooltip key={f}>
-                  <TooltipTrigger asChild>
-                    <SelectItem value={f}>{f}</SelectItem>
-                  </TooltipTrigger>
-                  {tooltipDescriptions && tooltipDescriptions[f] && (
-                    <TooltipContent>
-                      <p>{tooltipDescriptions[f]}</p>
-                    </TooltipContent>
-                  )}
-                </Tooltip>
-              ))}
-            </SelectContent>
-          </Select>
-        </TooltipProvider>
+        <div className="grid grid-cols-2 gap-3">
+          {finishOptions.map((option) => {
+            const Icon = option.icon;
+            return (
+              <div
+                key={option.id}
+                className={`border rounded-lg p-3 cursor-pointer transition-all ${
+                  finishId === option.id 
+                    ? 'bg-brand-blue/10 border-brand-blue shadow-sm' 
+                    : 'hover:bg-gray-50 border-gray-200'
+                }`}
+                onClick={() => handleFinishChange(option.id)}
+              >
+                <div className="flex flex-col items-center text-center">
+                  <Icon className={`h-8 w-8 mb-2 ${finishId === option.id ? 'text-brand-blue' : 'text-gray-500'}`} />
+                  <span className="text-sm font-medium">{option.label}</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       {area > 0 && (
@@ -170,6 +189,9 @@ export default function ArizonaDrivewayCalculator({
             <p className="text-sm text-gray-600">📍 Based on average Arizona prices (updated 2025).</p>
             <p className="text-sm text-gray-600 mt-1">
               💬 Final pricing depends on site conditions like concrete depth, access, and prep work. This is a ballpark estimate.
+            </p>
+            <p className="text-sm text-gray-500 italic mt-2">
+              "According to Forbes, upgrading your driveway can instantly improve how your home looks from the street — and may even increase its resale value."
             </p>
             {estimateDisclaimer && (
               <p className="text-sm text-gray-600 mt-2">{estimateDisclaimer}</p>
