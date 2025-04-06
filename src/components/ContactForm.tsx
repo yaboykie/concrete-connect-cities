@@ -21,7 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Loader2, AlertTriangle } from 'lucide-react';
+import { Loader2, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 // Define form schema with validation
@@ -43,6 +43,8 @@ interface ContactFormProps {
 const ContactForm = ({ onSuccess, closeModal }: ContactFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [connectionError, setConnectionError] = useState<string | null>(null);
+  const [leadId, setLeadId] = useState<string | null>(null);
+  const [matchCount, setMatchCount] = useState<number | null>(null);
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -68,6 +70,12 @@ const ContactForm = ({ onSuccess, closeModal }: ContactFormProps) => {
 
       if (error) {
         throw new Error(error.message);
+      }
+
+      // Store lead ID and match count if available
+      if (responseData && responseData.lead_id) {
+        setLeadId(responseData.lead_id);
+        setMatchCount(responseData.matched_contractors || 0);
       }
 
       toast({
@@ -114,6 +122,20 @@ const ContactForm = ({ onSuccess, closeModal }: ContactFormProps) => {
           </span>
         </div>
       )}
+      
+      {leadId && (
+        <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-md text-green-700 flex items-center">
+          <CheckCircle2 className="mr-2 h-5 w-5 flex-shrink-0" />
+          <div>
+            <p className="font-medium">Request submitted successfully!</p>
+            <p className="text-sm">Reference ID: {leadId}</p>
+            {matchCount !== null && matchCount > 0 && (
+              <p className="text-sm">Found {matchCount} contractor{matchCount !== 1 ? 's' : ''} in your area.</p>
+            )}
+          </div>
+        </div>
+      )}
+      
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
