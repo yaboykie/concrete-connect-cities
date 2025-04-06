@@ -65,27 +65,27 @@ const ArizonaCostEstimator = () => {
   return (
     <>
       <SEO 
-        title="Arizona Concrete Driveway Cost Estimator" 
+        title="Arizona Concrete Driveway Cost Estimator 2025" 
         description="Get instant concrete driveway cost estimates for Arizona. Calculate your price in 10 seconds and connect with top-rated local concreters."
         canonicalUrl="/arizona-concrete-cost-estimator"
       />
       
       <Header />
-      <MobileCta scrollTo="#quoteform" buttonText="📬 Get Free Driveway Quotes" />
+      <MobileCta scrollTo="#quoteform" buttonText="📍 Get My Free Quotes" />
       
       {/* Hero Section */}
       <section className="bg-concrete-light py-14 md:py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-3xl md:text-5xl font-bold mb-6">Estimate Your Concrete Driveway Cost in 10 Seconds</h1>
-            <p className="text-lg md:text-xl mb-6">Get an instant ballpark price based on your driveway size and concrete finish. All estimates use 2025 Arizona pricing averages.</p>
+            <h1 className="text-3xl md:text-5xl font-bold mb-6">See What a New Concrete Driveway Costs in Arizona</h1>
+            <p className="text-lg md:text-xl mb-6">Get a ballpark estimate based on your driveway size and finish. No email required.</p>
             
             <div className="bg-white/80 rounded-lg p-3 mb-6 text-sm md:text-base font-medium">
-              ✅ 4.8★ Rated Contractors &nbsp;|&nbsp; 📍 Arizona-Based Pricing &nbsp;|&nbsp; ⏱️ Quotes in 1–2 Hours
+              ✅ Local Quotes &nbsp;•&nbsp; 🏆 4.5★+ Google Rated &nbsp;•&nbsp; 📍 Arizona-Based Pricing
             </div>
             
-            <Button onClick={scrollToCalculator} className="cta-button">Get Your Driveway Estimate Costs in 5 Seconds</Button>
-            <p className="text-sm mt-3 text-gray-600">No obligation. Just fast, free quotes from local pros.</p>
+            <Button onClick={scrollToCalculator} className="cta-button">Start My Estimate</Button>
+            <p className="text-sm mt-3 text-gray-600">No sign-up. No obligation. Just a helpful pricing tool.</p>
           </div>
         </div>
       </section>
@@ -94,9 +94,9 @@ const ArizonaCostEstimator = () => {
       <section className="py-12 md:py-20" id="calculator" ref={calculatorRef}>
         <div className="container mx-auto px-4">
           <div className="text-center mb-8">
-            <h2 className="text-2xl md:text-4xl font-bold mb-4">Select Your Driveway Size and Finish</h2>
-            <p className="text-lg max-w-2xl mx-auto">We'll give you a ballpark estimate using average Arizona pricing. Select your driveway size or enter custom dimensions.</p>
-            <p className="text-sm text-gray-600 mt-2">Small = 1 Car (~10×18 ft), Medium = 2 Cars (~16×20 ft), Large = 3+ Cars (~20×30 ft)</p>
+            <h2 className="text-2xl md:text-4xl font-bold mb-4">Get an Instant Driveway Estimate</h2>
+            <p className="text-lg max-w-2xl mx-auto">Choose your driveway size and finish to see estimated Arizona pricing.</p>
+            <p className="text-sm text-gray-600 mt-2">Size guide: Small = 1 Car (~10×18 ft), Medium = 2 Cars (~16×20 ft), Large = 3+ Cars (~20×30 ft)</p>
           </div>
           
           <ArizonaDrivewayCalculator />
@@ -106,9 +106,9 @@ const ArizonaCostEstimator = () => {
       {/* Mid-Page CTA */}
       <section className="py-8 md:py-12 bg-brand-light text-center">
         <div className="container mx-auto px-4">
-          <h2 className="text-2xl md:text-3xl font-bold mb-3">Like the Price Range?</h2>
-          <p className="text-lg mb-6 max-w-2xl mx-auto">If it's in your ballpark, we'll connect you with 2–3 top-rated concreters to get real quotes — fast.</p>
-          <Button onClick={scrollToQuoteForm} className="cta-button">Get Custom Driveway Quotes</Button>
+          <h2 className="text-2xl md:text-3xl font-bold mb-3">Estimate in the Ballpark?</h2>
+          <p className="text-lg mb-6 max-w-2xl mx-auto">We can match you with up to 3 local concreters to get real quotes based on your project.</p>
+          <Button onClick={scrollToQuoteForm} className="cta-button">Get Free Quotes From Local Pros</Button>
         </div>
       </section>
       
@@ -118,16 +118,15 @@ const ArizonaCostEstimator = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Text Column */}
             <div>
-              <h2 className="text-2xl md:text-3xl font-bold mb-6">What Makes Our Service Different?</h2>
+              <h2 className="text-2xl md:text-3xl font-bold mb-6">Why Use ConcreterQuotes?</h2>
               <div className="prose lg:prose-lg">
-                <p className="mb-4">We connect you with 2–3 local concreters (<strong>4.8★+ Google reviews</strong>) who are ready to quote your driveway today.</p>
+                <p className="mb-4">We connect you with concreters rated 4.5★+ on Google, ready to quote your project today.</p>
                 
-                <p className="mb-2">💼 <strong>Licensed & insured</strong> — only pre-screened professionals on our platform.</p>
-                <p className="mb-2">🔍 <strong>You stay in control</strong> — compare multiple quotes and choose your favourite.</p>
-                <p className="mb-2">🔁 <strong>No chasing, no awkward calls</strong> — our system does the heavy lifting.</p>
-                <p className="mb-2">🏡 <strong>Boost curb appeal</strong> — a new driveway transforms your home's appearance.</p>
-                <p className="mb-2">💰 <strong>Add real value</strong> — quality concrete work can increase your home's resale value by $5,000–$10,000.</p>
-                <p className="mb-4">👀 <strong>Make a strong first impression</strong> — your driveway is the first thing buyers and guests see.</p>
+                <p className="mb-2">💼 <strong>Verified and insured</strong> — only pre-screened concreters accepted.</p>
+                <p className="mb-2">📍 <strong>Arizona based</strong> — get local pricing and fast responses.</p>
+                <p className="mb-2">🔍 <strong>You stay in control</strong> — compare quotes, no pressure.</p>
+                <p className="mb-2">💰 <strong>Boost curb appeal and value</strong> — a quality driveway can add $5,000–$10,000 in resale value.</p>
+                <p className="mb-2">🛠️ <strong>No chasing contractors</strong> — we streamline the process for you.</p>
                 
                 <p className="font-semibold mt-6 mb-3">What Homeowners Are Saying:</p>
                 <p className="mb-2">🗣️ "Got 3 quotes in one afternoon. Saved me so much time." – Josh from Tempe</p>
@@ -138,8 +137,8 @@ const ArizonaCostEstimator = () => {
             
             {/* Form Column */}
             <div>
-              <h2 className="text-2xl md:text-3xl font-bold mb-4">Get Your Free Concrete Driveway Quotes Now</h2>
-              <p className="text-lg mb-6">⏱️ Most homeowners get their first quote within 1–2 business hours.</p>
+              <h2 className="text-2xl md:text-3xl font-bold mb-4">Get Matched With Local Concreters</h2>
+              <p className="text-lg mb-6">📬 Most homeowners receive their first quote within 1–2 business hours.</p>
               
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 bg-white p-6 md:p-8 rounded-lg shadow-lg">
@@ -252,15 +251,12 @@ const ArizonaCostEstimator = () => {
                   />
                   
                   <Button type="submit" className="cta-button w-full py-6 text-lg">
-                    Get Your Driveway Quotes Fast – No Obligation
+                    📬 Send Me My 3 Free Quotes
                   </Button>
                   
                   <div className="text-center">
-                    <p className="text-sm text-gray-600 mb-2">
-                      We only connect you with concreters rated 4.7★ or higher. No spam. No commitment required.
-                    </p>
-                    <p className="text-sm font-medium text-brand-blue">
-                      ✅ 100+ Arizona homeowners matched this month
+                    <p className="text-sm text-gray-600">
+                      We only connect you with concreters rated 4.5★ or higher. No spam. No pressure. You choose who to speak with.
                     </p>
                   </div>
                 </form>
