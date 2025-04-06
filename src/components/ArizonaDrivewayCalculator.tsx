@@ -157,7 +157,7 @@ export default function ArizonaDrivewayCalculator({
       </div>
 
       {area > 0 && (
-        <Card className="mt-6 bg-brand-yellow/20 border border-brand-yellow">
+        <Card className="mt-6 bg-brand-yellow/20 border border-brand-yellow mb-4">
           <CardContent className="pt-6">
             <p className="mb-2">📐 <strong>Estimated Area:</strong> {area} sq ft</p>
             <p className="mb-2 text-lg font-bold">💲 <strong>Estimated Price Range:</strong> ${minCost} – ${maxCost}</p>
@@ -169,13 +169,13 @@ export default function ArizonaDrivewayCalculator({
         </Card>
       )}
 
-      <div className="mt-8">
+      <div className="mt-4">
         <a 
           href="#quote-form" 
           onClick={handleScrollToQuoteForm}
-          className="cta-button block w-full text-center text-lg py-4 rounded-md bg-brand-blue text-white font-medium hover:bg-blue-600 transition-all"
+          className="cta-button block w-full text-center text-lg py-4 rounded-md bg-black text-white font-semibold hover:bg-gray-800 transition-all"
         >
-          📍 Get My Free Quotes
+          👍 Like the Price? Get 2–3 Free Quotes Now
         </a>
       </div>
 

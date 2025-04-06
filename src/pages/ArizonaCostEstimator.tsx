@@ -119,9 +119,9 @@ const ArizonaCostEstimator = () => {
         <div className="fixed bottom-4 inset-x-0 px-4 z-50">
           <a
             href="#quote-form"
-            className="cta-button block w-full text-center text-lg py-4 rounded-md bg-brand-blue text-white font-medium hover:bg-blue-600 transition-all"
+            className="cta-button block w-full text-center text-lg py-4 rounded-md bg-black text-white font-semibold hover:bg-gray-800 transition-all"
           >
-            📍 Get Free Driveway Quotes
+            📍 Like the Price? Get 2–3 Free Quotes Now
           </a>
         </div>
       )}
@@ -129,8 +129,12 @@ const ArizonaCostEstimator = () => {
       <section className="py-16 md:py-24 bg-white" id="quote-form" ref={quoteFormRef}>
         <div className="container mx-auto px-4 max-w-4xl">
           <div className="text-center mb-10">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Get 2–3 Free Driveway Quotes Based on Your Estimate</h2>
-            <p className="text-lg">Most homeowners hear back within 1–2 business hours. All concreters are Google-rated 4.7★ and above.</p>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Only 4.7★+ Google Rated Concreters Make It Into Our Network
+            </h2>
+            <p className="text-lg text-gray-700">
+              These aren't just any contractors — these are concreters trusted by Arizona homeowners to deliver great results. Expect clear advice, expert recommendations, and quotes from professionals known for turning driveway ideas into reality. We only connect you with the best-rated concreters in your local area.
+            </p>
           </div>
 
           <Form {...form}>
@@ -244,7 +248,7 @@ const ArizonaCostEstimator = () => {
 
               <Button type="submit" className="cta-button w-full py-5 text-lg">📍 Get My Free Quotes</Button>
               <p className="text-sm text-center text-gray-600 mt-2">
-                We only work with concreters rated 4.7★ or higher. No spam. No obligation.
+                Every concreter we work with is rated 4.7★+ on Google. No spam. No pressure. Just top-rated advice and quotes.
               </p>
             </form>
           </Form>
