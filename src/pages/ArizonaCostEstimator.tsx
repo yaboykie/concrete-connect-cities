@@ -99,8 +99,12 @@ const ArizonaCostEstimator = () => {
       {/* Hero section */}
       <section className="bg-concrete-light py-14 md:py-20">
         <div className="container mx-auto px-4 text-center max-w-3xl">
-          <h1 className="text-3xl md:text-5xl font-bold mb-6">Estimate Your Concrete Driveway Cost in 10 Seconds – Arizona Pricing</h1>
-          <p className="text-lg md:text-xl mb-6">See how much a new driveway might cost based on your size and finish — no sign-up needed.</p>
+          <h1 className="text-3xl md:text-5xl font-bold mb-6">
+            Estimate Your Concrete Driveway Cost in Arizona — Instantly
+          </h1>
+          <p className="text-lg md:text-xl mb-6">
+            Just pick your driveway size and finish — and see what Arizona homeowners are paying in 2025. No signup needed.
+          </p>
           <div className="bg-white/80 rounded-lg p-3 mb-6 text-sm font-medium">
             ✅ Built for Arizona • 📍 2025 Local Pricing • 🏆 Only Top-Rated Concreters
           </div>
@@ -121,7 +125,7 @@ const ArizonaCostEstimator = () => {
         <div className="fixed bottom-4 inset-x-0 px-4 z-50">
           <a
             href="#quote-form"
-            className="cta-button block w-full text-center text-lg py-4 rounded-md bg-black text-white font-semibold hover:bg-gray-800 transition-all"
+            className="cta-button block w-full text-center text-lg py-4 rounded-md bg-brand-blue text-white font-semibold hover:bg-blue-600 transition-all"
           >
             👍 Estimate Look Good? Get 2–3 Free Quotes Now
           </a>
@@ -136,7 +140,7 @@ const ArizonaCostEstimator = () => {
               Only 4.7★+ Google Rated Concreters Make It Into Our Network
             </h2>
             <p className="text-lg text-gray-700">
-              These aren't just any contractors — these are concreters trusted by Arizona homeowners to deliver great results. Expect clear advice, expert recommendations, and quotes from professionals known for turning driveway ideas into reality. We only connect you with the best-rated concreters in your local area.
+              These aren't just any contractors — these are concreters trusted by Arizona homeowners to deliver great results. Expect clear advice, expert recommendations, and quotes from professionals known for turning driveway ideas into reality.
             </p>
           </div>
 
@@ -251,10 +255,23 @@ const ArizonaCostEstimator = () => {
 
               <Button type="submit" className="cta-button w-full py-5 text-lg">📍 Get My Free Quotes</Button>
               <p className="text-sm text-center text-gray-600 mt-2">
-                Every concreter we work with is rated 4.7★+ on Google. No spam. No pressure. Just top-rated advice and quotes.
+                Every concreter we work with is rated 4.7★+ on Google. No spam. No pressure.
               </p>
             </form>
           </Form>
+        </div>
+      </section>
+
+      {/* Final Trust Row */}
+      <section className="bg-gray-50 py-10 mt-10">
+        <div className="container mx-auto px-4 max-w-2xl text-center">
+          <h3 className="text-xl font-semibold mb-4">Here's What You Can Expect</h3>
+          <ul className="text-gray-700 text-base space-y-3">
+            <li>📅 Most homeowners get their first quote within 1–2 business hours — sometimes same day</li>
+            <li>✅ Every quote comes from a top-rated concreter ready to take on your project</li>
+            <li>📞 No ringing around, no chasing voicemails — just fast, reliable responses</li>
+            <li>🎯 We only show your project to concreters who are available and ready now</li>
+          </ul>
         </div>
       </section>
 

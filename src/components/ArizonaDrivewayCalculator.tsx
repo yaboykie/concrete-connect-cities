@@ -186,6 +186,9 @@ export default function ArizonaDrivewayCalculator({
         >
           👍 Estimate Look Good? Get 2–3 Free Quotes Now
         </a>
+        <p className="text-center text-sm mt-3 text-gray-700">
+          These top-rated concreters are ready to go — most have slots available this month and are taking new projects now.
+        </p>
       </div>
 
       {afterContent && (
