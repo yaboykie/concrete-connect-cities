@@ -6,13 +6,12 @@ import Footer from '@/components/Footer';
 import ArizonaDrivewayCalculator from '@/components/ArizonaDrivewayCalculator';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/components/ui/use-toast';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name is required" }),
@@ -61,7 +60,7 @@ const ArizonaCostEstimator = () => {
     <>
       <SEO 
         title="Arizona Concrete Driveway Cost Estimator" 
-        description="Get instant concrete driveway cost estimates for Arizona. Calculate your price in 15 seconds and connect with top-rated local concreters."
+        description="Get instant concrete driveway cost estimates for Arizona. Calculate your price in 10 seconds and connect with top-rated local concreters."
         canonicalUrl="/arizona-concrete-cost-estimator"
       />
       
@@ -71,10 +70,9 @@ const ArizonaCostEstimator = () => {
       <section className="bg-concrete-light py-14 md:py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-3xl md:text-5xl font-bold mb-6">🧱 Estimate Your Concrete Driveway Cost in 15 Seconds</h1>
-            <p className="text-lg md:text-xl mb-4">💲 Estimate looking good? Instantly connect with 2–3 top-rated concreters in Arizona (4.7★+ on Google) for a custom quote.</p>
-            <p className="text-lg md:text-xl mb-6">📍 Pricing is based on real Arizona rates — updated for 2024.</p>
-            <Button onClick={scrollToCalculator} className="cta-button">Start My Estimate</Button>
+            <h1 className="text-3xl md:text-5xl font-bold mb-6">Estimate Your Concrete Driveway Cost in 10 Seconds</h1>
+            <p className="text-lg md:text-xl mb-6">Get a quick estimate based on your driveway size and concrete finish. All estimates use 2024 Arizona pricing averages.</p>
+            <Button onClick={scrollToCalculator} className="cta-button">Get My Estimate</Button>
           </div>
         </div>
       </section>
@@ -83,70 +81,77 @@ const ArizonaCostEstimator = () => {
       <section className="py-12 md:py-20" id="calculator" ref={calculatorRef}>
         <div className="container mx-auto px-4">
           <div className="text-center mb-8">
-            <h2 className="text-2xl md:text-4xl font-bold mb-4">Get Your Instant Arizona Driveway Estimate</h2>
-            <p className="text-lg max-w-2xl mx-auto">Select your driveway size and finish. We'll give you an instant ballpark estimate based on average Arizona prices.</p>
+            <h2 className="text-2xl md:text-4xl font-bold mb-4">Select Your Driveway Size and Finish</h2>
+            <p className="text-lg max-w-2xl mx-auto">We'll give you an instant ballpark estimate based on average Arizona prices.</p>
           </div>
           
           <ArizonaDrivewayCalculator />
         </div>
       </section>
       
-      {/* Quote Form Section */}
+      {/* Columns Section with Form */}
       <section className="py-12 md:py-20 bg-concrete-light">
         <div className="container mx-auto px-4">
-          <div className="max-w-2xl mx-auto">
-            <div className="text-center mb-8">
-              <h2 className="text-2xl md:text-4xl font-bold mb-4">Estimate Looks Good?</h2>
-              <p className="text-lg">We'll connect you with 2–3 trusted local concreters (4.7★+ rated) who can give you a firm quote for your project.</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Text Column */}
+            <div>
+              <h2 className="text-2xl md:text-3xl font-bold mb-6">Estimate Looks Good?</h2>
+              <div className="prose lg:prose-lg">
+                <p className="mb-4">Use our free service to instantly connect with 2–3 top-rated concreter companies (4.8★+ Google reviews) to receive custom quotes in a timeframe that suits you.</p>
+                <p className="mb-2">🕒 <strong>Save time</strong> chasing quotes — we bring trusted concreters to you.</p>
+                <p>🛡️ <strong>No spam, no pressure</strong> — We only have best rated concreters on our platform.</p>
+              </div>
             </div>
             
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 bg-white p-6 md:p-8 rounded-lg shadow-lg">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Your full name" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Form Column */}
+            <div>
+              <h2 className="text-2xl md:text-3xl font-bold mb-6">Get 2–3 Free Quotes Now</h2>
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 bg-white p-6 md:p-8 rounded-lg shadow-lg">
                   <FormField
                     control={form.control}
-                    name="email"
+                    name="name"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Email</FormLabel>
+                        <FormLabel>Name</FormLabel>
                         <FormControl>
-                          <Input placeholder="Your email address" {...field} />
+                          <Input placeholder="Your full name" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                   
-                  <FormField
-                    control={form.control}
-                    name="phone"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Phone</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Your phone number" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Your email address" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="phone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Phone</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Your phone number" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  
                   <FormField
                     control={form.control}
                     name="zipCode"
@@ -175,51 +180,52 @@ const ArizonaCostEstimator = () => {
                           </FormControl>
                           <SelectContent>
                             <SelectItem value="Standard Concrete">Standard Concrete</SelectItem>
-                            <SelectItem value="Aggregate">Aggregate</SelectItem>
                             <SelectItem value="Exposed Aggregate">Exposed Aggregate</SelectItem>
-                            <SelectItem value="Decorative">Decorative</SelectItem>
                             <SelectItem value="Stamped Concrete">Stamped Concrete</SelectItem>
+                            <SelectItem value="Decorative">Decorative</SelectItem>
+                            <SelectItem value="Colored Concrete">Colored Concrete</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                </div>
-                
-                <FormField
-                  control={form.control}
-                  name="timeline"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Project Timeline</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select timeline (Optional)" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="ASAP">ASAP</SelectItem>
-                          <SelectItem value="Within a week">Within a week</SelectItem>
-                          <SelectItem value="1–2 weeks">1–2 weeks</SelectItem>
-                          <SelectItem value="2–4 weeks">2–4 weeks</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <Button type="submit" className="cta-button w-full py-6 text-lg">
-                  Get My Custom Driveway Quotes
-                </Button>
-                
-                <p className="text-sm text-gray-600 text-center mt-3">
-                  We only connect you with concreters rated 4.7★ or higher on Google. No spam. No pressure. Just accurate quotes from local pros.
-                </p>
-              </form>
-            </Form>
+                  
+                  <FormField
+                    control={form.control}
+                    name="timeline"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>When do you want the project done?</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select timeline (Optional)" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="ASAP">ASAP</SelectItem>
+                            <SelectItem value="Within a week">Within a week</SelectItem>
+                            <SelectItem value="1–2 Weeks">1–2 Weeks</SelectItem>
+                            <SelectItem value="2–4 Weeks">2–4 Weeks</SelectItem>
+                            <SelectItem value="1–2 Months">1–2 Months</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <Button type="submit" className="cta-button w-full py-6 text-lg">
+                    Get Your Driveway Quotes Fast – No Obligation
+                  </Button>
+                  
+                  <p className="text-sm text-gray-600 text-center mt-3">
+                    We only connect you with concreters rated 4.7★ or higher. No spam. No commitment required.
+                  </p>
+                </form>
+              </Form>
+            </div>
           </div>
         </div>
       </section>
@@ -227,38 +233,24 @@ const ArizonaCostEstimator = () => {
       {/* Trust Section */}
       <section className="py-12 md:py-16">
         <div className="container mx-auto px-4">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-10">Why Homeowners in Arizona Choose ConcreterQuotes</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-10">What Homeowners Are Saying</h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
             <div className="text-center p-4">
-              <div className="text-4xl mb-3">⭐</div>
-              <p className="font-medium">Only 4.7★+ Rated Concreters</p>
+              <div className="text-4xl mb-3">🗣️</div>
+              <p className="font-medium">"Got 3 quotes in one afternoon. Saved me so much time." – Josh from Tempe</p>
             </div>
             
             <div className="text-center p-4">
               <div className="text-4xl mb-3">📍</div>
-              <p className="font-medium">Based on Local Arizona Pricing</p>
+              <p className="font-medium">"I liked that I could choose who to speak with. Super easy." – Maria from Mesa</p>
             </div>
             
             <div className="text-center p-4">
-              <div className="text-4xl mb-3">⏱️</div>
-              <p className="font-medium">Replies Within 1 Business Hour</p>
-            </div>
-            
-            <div className="text-center p-4">
-              <div className="text-4xl mb-3">🚫</div>
-              <p className="font-medium">No Spam, No Sales Pressure</p>
+              <div className="text-4xl mb-3">⭐</div>
+              <p className="font-medium">"All 3 concreters were highly rated. Felt like a safe choice." – Dan in Scottsdale</p>
             </div>
           </div>
-        </div>
-      </section>
-      
-      {/* Final CTA */}
-      <section className="py-12 md:py-16 bg-concrete-light">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4">Still Comparing Costs?</h2>
-          <p className="text-lg mb-8 max-w-2xl mx-auto">Use our free calculator to estimate your project — then connect with verified local pros for exact pricing.</p>
-          <Button onClick={scrollToCalculator} className="cta-button">Start My Estimate</Button>
         </div>
       </section>
       

@@ -4,19 +4,21 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const finishRates = {
   "Standard Concrete": { min: 5.5, max: 7.5 },
   "Aggregate": { min: 8, max: 10 },
   "Exposed Aggregate": { min: 10, max: 13 },
   "Decorative": { min: 11, max: 14 },
-  "Stamped Concrete": { min: 12, max: 16 }
+  "Stamped Concrete": { min: 12, max: 16 },
+  "Colored Concrete": { min: 9, max: 12 }
 };
 
 const presets = {
-  Small: { width: 10, length: 18 },
-  Medium: { width: 16, length: 20 },
-  Large: { width: 20, length: 30 }
+  Small: { width: 10, length: 18, description: "1 car: 10×18 ft" },
+  Medium: { width: 16, length: 20, description: "2 cars: 16×20 ft" },
+  Large: { width: 20, length: 30, description: "3+ cars: 20×30 ft" }
 };
 
 export default function ArizonaDrivewayCalculator() {
@@ -36,18 +38,33 @@ export default function ArizonaDrivewayCalculator() {
   return (
     <div className="calculator bg-white p-6 rounded-lg shadow-lg max-w-2xl mx-auto">
       <h3 className="text-xl font-semibold mb-4">Select Driveway Size:</h3>
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
-        {['Small', 'Medium', 'Large', 'Custom'].map(label => (
+      <TooltipProvider>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
+          {Object.entries(presets).map(([label, details]) => (
+            <Tooltip key={label}>
+              <TooltipTrigger asChild>
+                <Button
+                  onClick={() => setSizePreset(label)}
+                  variant={sizePreset === label ? "default" : "outline"}
+                  className="w-full"
+                >
+                  {label}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{details.description}</p>
+              </TooltipContent>
+            </Tooltip>
+          ))}
           <Button
-            key={label}
-            onClick={() => setSizePreset(label)}
-            variant={sizePreset === label ? "default" : "outline"}
+            onClick={() => setSizePreset('Custom')}
+            variant={sizePreset === 'Custom' ? "default" : "outline"}
             className="w-full"
           >
-            {label}
+            Custom
           </Button>
-        ))}
-      </div>
+        </div>
+      </TooltipProvider>
 
       {isCustom && (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-4">
