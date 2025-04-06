@@ -8,7 +8,7 @@ interface MobileCtaProps {
 }
 
 const MobileCta: React.FC<MobileCtaProps> = ({ 
-  scrollTo = "#quoteform",
+  scrollTo = "#quote-form",
   buttonText = "Get My Free Quotes" 
 }) => {
   const isMobile = useIsMobile();

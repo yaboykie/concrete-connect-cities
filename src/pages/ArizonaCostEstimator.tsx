@@ -98,7 +98,7 @@ const ArizonaCostEstimator = () => {
       />
       
       <Header />
-      <MobileCta scrollTo="#quoteform" buttonText="📍 Get My Free Quotes" />
+      <MobileCta scrollTo="#quote-form" buttonText="📍 Get My Free Quotes" />
       
       <section className="bg-concrete-light py-14 md:py-20">
         <div className="container mx-auto px-4">
@@ -159,8 +159,8 @@ const ArizonaCostEstimator = () => {
               </div>
             </div>
             
-            <div>
-              <h2 className="text-2xl md:text-3xl font-bold mb-4">Get Matched With Local Concreters</h2>
+            <div id="quote-form">
+              <h2 className="text-2xl md:text-3xl font-bold mb-4">Get 2–3 Free Driveway Quotes</h2>
               <p className="text-lg mb-6">📬 Most homeowners receive their first quote within 1–2 business hours.</p>
               
               <Form {...form}>
