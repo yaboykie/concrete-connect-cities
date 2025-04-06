@@ -75,6 +75,9 @@ const generateSitemap = async () => {
     addUrl(urlMap, '/concretersignup/confirm', '0.6');
     addUrl(urlMap, '/concretersignup/thank-you', '0.6');
     
+    // Add Arizona cost estimator page
+    addUrl(urlMap, '/arizona-concrete-cost-estimator', '0.9');
+    
     // Primary service pages
     const services = [
       'concrete-driveways',
