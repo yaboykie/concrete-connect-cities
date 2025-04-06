@@ -123,6 +123,9 @@ const generateSitemap = async () => {
         categories.forEach(category => {
           addUrl(urlMap, `/${category}/locations/${stateCode}`, '0.7');
         });
+        
+        // Also add state driveway estimator pages
+        addUrl(urlMap, `/${stateCode}/driveway-cost-estimator`, '0.8');
       }
     });
     
@@ -145,54 +148,50 @@ const generateSitemap = async () => {
     // Convert the Map to an array of URLs
     const allPages = [...urlMap.values()];
 
-    // CRITICAL: Build sitemap XML string using Buffer to ensure no BOM or whitespace
-    // Note: XML declaration must be the VERY first character in the file
-    let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
-    sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+    // CRITICAL: Build sitemap XML string
+    // Writing directly to a string to avoid any potential BOM issues
+    let xmlContent = [];
+    xmlContent.push('<?xml version="1.0" encoding="UTF-8"?>');
+    xmlContent.push('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">');
 
     // Add each page to the sitemap
     allPages.forEach(page => {
-      sitemap += '  <url>\n';
-      sitemap += `    <loc>${BASE_URL}${page.url}</loc>\n`;
-      sitemap += `    <lastmod>${page.lastmod}</lastmod>\n`;
-      sitemap += '    <changefreq>monthly</changefreq>\n';
-      sitemap += `    <priority>${page.priority}</priority>\n`;
-      sitemap += '  </url>\n';
+      xmlContent.push('  <url>');
+      xmlContent.push(`    <loc>${BASE_URL}${page.url}</loc>`);
+      xmlContent.push(`    <lastmod>${page.lastmod}</lastmod>`);
+      xmlContent.push('    <changefreq>monthly</changefreq>');
+      xmlContent.push(`    <priority>${page.priority}</priority>`);
+      xmlContent.push('  </url>');
     });
 
-    sitemap += '</urlset>';
+    xmlContent.push('</urlset>');
 
+    // Join with newlines and ensure no BOM
+    const sitemap = xmlContent.join('\n');
+    
     const outputPath = path.join(__dirname, '../public/sitemap.xml');
     console.log('Saving sitemap to:', outputPath);
     
-    // Remove any existing file first
+    // Remove any existing file first to avoid issues with appending
     if (fs.existsSync(outputPath)) {
       fs.unlinkSync(outputPath);
       console.log('Deleted existing sitemap.xml file');
     }
     
-    // Write with explicit Buffer to ensure no BOM or encoding issues
-    fs.writeFileSync(outputPath, Buffer.from(sitemap, 'utf8'), { encoding: 'utf8' });
+    // Write with explicit utf8 encoding with no BOM
+    fs.writeFileSync(outputPath, sitemap, { encoding: 'utf8' });
     console.log('Sitemap file written successfully');
     
-    // Verify the start of the file with multiple methods
-    const checkBuffer = fs.readFileSync(outputPath, { encoding: null }).slice(0, 50);
-    console.log('First bytes of sitemap.xml (hex):', checkBuffer.toString('hex'));
-    console.log('First bytes as UTF-8:', checkBuffer.toString('utf8').substring(0, 40));
-    
+    // Verify the start of the file
+    const fileContent = fs.readFileSync(outputPath, 'utf8').substring(0, 50);
+    console.log('First 50 characters of sitemap.xml:', JSON.stringify(fileContent));
+
     // Strict validation of XML declaration
-    const fileStart = checkBuffer.toString('utf8').substring(0, 5);
-    if (fileStart === '<?xml') {
-      console.log('✅ Sitemap XML validation: XML declaration is at the start of the file');
+    if (fileContent.startsWith('<?xml')) {
+      console.log('✅ XML declaration is at the start of the file');
     } else {
-      console.error('❌ Sitemap XML validation failed: XML declaration is not at the start of the file');
-      console.error(`First 5 characters: "${fileStart}" (should be "<?xml")`);
-      
-      // Extra debugging if needed
-      console.log('Character codes of first 10 bytes:');
-      for (let i = 0; i < 10; i++) {
-        console.log(`Byte ${i}: ${checkBuffer[i]} (${String.fromCharCode(checkBuffer[i])})`);
-      }
+      console.error('❌ XML validation failed: XML declaration is not at the start of the file');
+      console.error(`First characters: "${fileContent.substring(0, 10)}"`);
     }
     
     console.log('Sitemap generated successfully!');
@@ -202,11 +201,10 @@ const generateSitemap = async () => {
     const robotsTxt = `User-agent: *\nAllow: /\n\n# Allow all search engine bots to access the entire site\nUser-agent: Googlebot\nAllow: /\n\nUser-agent: Bingbot\nAllow: /\n\nUser-agent: Twitterbot\nAllow: /\n\nUser-agent: facebookexternalhit\nAllow: /\n\n# Reference to sitemap\nSitemap: ${BASE_URL}/sitemap.xml\n`;
     
     const robotsPath = path.join(__dirname, '../public/robots.txt');
-    fs.writeFileSync(robotsPath, Buffer.from(robotsTxt, 'utf8'), { encoding: 'utf8' });
+    fs.writeFileSync(robotsPath, robotsTxt, { encoding: 'utf8' });
     console.log('robots.txt generated successfully with sitemap reference!');
-    console.log('robots.txt saved to:', robotsPath);
     
-    // Count URLs by type for detailed reporting
+    // Count URLs by type
     const staticPages = allPages.filter(page => !page.url.includes('/locations/') && !page.url.match(/\/[^\/]+-[a-z]{2}$/)).length;
     const statePages = allPages.filter(page => page.url.match(/\/locations\/[a-z]{2}$/)).length;
     const cityPagesNewFormat = allPages.filter(page => page.url.match(/\/locations\/[a-z]{2}\/[^\/]+$/)).length;
