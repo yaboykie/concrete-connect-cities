@@ -1,4 +1,3 @@
-
 import React, { useRef } from 'react';
 import SEO from '@/components/SEO';
 import Header from '@/components/Header';
@@ -127,11 +126,6 @@ const ArizonaCostEstimator = () => {
           <ArizonaDrivewayCalculator 
             tooltipDescriptions={tooltipDescriptions}
             estimateDisclaimer="💬 Final pricing depends on location, access, slab thickness, and site prep. This is a base estimate for a flat site with standard concrete."
-            afterContent={
-              <Button onClick={scrollToQuoteForm} className="cta-button w-full">
-                📬 Like the price? Get 2–3 Free Quotes Now →
-              </Button>
-            }
           />
         </div>
       </section>

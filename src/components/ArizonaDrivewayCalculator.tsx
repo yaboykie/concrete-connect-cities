@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -44,6 +43,14 @@ export default function ArizonaDrivewayCalculator({
   const { min, max } = finishRates[finish as keyof typeof finishRates];
   const minCost = (area * min).toFixed(0);
   const maxCost = (area * max).toFixed(0);
+  
+  const handleScrollToQuoteForm = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const quoteForm = document.querySelector('#quote-form');
+    if (quoteForm) {
+      quoteForm.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <div className="calculator bg-white p-6 rounded-lg shadow-lg max-w-2xl mx-auto">
@@ -136,6 +143,16 @@ export default function ArizonaDrivewayCalculator({
           </CardContent>
         </Card>
       )}
+
+      <div className="mt-8">
+        <a 
+          href="#quote-form" 
+          onClick={handleScrollToQuoteForm}
+          className="cta-button block w-full text-center text-lg py-4 rounded-md bg-brand-blue text-white font-medium hover:bg-blue-600 transition-all"
+        >
+          📍 Get My Free Quotes
+        </a>
+      </div>
 
       {afterContent && (
         <div className="mt-6">
