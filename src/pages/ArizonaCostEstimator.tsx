@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect, useState } from 'react';
 import SEO from '@/components/SEO';
 import Header from '@/components/Header';
@@ -121,7 +120,7 @@ const ArizonaCostEstimator = () => {
             href="#quote-form"
             className="cta-button block w-full text-center text-lg py-4 rounded-md bg-black text-white font-semibold hover:bg-gray-800 transition-all"
           >
-            📍 Like the Price? Get 2–3 Free Quotes Now
+            👍 Estimate Look Good? Get Quotes from Top-Rated Concreters
           </a>
         </div>
       )}
