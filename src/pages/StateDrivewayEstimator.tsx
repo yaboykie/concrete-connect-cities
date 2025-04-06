@@ -2,7 +2,7 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import StateDrivewayCalculator from '@/components/StateDrivewayCalculator';
-import { SEO } from '@/components/SEO';
+import SEO from '@/components/SEO';
 
 export default function StateDrivewayEstimator() {
   const { state } = useParams<{ state: string }>();
