@@ -1,3 +1,4 @@
+
 // Define types used throughout the application
 export interface FAQ {
   question: string;
@@ -41,6 +42,16 @@ export interface ServiceContentMap {
   [key: string]: ServiceContent;
 }
 
+// Define UTM parameter interface for tracking
+export interface UTMParams {
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
+  utm_term?: string;
+  utm_content?: string;
+  [key: string]: string | undefined;
+}
+
 // Define global gtag function for Google Analytics 4
 declare global {
   interface Window {
@@ -51,6 +62,17 @@ declare global {
         [key: string]: any;
       }
     ) => void;
+    trackFormConversion?: (
+      conversionId: string,
+      conversionLabel: string,
+      formData: any
+    ) => void;
+    trackFormInteraction?: (
+      action: string,
+      formName: string,
+      additionalData: Record<string, any>
+    ) => void;
+    dataLayer?: any[];
   }
 }
 

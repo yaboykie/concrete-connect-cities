@@ -6,17 +6,18 @@ import SEO from '@/components/SEO';
 import SimpleQuoteForm from '@/components/driveway-concreters/components/SimpleQuoteForm';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/components/ui/use-toast';
+import { UTMParams } from '@/types';
 
 export default function StateDrivewayEstimator() {
   const { state } = useParams<{ state: string }>();
   const location = useLocation();
   const stateDisplayName = state ? state.charAt(0).toUpperCase() + state.slice(1) : '';
-  const [utmParams, setUtmParams] = useState<Record<string, string>>({});
+  const [utmParams, setUtmParams] = useState<UTMParams>({});
   
-  // Extract UTM parameters from URL
+  // Extract UTM parameters from URL with improved tracking
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
-    const utmData: Record<string, string> = {};
+    const utmData: UTMParams = {};
     
     // Collect all UTM parameters
     ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(param => {
@@ -28,11 +29,18 @@ export default function StateDrivewayEstimator() {
     if (Object.keys(utmData).length > 0) {
       setUtmParams(utmData);
       sessionStorage.setItem('utm_data', JSON.stringify(utmData));
+      console.log('UTM parameters detected and stored:', utmData);
     } else {
       // Check if we have UTM data from a previous page
       const storedUtmData = sessionStorage.getItem('utm_data');
       if (storedUtmData) {
-        setUtmParams(JSON.parse(storedUtmData));
+        try {
+          const parsedUtmData = JSON.parse(storedUtmData);
+          setUtmParams(parsedUtmData);
+          console.log('Retrieved UTM parameters from session:', parsedUtmData);
+        } catch (e) {
+          console.error('Error parsing stored UTM data:', e);
+        }
       }
     }
   }, [location]);
@@ -44,10 +52,11 @@ export default function StateDrivewayEstimator() {
         page_title: `${stateDisplayName} Concrete Driveway Cost Estimator`,
         page_location: window.location.href,
         page_path: location.pathname,
-        state: stateDisplayName
+        state: stateDisplayName,
+        ...utmParams // Include UTM parameters in the page view event
       });
     }
-  }, [stateDisplayName, location]);
+  }, [stateDisplayName, location, utmParams]);
 
   // Handle form submission with proper error handling and GA4 tracking
   const handleFormSubmit = async (formData: any) => {
@@ -56,7 +65,8 @@ export default function StateDrivewayEstimator() {
       if (window.gtag) {
         window.gtag('event', 'form_start', {
           form_name: 'concrete_quote_request',
-          state: stateDisplayName
+          state: stateDisplayName,
+          ...utmParams
         });
       }
 
@@ -67,12 +77,16 @@ export default function StateDrivewayEstimator() {
         state: stateDisplayName
       };
       
+      console.log('Submitting lead with data:', enrichedFormData);
+      
       // Submit the form data to the Supabase edge function
       const { data, error } = await supabase.functions.invoke('send-lead', {
         body: enrichedFormData
       });
       
       if (error) throw new Error(error.message);
+      
+      console.log('Lead submission successful:', data);
       
       // Show success message
       toast({
@@ -87,8 +101,21 @@ export default function StateDrivewayEstimator() {
           form_name: 'concrete_quote_request',
           state: stateDisplayName,
           lead_id: data?.lead_id || 'unknown',
-          matched_contractors: data?.matched_contractors || 0
+          matched_contractors: data?.matched_contractors || 0,
+          ...utmParams
         });
+        
+        // If conversion tracking function is available, use it
+        if (typeof window.trackFormConversion === 'function') {
+          window.trackFormConversion(
+            'AW-676763112', 
+            'form_submission',
+            {
+              ...enrichedFormData,
+              lead_id: data?.lead_id
+            }
+          );
+        }
       }
       
       return data;
@@ -108,7 +135,8 @@ export default function StateDrivewayEstimator() {
         window.gtag('event', 'form_error', {
           form_name: 'concrete_quote_request',
           error_message: error instanceof Error ? error.message : 'Unknown error',
-          state: stateDisplayName
+          state: stateDisplayName,
+          ...utmParams
         });
       }
       

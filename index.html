@@ -17,14 +17,43 @@
     <meta name="twitter:site" content="@lovable_dev" />
     <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
     
-    <!-- Google tag (gtag.js) -->
+    <!-- Google tag (gtag.js) - GA4 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=AW-676763112"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
 
+      // Configure your GA4 and Ads accounts
       gtag('config', 'AW-676763112');
+      
+      // Track form submissions as conversions
+      function trackFormConversion(conversionId, conversionLabel, formData) {
+        if (window.gtag) {
+          gtag('event', 'conversion', {
+            'send_to': conversionId + '/' + conversionLabel,
+            'value': 1.0,
+            'transaction_id': formData.lead_id || Date.now().toString(),
+            'user_data': {
+              'email': formData.email || formData.contact || '',
+              'phone_number': formData.phone || '',
+              'address': {
+                'postal_code': formData.zipCode || ''
+              }
+            }
+          });
+        }
+      }
+      
+      // Enhanced form tracking
+      function trackFormInteraction(action, formName, additionalData) {
+        if (window.gtag) {
+          gtag('event', action, {
+            'form_name': formName,
+            ...additionalData
+          });
+        }
+      }
     </script>
   </head>
 

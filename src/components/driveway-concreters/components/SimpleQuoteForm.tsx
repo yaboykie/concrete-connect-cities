@@ -18,12 +18,23 @@ const SimpleQuoteForm = ({ onSubmit, utmParams = {}, stateLocation = '' }: Simpl
   const [details, setDetails] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const trackInteraction = (eventName: string) => {
+  // Enhanced tracking function that uses the global tracking functions
+  const trackInteraction = (eventName: string, additionalData = {}) => {
     if (window.gtag) {
+      // Use direct gtag for standard events
       window.gtag('event', eventName, {
         form_name: 'simple_quote_form',
-        state: stateLocation
+        state: stateLocation,
+        ...additionalData
       });
+      
+      // For form-specific tracking events, use the enhanced tracking
+      if (typeof window.trackFormInteraction === 'function') {
+        window.trackFormInteraction(eventName, 'simple_quote_form', {
+          state: stateLocation,
+          ...additionalData
+        });
+      }
     }
   };
 
@@ -40,7 +51,13 @@ const SimpleQuoteForm = ({ onSubmit, utmParams = {}, stateLocation = '' }: Simpl
         description: "Please fill out all required information to get your quotes.",
         variant: "destructive",
       });
-      trackInteraction('form_validation_error');
+      trackInteraction('form_validation_error', {
+        missing_fields: [
+          !name ? 'name' : null,
+          !zipCode ? 'zipCode' : null,
+          !contact ? 'contact' : null
+        ].filter(Boolean).join(',')
+      });
       return;
     }
     
@@ -58,7 +75,25 @@ const SimpleQuoteForm = ({ onSubmit, utmParams = {}, stateLocation = '' }: Simpl
     if (onSubmit) {
       try {
         // Use the parent component's submit handler
-        await onSubmit(formData);
+        const response = await onSubmit(formData);
+        
+        // Track successful conversion if the conversion tracking is available
+        if (response?.lead_id && typeof window.trackFormConversion === 'function') {
+          window.trackFormConversion(
+            'AW-676763112',     // Your conversion ID
+            'form_submission',  // Conversion label - update this with your actual label
+            {
+              ...formData,
+              lead_id: response.lead_id
+            }
+          );
+        }
+        
+        // Track successful submission
+        trackInteraction('form_submit_success', {
+          lead_id: response?.lead_id || 'unknown',
+          matched_contractors: response?.matched_contractors || 0
+        });
         
         // Reset form on success
         setName('');
@@ -67,7 +102,10 @@ const SimpleQuoteForm = ({ onSubmit, utmParams = {}, stateLocation = '' }: Simpl
         setDetails('');
       } catch (error) {
         console.error('Error in form submission:', error);
-        // Error is handled by the parent component
+        // Track submission error
+        trackInteraction('form_submit_error', {
+          error_message: error instanceof Error ? error.message : 'Unknown error'
+        });
       } finally {
         setIsSubmitting(false);
       }
@@ -154,5 +192,21 @@ const SimpleQuoteForm = ({ onSubmit, utmParams = {}, stateLocation = '' }: Simpl
     </form>
   );
 };
+
+// Add TypeScript declaration for the window object
+declare global {
+  interface Window {
+    trackFormConversion?: (
+      conversionId: string,
+      conversionLabel: string,
+      formData: any
+    ) => void;
+    trackFormInteraction?: (
+      action: string,
+      formName: string,
+      additionalData: Record<string, any>
+    ) => void;
+  }
+}
 
 export default SimpleQuoteForm;

@@ -23,8 +23,10 @@ interface LeadData {
   name: string;
   email: string;
   phone: string;
+  contact?: string;
   jobType: string;
   zipCode: string;
+  details?: string;
   utm_source?: string;
   utm_medium?: string;
   utm_campaign?: string;
@@ -48,9 +50,11 @@ function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: numbe
   return distance;
 }
 
-// Function to get coordinates from zip code
+// Function to get coordinates from zip code with improved fallback
 async function getCoordinatesFromZipCode(zipCode: string): Promise<[number, number] | null> {
   try {
+    console.log(`Looking up coordinates for zip code: ${zipCode}`);
+    
     // First check if we have this zip code in our Location Data table
     const { data: locationData, error: locationError } = await supabase
       .from('Location Data + URL Structure')
@@ -58,18 +62,53 @@ async function getCoordinatesFromZipCode(zipCode: string): Promise<[number, numb
       .eq('City', zipCode)
       .maybeSingle();
     
+    if (locationError) {
+      console.error("Error querying location database:", locationError);
+    }
+    
     if (locationData?.Latitude && locationData?.Longitude) {
+      console.log(`Found coordinates in database: ${locationData.Latitude}, ${locationData.Longitude}`);
       return [locationData.Latitude, locationData.Longitude];
     }
     
-    // If not found in our db, could add a fallback to a geocoding API here
-    // For now, return null if not found
+    // Secondary lookup - check if we can find by ZIP code in another database
+    // This is a placeholder for connecting to a more comprehensive ZIP code database
+    // Implementation would depend on what other data sources you have available
+    
     console.log(`Zip code ${zipCode} not found in location database`);
     return null;
   } catch (error) {
     console.error("Error getting coordinates from zip code:", error);
     return null;
   }
+}
+
+// Extract email and phone from contact field if present
+function extractContactInfo(leadData: LeadData): { email: string | null; phone: string | null } {
+  // If email and phone are already provided directly, use those
+  if (leadData.email && leadData.phone) {
+    return { email: leadData.email, phone: leadData.phone };
+  }
+  
+  const contactInfo = leadData.contact || '';
+  
+  // Check if contact looks like an email
+  if (contactInfo.includes('@') && contactInfo.includes('.')) {
+    return { email: contactInfo, phone: leadData.phone || null };
+  }
+  
+  // Otherwise assume it's a phone number
+  // Remove non-numeric characters for consistent phone format
+  const cleanedPhone = contactInfo.replace(/\D/g, '');
+  if (cleanedPhone.length >= 10) {
+    return { email: leadData.email || null, phone: cleanedPhone };
+  }
+  
+  // Fallback
+  return { 
+    email: leadData.email || (contactInfo.includes('@') ? contactInfo : null),
+    phone: leadData.phone || (!contactInfo.includes('@') ? contactInfo : null)
+  };
 }
 
 // Handle the incoming request
@@ -85,9 +124,8 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Received lead data:", leadData);
 
     // Extract contact information (either email or phone)
-    const contactInfo = leadData.email || leadData.phone || leadData.contact;
-    const phoneInfo = leadData.phone || (leadData.contact?.includes('@') ? null : leadData.contact);
-    const emailInfo = leadData.email || (leadData.contact?.includes('@') ? leadData.contact : null);
+    const { email: emailInfo, phone: phoneInfo } = extractContactInfo(leadData);
+    const contactInfo = emailInfo || phoneInfo;
 
     // Basic validation
     if (!leadData.name || !contactInfo || !leadData.zipCode) {
