@@ -69,7 +69,10 @@ const SimpleQuoteForm = ({ onSubmit, utmParams = {}, stateLocation = '' }: Simpl
       zipCode,
       contact,
       details,
-      ...utmParams
+      ...utmParams,
+      form_type: 'simple_quote_form',
+      page_path: window.location.pathname,
+      landing_url: window.location.href
     };
     
     if (onSubmit) {

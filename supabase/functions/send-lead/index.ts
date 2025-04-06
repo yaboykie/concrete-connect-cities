@@ -1,3 +1,4 @@
+
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
 import { createClient } from "npm:@supabase/supabase-js@2.39.7";
@@ -33,6 +34,9 @@ interface LeadData {
   utm_term?: string;
   utm_content?: string;
   state?: string;
+  form_type?: string;
+  landing_url?: string;
+  page_path?: string;
   [key: string]: any;
 }
 
@@ -242,6 +246,9 @@ const handler = async (req: Request): Promise<Response> => {
         utm_campaign: utmData.utm_campaign || null,
         utm_term: utmData.utm_term || null,
         utm_content: utmData.utm_content || null,
+        form_type: leadData.form_type || null,
+        landing_url: leadData.landing_url || null,
+        page_path: leadData.page_path || leadData.landing_url || null,
         details: leadData.details || null
       })
       .select();
@@ -270,6 +277,9 @@ const handler = async (req: Request): Promise<Response> => {
         ${matchedCampaignId ? `<p><strong>Matched Campaign:</strong> ${matchedCampaignId}</p>` : ''}
         ${utmData.utm_source ? `<p><strong>Source:</strong> ${utmData.utm_source}</p>` : ''}
         ${utmData.utm_campaign ? `<p><strong>Campaign:</strong> ${utmData.utm_campaign}</p>` : ''}
+        ${utmData.utm_medium ? `<p><strong>Medium:</strong> ${utmData.utm_medium}</p>` : ''}
+        ${leadData.form_type ? `<p><strong>Form Type:</strong> ${leadData.form_type}</p>` : ''}
+        ${leadData.page_path ? `<p><strong>Page Path:</strong> ${leadData.page_path}</p>` : ''}
         ${leadData.details ? `<p><strong>Details:</strong> ${leadData.details}</p>` : ''}
       `,
       text: `
@@ -285,6 +295,9 @@ Matched Contractors: ${matchedContractorIds.length || 0}
 ${matchedCampaignId ? `Matched Campaign: ${matchedCampaignId}` : ''}
 ${utmData.utm_source ? `Source: ${utmData.utm_source}` : ''}
 ${utmData.utm_campaign ? `Campaign: ${utmData.utm_campaign}` : ''}
+${utmData.utm_medium ? `Medium: ${utmData.utm_medium}` : ''}
+${leadData.form_type ? `Form Type: ${leadData.form_type}` : ''}
+${leadData.page_path ? `Page Path: ${leadData.page_path}` : ''}
 ${leadData.details ? `Details: ${leadData.details}` : ''}
       `,
     });

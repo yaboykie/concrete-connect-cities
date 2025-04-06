@@ -70,11 +70,14 @@ export default function StateDrivewayEstimator() {
         });
       }
 
-      // Add UTM parameters to the form data
+      // Add UTM parameters and page information to the form data
       const enrichedFormData = {
         ...formData,
         ...utmParams,
-        state: stateDisplayName
+        state: stateDisplayName,
+        form_type: 'state_estimator',
+        page_path: location.pathname,
+        landing_url: window.location.href
       };
       
       console.log('Submitting lead with data:', enrichedFormData);
@@ -105,7 +108,7 @@ export default function StateDrivewayEstimator() {
           ...utmParams
         });
         
-        // If conversion tracking function is available, use it
+        // Track conversion for Google Ads
         if (typeof window.trackFormConversion === 'function') {
           window.trackFormConversion(
             'AW-676763112', 

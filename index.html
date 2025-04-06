@@ -42,6 +42,21 @@
               }
             }
           });
+          
+          // Also track as a Google Analytics 4 event with lead data
+          gtag('event', 'lead_submitted', {
+            'lead_id': formData.lead_id || Date.now().toString(),
+            'form_type': formData.form_type || 'quote_request',
+            'job_type': formData.jobType || 'driveway',
+            'location': formData.state || formData.zipCode || '',
+            'utm_source': formData.utm_source || '',
+            'utm_medium': formData.utm_medium || '',
+            'utm_campaign': formData.utm_campaign || '',
+            'utm_term': formData.utm_term || '',
+            'utm_content': formData.utm_content || '',
+            'page_path': formData.page_path || window.location.pathname,
+            'landing_url': formData.landing_url || window.location.href
+          });
         }
       }
       

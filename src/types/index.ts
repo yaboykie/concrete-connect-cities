@@ -49,6 +49,9 @@ export interface UTMParams {
   utm_campaign?: string;
   utm_term?: string;
   utm_content?: string;
+  form_type?: string;
+  page_path?: string;
+  landing_url?: string;
   [key: string]: string | undefined;
 }
 
