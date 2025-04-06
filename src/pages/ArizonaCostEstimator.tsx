@@ -1,3 +1,4 @@
+
 import React, { useRef, useEffect, useState } from 'react';
 import SEO from '@/components/SEO';
 import Header from '@/components/Header';
@@ -95,6 +96,7 @@ const ArizonaCostEstimator = () => {
       <Header />
       <MobileCta scrollTo="#quote-form" buttonText="📍 Get My Free Quotes" />
 
+      {/* Hero section */}
       <section className="bg-concrete-light py-14 md:py-20">
         <div className="container mx-auto px-4 text-center max-w-3xl">
           <h1 className="text-3xl md:text-5xl font-bold mb-6">Estimate Your Concrete Driveway Cost in 10 Seconds – Arizona Pricing</h1>
@@ -107,6 +109,7 @@ const ArizonaCostEstimator = () => {
         </div>
       </section>
 
+      {/* Calculator section */}
       <section className="py-12 md:py-20" id="calculator" ref={calculatorRef}>
         <div className="container mx-auto px-4">
           <ArizonaDrivewayCalculator onInteraction={handleCalculatorInteraction} />
@@ -120,11 +123,12 @@ const ArizonaCostEstimator = () => {
             href="#quote-form"
             className="cta-button block w-full text-center text-lg py-4 rounded-md bg-black text-white font-semibold hover:bg-gray-800 transition-all"
           >
-            👍 Estimate Look Good? Get Quotes from Top-Rated Concreters
+            👍 Estimate Look Good? Get 2–3 Free Quotes Now
           </a>
         </div>
       )}
 
+      {/* Quote form section */}
       <section className="py-16 md:py-24 bg-white" id="quote-form" ref={quoteFormRef}>
         <div className="container mx-auto px-4 max-w-4xl">
           <div className="text-center mb-10">
