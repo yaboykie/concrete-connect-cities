@@ -67,7 +67,7 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
 
   const fetchDisputedLeads = async () => {
     try {
-      const { data, error } = await supabase.rpc<UserDisputeResponse>('get_user_disputes', { user_id: userId });
+      const { data, error } = await supabase.rpc<UserDisputeResponse[]>('get_user_disputes', { user_id: userId });
       
       if (error) throw error;
       
@@ -100,7 +100,7 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
 
   const handleViewDispute = async (lead: Lead) => {
     try {
-      const { data, error } = await supabase.rpc<DisputeDetailResponse>('get_dispute_details', { 
+      const { data, error } = await supabase.rpc<DisputeDetailResponse[]>('get_dispute_details', { 
         p_lead_id: lead.lead_id,
         p_contractor_id: userId
       });
