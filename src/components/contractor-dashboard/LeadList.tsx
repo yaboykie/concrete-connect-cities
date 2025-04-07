@@ -66,16 +66,16 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
 
   const fetchDisputedLeads = async () => {
     try {
-      // Use type assertion for the RPC call to solve TypeScript errors
+      const rpcArgs: { user_id: string } = { user_id: userId };
+      
       const { data, error } = await supabase.rpc(
         'get_user_disputes', 
-        { user_id: userId }
+        rpcArgs
       ) as { data: UserDisputeResponse[] | null, error: any };
       
       if (error) throw error;
       
       if (data) {
-        // Add array check to ensure data is an array before mapping
         const leadIds = Array.isArray(data) ? data.map(item => item.lead_id) : [];
         setDisputedLeads(leadIds);
       }
@@ -102,13 +102,17 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
 
   const handleViewDispute = async (lead: Lead) => {
     try {
-      // Use type assertion for the RPC call to solve TypeScript errors
+      const rpcArgs: { 
+        p_lead_id: string, 
+        p_contractor_id: string 
+      } = { 
+        p_lead_id: lead.lead_id,
+        p_contractor_id: userId
+      };
+      
       const { data, error } = await supabase.rpc(
         'get_dispute_details', 
-        { 
-          p_lead_id: lead.lead_id,
-          p_contractor_id: userId
-        }
+        rpcArgs
       ) as { data: DisputeDetailResponse[] | null, error: any };
       
       if (error) throw error;
@@ -179,15 +183,21 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
         return;
       }
       
-      // Use type assertion for the RPC call to solve TypeScript errors
+      const rpcArgs: {
+        p_lead_id: string,
+        p_contractor_id: string,
+        p_campaign_id: string,
+        p_reason: string
+      } = {
+        p_lead_id: selectedLead.lead_id,
+        p_contractor_id: userId,
+        p_campaign_id: campaignData.campaign_id,
+        p_reason: finalReason
+      };
+      
       const { error } = await supabase.rpc(
         'submit_lead_dispute', 
-        {
-          p_lead_id: selectedLead.lead_id,
-          p_contractor_id: userId,
-          p_campaign_id: campaignData.campaign_id,
-          p_reason: finalReason
-        }
+        rpcArgs
       ) as { data: null, error: any };
       
       if (error) throw error;
