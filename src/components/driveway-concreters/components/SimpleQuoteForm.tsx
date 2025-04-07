@@ -17,6 +17,7 @@ const SimpleQuoteForm = ({ onSubmit, utmParams = {}, stateLocation = '' }: Simpl
     formErrors,
     isSubmitting,
     handleInputChange,
+    handleFieldBlur,
     handleFieldFocus,
     handleSubmit
   } = useSimpleQuoteForm({
@@ -33,6 +34,7 @@ const SimpleQuoteForm = ({ onSubmit, utmParams = {}, stateLocation = '' }: Simpl
         formData={formData}
         errors={formErrors}
         onChange={handleInputChange}
+        onBlur={handleFieldBlur}
         onFocus={handleFieldFocus}
       />
       

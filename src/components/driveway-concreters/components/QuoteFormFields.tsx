@@ -16,6 +16,7 @@ interface QuoteFormFieldsProps {
   };
   errors: FormErrors;
   onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  onBlur?: (fieldName: string) => void;
   onFocus?: (fieldName: string) => void;
 }
 
@@ -23,11 +24,18 @@ const QuoteFormFields: React.FC<QuoteFormFieldsProps> = ({
   formData, 
   errors, 
   onChange,
+  onBlur,
   onFocus 
 }) => {
   const handleFocus = (fieldName: string) => {
     if (onFocus) {
       onFocus(fieldName);
+    }
+  };
+  
+  const handleBlur = (fieldName: string) => {
+    if (onBlur) {
+      onBlur(fieldName);
     }
   };
   
@@ -43,6 +51,7 @@ const QuoteFormFields: React.FC<QuoteFormFieldsProps> = ({
           required 
           placeholder="Your name"
           onFocus={() => handleFocus('name_field_focus')}
+          onBlur={() => handleBlur('name')}
           className={errors.name ? 'border-red-500' : ''}
         />
         {errors.name && (
@@ -60,6 +69,7 @@ const QuoteFormFields: React.FC<QuoteFormFieldsProps> = ({
           required 
           placeholder="Your ZIP code"
           onFocus={() => handleFocus('zipcode_field_focus')}
+          onBlur={() => handleBlur('zipCode')}
           className={errors.zipCode ? 'border-red-500' : ''}
         />
         {errors.zipCode && (
@@ -77,6 +87,7 @@ const QuoteFormFields: React.FC<QuoteFormFieldsProps> = ({
           required 
           placeholder="How should we contact you?"
           onFocus={() => handleFocus('contact_field_focus')}
+          onBlur={() => handleBlur('contact')}
           className={errors.contact ? 'border-red-500' : ''}
         />
         {errors.contact && (
@@ -94,6 +105,7 @@ const QuoteFormFields: React.FC<QuoteFormFieldsProps> = ({
           placeholder="Tell us about your driveway project"
           rows={3}
           onFocus={() => handleFocus('details_field_focus')}
+          onBlur={() => handleBlur('details')}
         />
       </div>
     </div>

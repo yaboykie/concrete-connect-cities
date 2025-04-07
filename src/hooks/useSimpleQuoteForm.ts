@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import { toast } from '@/components/ui/use-toast';
 import { UTMParams } from '@/types';
 import { supabase } from '@/integrations/supabase/client';
+import { useAnalyticsTracking } from './useAnalyticsTracking';
+import * as Yup from 'yup';
 
 interface FormData {
   name: string;
@@ -21,6 +23,25 @@ interface UseSimpleQuoteFormProps {
   stateLocation?: string;
 }
 
+const quoteFormSchema = Yup.object().shape({
+  name: Yup.string().required('Name is required'),
+  zipCode: Yup.string()
+    .matches(/^\d{5}(-\d{4})?$/, 'Please enter a valid ZIP code')
+    .required('ZIP code is required'),
+  contact: Yup.string()
+    .test(
+      'is-phone-or-email',
+      'Please enter a valid email or phone number',
+      value => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const phoneRegex = /^(\+1[- ]?)?\(?\d{3}\)?[- ]?\d{3}[- ]?\d{4}$/;
+        return emailRegex.test(value || '') || phoneRegex.test(value || '');
+      }
+    )
+    .required('Contact information is required'),
+  details: Yup.string(),
+});
+
 export const useSimpleQuoteForm = ({ 
   onSubmit, 
   utmParams = {}, 
@@ -35,55 +56,48 @@ export const useSimpleQuoteForm = ({
   const [formErrors, setFormErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionSuccess, setSubmissionSuccess] = useState(false);
+  const { trackInteraction } = useAnalyticsTracking();
 
-  // Enhanced tracking function that uses the global tracking functions
-  const trackInteraction = (eventName: string, additionalData = {}) => {
-    if (window.gtag) {
-      // Use direct gtag for standard events
-      window.gtag('event', eventName, {
-        form_name: 'simple_quote_form',
-        state: stateLocation,
-        ...additionalData
-      });
-      
-      // For form-specific tracking events, use the enhanced tracking
-      if (typeof window.trackFormInteraction === 'function') {
-        window.trackFormInteraction(eventName, 'simple_quote_form', {
-          state: stateLocation,
-          ...additionalData
+  const validateForm = async (): Promise<boolean> => {
+    try {
+      await quoteFormSchema.validate(formData, { abortEarly: false });
+      setFormErrors({});
+      return true;
+    } catch (err: any) {
+      if (err.inner) {
+        const errors: FormErrors = {};
+        err.inner.forEach((validationError: Yup.ValidationError) => {
+          if (validationError.path) {
+            errors[validationError.path] = validationError.message;
+          }
         });
+        setFormErrors(errors);
       }
+      return false;
     }
   };
 
-  const validateForm = (): boolean => {
-    const errors: FormErrors = {};
-    
-    if (!formData.name.trim()) {
-      errors.name = 'Name is required';
-    }
-    
-    if (!formData.zipCode.trim()) {
-      errors.zipCode = 'ZIP code is required';
-    } else if (!/^\d{5}(-\d{4})?$/.test(formData.zipCode.trim())) {
-      errors.zipCode = 'Please enter a valid ZIP code';
-    }
-    
-    if (!formData.contact.trim()) {
-      errors.contact = 'Contact information is required';
-    } else {
-      // Check if it's an email
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      // Simple phone regex (handles various formats with or without country code)
-      const phoneRegex = /^(\+\d{1,3}[- ]?)?\(?\d{3}\)?[- ]?\d{3}[- ]?\d{4}$/;
+  const validateField = async (fieldName: string, value: string): Promise<boolean> => {
+    try {
+      // Create a schema just for this field
+      const fieldSchema = Yup.reach(quoteFormSchema, fieldName);
+      await fieldSchema.validate(value);
       
-      if (!emailRegex.test(formData.contact) && !phoneRegex.test(formData.contact)) {
-        errors.contact = 'Please enter a valid email or phone number';
+      // Remove error for this field if it exists
+      if (formErrors[fieldName]) {
+        const newErrors = { ...formErrors };
+        delete newErrors[fieldName];
+        setFormErrors(newErrors);
       }
+      return true;
+    } catch (err: any) {
+      // Set just this field's error
+      setFormErrors(prev => ({
+        ...prev,
+        [fieldName]: err.message
+      }));
+      return false;
     }
-    
-    setFormErrors(errors);
-    return Object.keys(errors).length === 0;
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -100,20 +114,36 @@ export const useSimpleQuoteForm = ({
     }
   };
 
+  const handleFieldBlur = (fieldName: string) => {
+    // Validate just this field
+    validateField(fieldName, formData[fieldName as keyof FormData]);
+    
+    // Track field blur event
+    trackInteraction(`${fieldName}_field_blur`, 'simple_quote_form', {
+      state: stateLocation
+    });
+  };
+
   const handleFieldFocus = (fieldName: string) => {
-    trackInteraction(fieldName);
+    trackInteraction(fieldName, 'simple_quote_form', {
+      state: stateLocation
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Track form submission attempt
-    trackInteraction('form_submit_attempt');
+    trackInteraction('form_submit_attempt', 'simple_quote_form', {
+      state: stateLocation
+    });
     
     // Form validation
-    if (!validateForm()) {
-      trackInteraction('form_validation_error', {
-        missing_fields: Object.keys(formErrors).join(',')
+    const isValid = await validateForm();
+    if (!isValid) {
+      trackInteraction('form_validation_error', 'simple_quote_form', {
+        missing_fields: Object.keys(formErrors).join(','),
+        state: stateLocation
       });
       return;
     }
@@ -147,9 +177,10 @@ export const useSimpleQuoteForm = ({
         }
         
         // Track successful submission
-        trackInteraction('form_submit_success', {
+        trackInteraction('form_submit_success', 'simple_quote_form', {
           lead_id: response?.lead_id || 'unknown',
-          matched_contractors: response?.matched_contractors || 0
+          matched_contractors: response?.matched_contractors || 0,
+          state: stateLocation
         });
         
         // Reset form on success
@@ -163,8 +194,9 @@ export const useSimpleQuoteForm = ({
       } catch (error) {
         console.error('Error in form submission:', error);
         // Track submission error
-        trackInteraction('form_submit_error', {
-          error_message: error instanceof Error ? error.message : 'Unknown error'
+        trackInteraction('form_submit_error', 'simple_quote_form', {
+          error_message: error instanceof Error ? error.message : 'Unknown error',
+          state: stateLocation
         });
         
         toast({
@@ -192,7 +224,9 @@ export const useSimpleQuoteForm = ({
         });
         setSubmissionSuccess(true);
         
-        trackInteraction('form_submit_success_fallback');
+        trackInteraction('form_submit_success_fallback', 'simple_quote_form', {
+          state: stateLocation
+        });
       }, 1500);
     }
   };
@@ -203,6 +237,7 @@ export const useSimpleQuoteForm = ({
     isSubmitting,
     submissionSuccess,
     handleInputChange,
+    handleFieldBlur,
     handleFieldFocus,
     handleSubmit
   };
