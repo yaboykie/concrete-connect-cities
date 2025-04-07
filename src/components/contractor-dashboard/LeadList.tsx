@@ -1,39 +1,33 @@
-
 import React, { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { toast } from '@/components/ui/use-toast';
-import { Button } from '@/components/ui/button';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { 
+  Table, TableBody, TableCell, TableHead, 
+  TableHeader, TableRow 
+} from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { AlertCircle, Loader2 } from 'lucide-react';
-import { useAnalyticsTracking } from '@/hooks/useAnalyticsTracking';
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-  DialogDescription,
+  Card, CardContent, CardDescription, CardHeader, CardTitle
+} from '@/components/ui/card';
+import {
+  Dialog, DialogContent, DialogDescription,
+  DialogHeader, DialogTitle
 } from '@/components/ui/dialog';
-import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
+import { Loader2, AlertCircle } from 'lucide-react';
+import { toast } from '@/components/ui/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+import { formatDistanceToNow } from 'date-fns';
 
+// Define Lead type with proper typing for lead_type
 interface Lead {
   lead_id: string;
   name: string;
-  phone: string;
   email: string;
+  phone: string;
   job_type: string;
-  formatted_job_type?: string;
   zip_code: string;
   created_at: string;
-  campaign_id: string;
-  campaign_name?: string;
-  lead_type: 'standard' | 'priority';
-  disputed?: boolean;
-}
-
-interface CampaignMap {
-  [key: string]: string;
+  status?: string;
+  lead_type?: 'standard' | 'priority' | null;
 }
 
 interface LeadListProps {
@@ -43,24 +37,20 @@ interface LeadListProps {
 const LeadList: React.FC<LeadListProps> = ({ userId }) => {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
-  const [campaigns, setCampaigns] = useState<CampaignMap>({});
-  const [disputes, setDisputes] = useState<string[]>([]);
-  const [disputeDialog, setDisputeDialog] = useState({ open: false, leadId: '', campaignId: '' });
-  const [disputeReason, setDisputeReason] = useState('');
+  const [disputedLeads, setDisputedLeads] = useState<string[]>([]);
+  const [isDisputeDialogOpen, setIsDisputeDialogOpen] = useState(false);
+  const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
+  const [disputeReason, setDisputeReason] = useState<string>('');
   const [submittingDispute, setSubmittingDispute] = useState(false);
-  
-  const { trackInteraction } = useAnalyticsTracking();
 
   useEffect(() => {
     fetchLeads();
-    fetchCampaignNames();
-    fetchDisputes();
+    fetchDisputedLeads();
   }, [userId]);
 
   const fetchLeads = async () => {
     try {
       setLoading(true);
-      // Fetch leads that match the contractor's campaigns
       const { data, error } = await supabase
         .from('leads')
         .select('*')
@@ -68,13 +58,7 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
       
       if (error) throw error;
       
-      // Add lead type based on some business logic (this is a placeholder)
-      const processedLeads = (data || []).map(lead => ({
-        ...lead,
-        lead_type: (lead.job_type.includes('premium') ? 'priority' : 'standard') as 'priority' | 'standard'
-      }));
-      
-      setLeads(processedLeads as Lead[]);
+      setLeads(data || []);
     } catch (error) {
       console.error('Error fetching leads:', error);
       toast({
@@ -87,82 +71,65 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
     }
   };
 
-  const fetchCampaignNames = async () => {
+  const fetchDisputedLeads = async () => {
     try {
-      const { data, error } = await supabase
-        .from('campaigns')
-        .select('campaign_id, name')
-        .eq('contractor_id', userId);
+      const { data, error } = await supabase.rpc('get_user_disputes', { user_id: userId });
       
       if (error) throw error;
       
-      const campaignMap: CampaignMap = {};
-      (data || []).forEach(campaign => {
-        campaignMap[campaign.campaign_id] = campaign.name;
-      });
-      
-      setCampaigns(campaignMap);
+      if (data) {
+        setDisputedLeads(data.map((item: { lead_id: string }) => item.lead_id));
+      }
     } catch (error) {
-      console.error('Error fetching campaign names:', error);
+      console.error('Error fetching disputed leads:', error);
     }
   };
 
-  const fetchDisputes = async () => {
-    try {
-      // Use custom SQL query instead of direct table access for now
-      // until the types are regenerated
-      const { data, error } = await supabase
-        .rpc('get_user_disputes', { user_id: userId });
-      
-      if (error) throw error;
-      
-      setDisputes(data ? data.map((d: any) => d.lead_id) : []);
-    } catch (error) {
-      console.error('Error fetching disputes:', error);
-    }
-  };
-
-  const openDisputeDialog = (leadId: string, campaignId: string) => {
-    setDisputeDialog({ open: true, leadId, campaignId });
-    setDisputeReason('');
-  };
-
-  const closeDisputeDialog = () => {
-    setDisputeDialog({ open: false, leadId: '', campaignId: '' });
-    setDisputeReason('');
+  const handleDisputeLead = (lead: Lead) => {
+    setSelectedLead(lead);
+    setIsDisputeDialogOpen(true);
   };
 
   const submitDispute = async () => {
-    if (!disputeDialog.leadId || !disputeDialog.campaignId) return;
-    
-    setSubmittingDispute(true);
+    if (!selectedLead || !disputeReason.trim()) return;
     
     try {
-      // Use RPC call instead of direct table access
-      const { error } = await supabase
-        .rpc('submit_lead_dispute', {
-          p_lead_id: disputeDialog.leadId,
-          p_contractor_id: userId,
-          p_campaign_id: disputeDialog.campaignId,
-          p_reason: disputeReason || 'No reason provided'
+      setSubmittingDispute(true);
+      
+      // Find the campaign_id for this lead
+      const { data: campaignData } = await supabase
+        .from('campaigns')
+        .select('campaign_id')
+        .eq('contractor_id', userId)
+        .single();
+      
+      if (!campaignData?.campaign_id) {
+        toast({
+          title: "Error",
+          description: "Could not find a campaign for this dispute",
+          variant: "destructive",
         });
+        return;
+      }
+      
+      const { error } = await supabase.rpc('submit_lead_dispute', {
+        p_lead_id: selectedLead.lead_id,
+        p_contractor_id: userId,
+        p_campaign_id: campaignData.campaign_id,
+        p_reason: disputeReason
+      });
       
       if (error) throw error;
       
-      // Update local state
-      setDisputes(prev => [...prev, disputeDialog.leadId]);
-      
-      trackInteraction('lead_disputed', 'contractor_dashboard', {
-        lead_id: disputeDialog.leadId,
-        campaign_id: disputeDialog.campaignId
-      });
-      
       toast({
-        title: "Lead disputed",
-        description: "Your dispute has been recorded and will be reviewed.",
+        title: "Dispute Submitted",
+        description: "Your lead dispute has been submitted for review",
       });
       
-      closeDisputeDialog();
+      setDisputedLeads([...disputedLeads, selectedLead.lead_id]);
+      setIsDisputeDialogOpen(false);
+      setDisputeReason('');
+      
     } catch (error) {
       console.error('Error submitting dispute:', error);
       toast({
@@ -177,9 +144,7 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">My Leads</h1>
-      </div>
+      <h1 className="text-2xl font-bold">My Leads</h1>
       
       {loading ? (
         <div className="flex justify-center py-12">
@@ -189,7 +154,7 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
         <div className="bg-white rounded-lg shadow p-6 text-center">
           <h3 className="text-lg font-medium mb-2">No leads yet</h3>
           <p className="text-gray-600 mb-4">
-            Leads will appear here when they match your campaign criteria
+            As leads become available that match your campaigns, they will appear here.
           </p>
         </div>
       ) : (
@@ -197,40 +162,42 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Date</TableHead>
-                <TableHead>Lead Type</TableHead>
-                <TableHead>Campaign</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Job Type</TableHead>
-                <TableHead>ZIP Code</TableHead>
+                <TableHead>Location</TableHead>
+                <TableHead>Contact</TableHead>
+                <TableHead>Received</TableHead>
+                <TableHead>Status</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {leads.map((lead) => (
                 <TableRow key={lead.lead_id}>
-                  <TableCell>{new Date(lead.created_at).toLocaleDateString()}</TableCell>
-                  <TableCell>
-                    <Badge variant={lead.lead_type === 'priority' ? 'success' : 'secondary'}>
-                      {lead.lead_type === 'priority' ? 'Priority' : 'Standard'}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>{campaigns[lead.campaign_id] || 'Unknown'}</TableCell>
                   <TableCell className="font-medium">{lead.name}</TableCell>
-                  <TableCell>{lead.formatted_job_type || lead.job_type}</TableCell>
+                  <TableCell>{lead.job_type}</TableCell>
                   <TableCell>{lead.zip_code}</TableCell>
                   <TableCell>
-                    {disputes.includes(lead.lead_id) ? (
-                      <Badge variant="secondary" className="cursor-not-allowed">Disputed</Badge>
+                    {lead.email ? <a href={`mailto:${lead.email}`} className="hover:text-blue-500">{lead.email}</a> : 'N/A'}
+                    <br />
+                    {lead.phone ? <a href={`tel:${lead.phone}`} className="hover:text-blue-500">{lead.phone}</a> : 'N/A'}
+                  </TableCell>
+                  <TableCell>
+                    {formatDistanceToNow(new Date(lead.created_at), { addSuffix: true })}
+                  </TableCell>
+                  <TableCell>
+                    {disputedLeads.includes(lead.lead_id) ? (
+                      <Badge variant="destructive">Disputed</Badge>
                     ) : (
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="text-red-600 hover:bg-red-50 border-red-200"
-                        onClick={() => openDisputeDialog(lead.lead_id, lead.campaign_id)}
-                      >
-                        <AlertCircle className="h-4 w-4 mr-1" />
-                        Report
+                      <Badge variant="secondary">New</Badge>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {disputedLeads.includes(lead.lead_id) ? (
+                      <Badge variant="outline">Disputed</Badge>
+                    ) : (
+                      <Button variant="outline" size="sm" onClick={() => handleDisputeLead(lead)}>
+                        Dispute
                       </Button>
                     )}
                   </TableCell>
@@ -240,44 +207,38 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
           </Table>
         </div>
       )}
-      
-      <Dialog open={disputeDialog.open} onOpenChange={(open) => !open && closeDisputeDialog()}>
-        <DialogContent>
+
+      <Dialog open={isDisputeDialogOpen} onOpenChange={setIsDisputeDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Report Bad Lead</DialogTitle>
+            <DialogTitle>Dispute Lead</DialogTitle>
             <DialogDescription>
-              Please provide a reason why this lead does not meet your requirements.
+              Please provide a reason for disputing this lead.
             </DialogDescription>
           </DialogHeader>
-          
-          <div className="space-y-4 py-4">
-            <Textarea
-              placeholder="Reason for reporting this lead..."
-              value={disputeReason}
-              onChange={(e) => setDisputeReason(e.target.value)}
-              className="min-h-[100px]"
-            />
+          <div className="grid gap-4 py-4">
+            <div className="space-y-2">
+              <label htmlFor="disputeReason" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed">
+                Reason for Dispute
+              </label>
+              <textarea
+                id="disputeReason"
+                className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
+                placeholder="Enter your reason here"
+                value={disputeReason}
+                onChange={(e) => setDisputeReason(e.target.value)}
+              />
+            </div>
           </div>
-          
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={closeDisputeDialog}>
-              Cancel
-            </Button>
-            <Button 
-              onClick={submitDispute} 
-              disabled={submittingDispute}
-              className="bg-red-600 hover:bg-red-700"
-            >
-              {submittingDispute ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Submitting...
-                </>
-              ) : (
-                'Submit Report'
-              )}
-            </Button>
-          </DialogFooter>
+          <Button onClick={submitDispute} disabled={submittingDispute}>
+            {submittingDispute ? (
+              <>
+                Submitting <Loader2 className="h-4 w-4 ml-2 animate-spin" />
+              </>
+            ) : (
+              "Submit Dispute"
+            )}
+          </Button>
         </DialogContent>
       </Dialog>
     </div>

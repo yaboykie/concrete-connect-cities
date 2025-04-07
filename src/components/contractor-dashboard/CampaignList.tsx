@@ -47,7 +47,14 @@ const CampaignList: React.FC<CampaignListProps> = ({ userId }) => {
       
       if (error) throw error;
       
-      setCampaigns(data || []);
+      // Type assertion to ensure the data matches our Campaign interface
+      const typedCampaigns = data?.map(campaign => ({
+        ...campaign,
+        lead_type_preference: campaign.lead_type_preference as 'standard' | 'priority' | 'both',
+        lead_cap_type: campaign.lead_cap_type as 'weekly' | 'monthly'
+      })) || [];
+      
+      setCampaigns(typedCampaigns);
     } catch (error) {
       console.error('Error fetching campaigns:', error);
       toast({
