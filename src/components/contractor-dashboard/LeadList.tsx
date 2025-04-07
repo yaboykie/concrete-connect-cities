@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { 
   Table, TableBody, TableCell, TableHead, 
@@ -78,7 +79,9 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
       if (error) throw error;
       
       if (data) {
-        setDisputedLeads(data.map((item: { lead_id: string }) => item.lead_id));
+        // Properly cast the data to the expected type and extract lead_id values
+        const leadIds = (data as { lead_id: string }[]).map(item => item.lead_id);
+        setDisputedLeads(leadIds);
       }
     } catch (error) {
       console.error('Error fetching disputed leads:', error);
