@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
@@ -66,11 +67,15 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
 
   const fetchDisputedLeads = async () => {
     try {
-      const { data, error } = await supabase.rpc<UserDisputeResponse[], { user_id: string }>('get_user_disputes', { user_id: userId });
+      const { data, error } = await supabase.rpc<UserDisputeResponse[], { user_id: string }>(
+        'get_user_disputes', 
+        { user_id: userId }
+      );
       
       if (error) throw error;
       
       if (data) {
+        // Add array check to ensure data is an array before mapping
         const leadIds = Array.isArray(data) ? data.map(item => item.lead_id) : [];
         setDisputedLeads(leadIds);
       }
@@ -100,10 +105,13 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
       const { data, error } = await supabase.rpc<DisputeDetailResponse[], { 
         p_lead_id: string,
         p_contractor_id: string
-      }>('get_dispute_details', { 
-        p_lead_id: lead.lead_id,
-        p_contractor_id: userId
-      });
+      }>(
+        'get_dispute_details', 
+        { 
+          p_lead_id: lead.lead_id,
+          p_contractor_id: userId
+        }
+      );
       
       if (error) throw error;
       
@@ -173,17 +181,20 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
         return;
       }
       
-      const { error } = await supabase.rpc<null, {
+      const { error } = await supabase.rpc<void, {
         p_lead_id: string,
         p_contractor_id: string,
         p_campaign_id: string,
         p_reason: string
-      }>('submit_lead_dispute', {
-        p_lead_id: selectedLead.lead_id,
-        p_contractor_id: userId,
-        p_campaign_id: campaignData.campaign_id,
-        p_reason: finalReason
-      });
+      }>(
+        'submit_lead_dispute', 
+        {
+          p_lead_id: selectedLead.lead_id,
+          p_contractor_id: userId,
+          p_campaign_id: campaignData.campaign_id,
+          p_reason: finalReason
+        }
+      );
       
       if (error) throw error;
       
