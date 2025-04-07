@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Phone, Mail, MapPin, Facebook, Twitter, Instagram, Linkedin } from 'lucide-react';
+import { Phone, Mail, MapPin, Facebook, Twitter, Instagram, Linkedin, LogIn } from 'lucide-react';
 
 const Footer = () => {
   return (
@@ -65,6 +65,10 @@ const Footer = () => {
           <div className="mt-2 space-x-4">
             <Link to="/privacy-policy" className="hover:text-white">Privacy Policy</Link>
             <Link to="/terms-of-service" className="hover:text-white">Terms of Service</Link>
+            <Link to="/contractor/login" className="flex items-center justify-center space-x-1 hover:text-white">
+              <LogIn className="h-4 w-4" />
+              <span>Contractor Login</span>
+            </Link>
             <a href="/sitemap.xml" className="hover:text-white">Sitemap</a>
           </div>
         </div>

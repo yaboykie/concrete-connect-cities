@@ -21,6 +21,8 @@ import ArizonaCostEstimator from '@/pages/ArizonaCostEstimator';
 import StateDrivewayEstimator from '@/pages/StateDrivewayEstimator';
 import ContractorSignup from '@/pages/ContractorSignup';
 import ContractorDashboard from '@/pages/contractor/Dashboard';
+import ContractorLogin from '@/pages/contractor/Login';
+import AuthGuard from '@/components/contractor-dashboard/AuthGuard';
 
 // Scroll to top component
 const ScrollToTop = () => {
@@ -83,7 +85,12 @@ const App = () => (
             <Route path="/concretersignup/thank-you" element={<ConcreterSignupThankYou />} />
             
             {/* Contractor routes */}
-            <Route path="/contractor/dashboard" element={<ContractorDashboard />} />
+            <Route path="/contractor/login" element={<ContractorLogin />} />
+            <Route path="/contractor/dashboard" element={
+              <AuthGuard>
+                <ContractorDashboard />
+              </AuthGuard>
+            } />
             <Route path="/contractorsignup" element={<ContractorSignup />} />
             
             {/* Example direct routes to locations - using redirect in DrivewayConcreterLocations */}

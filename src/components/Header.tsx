@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { MapPin, Phone, Menu, X, ChevronRight } from 'lucide-react';
+import { MapPin, Phone, Menu, X, ChevronRight, LogIn } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import {
   NavigationMenu,
@@ -84,6 +84,10 @@ const Header = () => {
               <span>Serving the USA</span>
             </div>
             <QuoteFormModal />
+            <Link to="/contractor/login" className="flex items-center text-sm text-gray-600 hover:text-brand-blue">
+              <LogIn className="h-4 w-4 mr-1" />
+              <span>Contractor Login</span>
+            </Link>
           </div>
           
           <div className="md:hidden flex items-center">
@@ -125,6 +129,11 @@ const Header = () => {
                   </Link>
                 </div>
               </div>
+              
+              <Link to="/contractor/login" className="flex items-center py-2 text-gray-700 hover:text-brand-blue">
+                <LogIn className="h-4 w-4 mr-2" />
+                <span>Contractor Login</span>
+              </Link>
               
               <QuoteFormModal buttonClassName="cta-button w-full" />
             </nav>
