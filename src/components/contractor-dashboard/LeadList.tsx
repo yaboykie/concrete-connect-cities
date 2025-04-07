@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
@@ -72,7 +71,6 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
       if (error) throw error;
       
       if (data) {
-        // Ensure data is treated as an array and extract lead_id values
         const leadIds = Array.isArray(data) ? data.map(item => item.lead_id) : [];
         setDisputedLeads(leadIds);
       }
@@ -82,7 +80,6 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
   };
 
   const handleDisputeLead = (lead: Lead) => {
-    // Check if already disputed
     if (disputedLeads.includes(lead.lead_id)) {
       toast({
         title: "Already Disputed",
@@ -110,7 +107,6 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
       
       if (error) throw error;
       
-      // Ensure data is treated as an array before checking length
       if (data && Array.isArray(data) && data.length > 0) {
         const disputeData = data[0];
         setCurrentDisputeDetails(disputeData);
@@ -132,26 +128,21 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
     }
   };
 
-  // Handle reason selection change
   const handleReasonChange = (value: string) => {
     setSelectedReason(value);
     
-    // If it's not "Other", use the selected reason as the dispute reason
     if (value !== "Other") {
       setDisputeReason(value);
     } else {
-      // Clear the custom reason field when selecting "Other"
       setDisputeReason('');
     }
   };
 
   const submitDispute = async () => {
-    // Validate inputs
     if (!selectedLead) return;
     
     let finalReason = selectedReason;
     
-    // If "Other" is selected, use the custom reason text
     if (selectedReason === "Other") {
       if (!disputeReason.trim()) {
         toast({
@@ -167,7 +158,6 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
     try {
       setSubmittingDispute(true);
       
-      // Find the campaign_id for this lead
       const { data: campaignData } = await supabase
         .from('campaigns')
         .select('campaign_id')
@@ -202,7 +192,6 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
         description: "Your lead dispute has been submitted for review",
       });
       
-      // Update local state with the new disputed lead
       if (selectedLead.lead_id) {
         setDisputedLeads(prev => [...prev, selectedLead.lead_id]);
       }
@@ -247,7 +236,6 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
         />
       )}
 
-      {/* Dispute Modal */}
       <DisputeModal
         open={isDisputeDialogOpen}
         onOpenChange={setIsDisputeDialogOpen}
@@ -259,7 +247,6 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
         submitting={submittingDispute}
       />
 
-      {/* View Dispute Details Modal */}
       <ViewDisputeModal
         open={isViewDisputeOpen}
         onOpenChange={setIsViewDisputeOpen}
