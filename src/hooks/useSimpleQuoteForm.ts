@@ -79,8 +79,8 @@ export const useSimpleQuoteForm = ({
 
   const validateField = async (fieldName: string): Promise<boolean> => {
     try {
-      // Create a schema just for this field
-      const fieldSchema = Yup.reach(quoteFormSchema, fieldName);
+      // Create a schema just for this field - adding the type cast to fix the TypeScript error
+      const fieldSchema = Yup.reach(quoteFormSchema, fieldName) as Yup.AnySchema;
       await fieldSchema.validate(formData[fieldName as keyof FormData]);
       
       // Remove error for this field if it exists
