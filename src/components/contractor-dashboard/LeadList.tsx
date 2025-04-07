@@ -67,6 +67,7 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
 
   const fetchDisputedLeads = async () => {
     try {
+      // Fix TypeScript error by declaring correct return type for Supabase RPC call
       const { data, error } = await supabase.rpc<UserDisputeResponse[], { user_id: string }>(
         'get_user_disputes', 
         { user_id: userId }
@@ -102,6 +103,7 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
 
   const handleViewDispute = async (lead: Lead) => {
     try {
+      // Fix TypeScript error by declaring correct return type for Supabase RPC call
       const { data, error } = await supabase.rpc<DisputeDetailResponse[], { 
         p_lead_id: string,
         p_contractor_id: string
@@ -181,6 +183,7 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
         return;
       }
       
+      // Fix TypeScript error by declaring correct return type for Supabase RPC call
       const { error } = await supabase.rpc<void, {
         p_lead_id: string,
         p_contractor_id: string,
