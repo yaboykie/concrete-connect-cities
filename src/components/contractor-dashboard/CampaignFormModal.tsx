@@ -14,6 +14,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Slider } from '@/components/ui/slider';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface CampaignFormModalProps {
   isOpen: boolean;
@@ -33,6 +34,7 @@ const CampaignFormModal: React.FC<CampaignFormModalProps> = ({
     formErrors,
     isSubmitting,
     handleInputChange,
+    handleSelectChange,
     handleJobTypeChange,
     handleRadiusChange,
     handleSubmit,
@@ -149,6 +151,58 @@ const CampaignFormModal: React.FC<CampaignFormModalProps> = ({
               </div>
               {formErrors.jobTypes && (
                 <p className="text-sm text-red-500 mt-1">{formErrors.jobTypes}</p>
+              )}
+            </div>
+            
+            <div>
+              <Label htmlFor="leadTypePreference">Lead Type Preference</Label>
+              <Select 
+                value={formData.leadTypePreference}
+                onValueChange={(value) => handleSelectChange('leadTypePreference', value)}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select Lead Type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="standard">Standard Only</SelectItem>
+                  <SelectItem value="priority">Priority Only</SelectItem>
+                  <SelectItem value="both">Both (Recommended)</SelectItem>
+                </SelectContent>
+              </Select>
+              {formErrors.leadTypePreference && (
+                <p className="text-sm text-red-500 mt-1">{formErrors.leadTypePreference}</p>
+              )}
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="leadCapType">Lead Cap</Label>
+              <div className="grid grid-cols-2 gap-4">
+                <Select 
+                  value={formData.leadCapType}
+                  onValueChange={(value) => handleSelectChange('leadCapType', value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Cap Type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="weekly">Weekly Cap</SelectItem>
+                    <SelectItem value="monthly">Monthly Cap</SelectItem>
+                  </SelectContent>
+                </Select>
+                
+                <Input
+                  id="leadCapLimit"
+                  name="leadCapLimit"
+                  type="number"
+                  value={formData.leadCapLimit}
+                  min={1}
+                  max={100}
+                  onChange={handleInputChange}
+                  className={formErrors.leadCapLimit ? "border-red-500" : ""}
+                />
+              </div>
+              {formErrors.leadCapLimit && (
+                <p className="text-sm text-red-500 mt-1">{formErrors.leadCapLimit}</p>
               )}
             </div>
           </div>

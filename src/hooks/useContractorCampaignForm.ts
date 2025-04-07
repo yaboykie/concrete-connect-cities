@@ -11,6 +11,9 @@ interface FormData {
   zipCode: string;
   radiusKm: number;
   jobTypes: string[];
+  leadTypePreference: 'standard' | 'priority' | 'both';
+  leadCapType: 'weekly' | 'monthly';
+  leadCapLimit: number;
 }
 
 interface FormErrors {
@@ -50,6 +53,16 @@ const campaignSchema = Yup.object().shape({
   jobTypes: Yup.array()
     .min(1, 'Select at least one job type')
     .required('Job types are required'),
+  leadTypePreference: Yup.string()
+    .oneOf(['standard', 'priority', 'both'], 'Invalid lead type preference')
+    .required('Lead type preference is required'),
+  leadCapType: Yup.string()
+    .oneOf(['weekly', 'monthly'], 'Invalid cap type')
+    .required('Lead cap type is required'),
+  leadCapLimit: Yup.number()
+    .min(1, 'Minimum lead cap is 1')
+    .max(100, 'Maximum lead cap is 100')
+    .required('Lead cap limit is required'),
 });
 
 export const useContractorCampaignForm = ({ userId, onSuccess }: UseContractorCampaignFormProps) => {
@@ -60,6 +73,9 @@ export const useContractorCampaignForm = ({ userId, onSuccess }: UseContractorCa
     zipCode: '',
     radiusKm: 25,
     jobTypes: [],
+    leadTypePreference: 'both',
+    leadCapType: 'weekly',
+    leadCapLimit: 10,
   });
   const [formErrors, setFormErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -84,7 +100,7 @@ export const useContractorCampaignForm = ({ userId, onSuccess }: UseContractorCa
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     
     if (name === 'latitude' || name === 'longitude') {
@@ -92,12 +108,33 @@ export const useContractorCampaignForm = ({ userId, onSuccess }: UseContractorCa
         ...prev,
         [name]: value === '' ? null : parseFloat(value),
       }));
+    } else if (name === 'leadCapLimit') {
+      setFormData(prev => ({
+        ...prev,
+        [name]: parseInt(value, 10) || 0,
+      }));
     } else {
       setFormData(prev => ({
         ...prev,
         [name]: value,
       }));
     }
+    
+    // Clear the error for this field when user makes changes
+    if (formErrors[name]) {
+      setFormErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
+  };
+
+  const handleSelectChange = (name: string, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [name]: value,
+    }));
     
     // Clear the error for this field when user makes changes
     if (formErrors[name]) {
@@ -174,6 +211,9 @@ export const useContractorCampaignForm = ({ userId, onSuccess }: UseContractorCa
             radius_km: formData.radiusKm,
             job_types: formData.jobTypes,
             is_active: true,
+            lead_type_preference: formData.leadTypePreference,
+            lead_cap_type: formData.leadCapType,
+            lead_cap_limit: formData.leadCapLimit,
           }
         ]);
       
@@ -181,7 +221,10 @@ export const useContractorCampaignForm = ({ userId, onSuccess }: UseContractorCa
       
       trackInteraction('campaign_created', 'contractor_dashboard', {
         job_types: formData.jobTypes.join(','),
-        radius_km: formData.radiusKm
+        radius_km: formData.radiusKm,
+        lead_type_preference: formData.leadTypePreference,
+        lead_cap_type: formData.leadCapType,
+        lead_cap_limit: formData.leadCapLimit,
       });
       
       onSuccess();
@@ -200,6 +243,7 @@ export const useContractorCampaignForm = ({ userId, onSuccess }: UseContractorCa
     formErrors,
     isSubmitting,
     handleInputChange,
+    handleSelectChange,
     handleJobTypeChange,
     handleRadiusChange,
     handleSubmit

@@ -17,6 +17,9 @@ export type Database = {
           is_active: boolean | null
           job_types: string[]
           latitude: number
+          lead_cap_limit: number
+          lead_cap_type: string
+          lead_type_preference: string
           longitude: number
           name: string
           radius_km: number
@@ -28,6 +31,9 @@ export type Database = {
           is_active?: boolean | null
           job_types?: string[]
           latitude: number
+          lead_cap_limit?: number
+          lead_cap_type?: string
+          lead_type_preference?: string
           longitude: number
           name: string
           radius_km?: number
@@ -39,6 +45,9 @@ export type Database = {
           is_active?: boolean | null
           job_types?: string[]
           latitude?: number
+          lead_cap_limit?: number
+          lead_cap_type?: string
+          lead_type_preference?: string
           longitude?: number
           name?: string
           radius_km?: number
@@ -91,6 +100,48 @@ export type Database = {
           state?: string | null
         }
         Relationships: []
+      }
+      lead_disputes: {
+        Row: {
+          campaign_id: string
+          contractor_id: string
+          created_at: string
+          id: string
+          lead_id: string
+          reason: string | null
+        }
+        Insert: {
+          campaign_id: string
+          contractor_id: string
+          created_at?: string
+          id?: string
+          lead_id: string
+          reason?: string | null
+        }
+        Update: {
+          campaign_id?: string
+          contractor_id?: string
+          created_at?: string
+          id?: string
+          lead_id?: string
+          reason?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_disputes_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "campaigns"
+            referencedColumns: ["campaign_id"]
+          },
+          {
+            foreignKeyName: "lead_disputes_contractor_id_fkey"
+            columns: ["contractor_id"]
+            isOneToOne: false
+            referencedRelation: "contractor_signups"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       leads: {
         Row: {

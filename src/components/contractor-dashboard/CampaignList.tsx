@@ -18,6 +18,9 @@ interface Campaign {
   job_types: string[];
   is_active: boolean;
   created_at: string;
+  lead_type_preference: 'standard' | 'priority' | 'both';
+  lead_cap_type: 'weekly' | 'monthly';
+  lead_cap_limit: number;
 }
 
 interface CampaignListProps {
@@ -100,6 +103,8 @@ const CampaignList: React.FC<CampaignListProps> = ({ userId }) => {
                 <TableHead>Campaign Name</TableHead>
                 <TableHead>Job Types</TableHead>
                 <TableHead>Radius</TableHead>
+                <TableHead>Lead Type</TableHead>
+                <TableHead>Lead Cap</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Created</TableHead>
                 <TableHead>Actions</TableHead>
@@ -119,6 +124,15 @@ const CampaignList: React.FC<CampaignListProps> = ({ userId }) => {
                     </div>
                   </TableCell>
                   <TableCell>{campaign.radius_km} km</TableCell>
+                  <TableCell>
+                    <Badge variant={campaign.lead_type_preference === 'priority' ? 'success' : 'secondary'}>
+                      {campaign.lead_type_preference === 'both' ? 'Standard & Priority' : 
+                       campaign.lead_type_preference === 'priority' ? 'Priority Only' : 'Standard Only'}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    {campaign.lead_cap_limit} / {campaign.lead_cap_type}
+                  </TableCell>
                   <TableCell>
                     <Badge variant={campaign.is_active ? "success" : "secondary"}>
                       {campaign.is_active ? 'Active' : 'Paused'}

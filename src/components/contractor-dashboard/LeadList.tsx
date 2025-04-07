@@ -2,22 +2,38 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/components/ui/use-toast';
+import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Loader2, AlertCircle } from 'lucide-react';
+import { AlertCircle, Loader2 } from 'lucide-react';
 import { useAnalyticsTracking } from '@/hooks/useAnalyticsTracking';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogDescription,
+} from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
 
 interface Lead {
   lead_id: string;
   name: string;
+  phone: string;
+  email: string;
   job_type: string;
-  formatted_job_type: string;
+  formatted_job_type?: string;
   zip_code: string;
   created_at: string;
   campaign_id: string;
   campaign_name?: string;
-  is_disputed?: boolean;
+  lead_type: 'standard' | 'priority';
+  disputed?: boolean;
+}
+
+interface CampaignMap {
+  [key: string]: string;
 }
 
 interface LeadListProps {
@@ -27,53 +43,38 @@ interface LeadListProps {
 const LeadList: React.FC<LeadListProps> = ({ userId }) => {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
-  const [disputedLeads, setDisputedLeads] = useState<Record<string, boolean>>({});
+  const [campaigns, setCampaigns] = useState<CampaignMap>({});
+  const [disputes, setDisputes] = useState<string[]>([]);
+  const [disputeDialog, setDisputeDialog] = useState({ open: false, leadId: '', campaignId: '' });
+  const [disputeReason, setDisputeReason] = useState('');
+  const [submittingDispute, setSubmittingDispute] = useState(false);
+  
   const { trackInteraction } = useAnalyticsTracking();
 
   useEffect(() => {
     fetchLeads();
-    fetchDisputedLeads();
+    fetchCampaignNames();
+    fetchDisputes();
   }, [userId]);
 
   const fetchLeads = async () => {
     try {
       setLoading(true);
-      // Get all campaigns for this contractor
-      const { data: campaigns, error: campaignsError } = await supabase
-        .from('campaigns')
-        .select('campaign_id, name')
-        .eq('contractor_id', userId);
-
-      if (campaignsError) throw campaignsError;
-
-      if (!campaigns || campaigns.length === 0) {
-        setLeads([]);
-        setLoading(false);
-        return;
-      }
-
-      const campaignIds = campaigns.map(c => c.campaign_id);
-      const campaignNameMap = campaigns.reduce((acc, curr) => {
-        acc[curr.campaign_id] = curr.name;
-        return acc;
-      }, {} as Record<string, string>);
-
-      // Get leads matched to these campaigns
+      // Fetch leads that match the contractor's campaigns
       const { data, error } = await supabase
         .from('leads')
         .select('*')
-        .in('campaign_id', campaignIds)
-        .order('created_at', { ascending: false });
-
+        .contains('matched_contractor_ids', [userId]);
+      
       if (error) throw error;
-
-      // Add campaign name to each lead
-      const leadsWithCampaignNames = (data || []).map(lead => ({
+      
+      // Add lead type based on some business logic (this is a placeholder)
+      const processedLeads = (data || []).map(lead => ({
         ...lead,
-        campaign_name: campaignNameMap[lead.campaign_id] || 'Unknown Campaign'
+        lead_type: lead.job_type.includes('premium') ? 'priority' : 'standard'
       }));
       
-      setLeads(leadsWithCampaignNames);
+      setLeads(processedLeads);
     } catch (error) {
       console.error('Error fetching leads:', error);
       toast({
@@ -86,61 +87,99 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
     }
   };
 
-  const fetchDisputedLeads = async () => {
+  const fetchCampaignNames = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('campaigns')
+        .select('campaign_id, name')
+        .eq('contractor_id', userId);
+      
+      if (error) throw error;
+      
+      const campaignMap: CampaignMap = {};
+      (data || []).forEach(campaign => {
+        campaignMap[campaign.campaign_id] = campaign.name;
+      });
+      
+      setCampaigns(campaignMap);
+    } catch (error) {
+      console.error('Error fetching campaign names:', error);
+    }
+  };
+
+  const fetchDisputes = async () => {
     try {
       const { data, error } = await supabase
         .from('lead_disputes')
         .select('lead_id')
         .eq('contractor_id', userId);
-
+      
       if (error) throw error;
-
-      const disputed = (data || []).reduce((acc, dispute) => {
-        acc[dispute.lead_id] = true;
-        return acc;
-      }, {} as Record<string, boolean>);
-
-      setDisputedLeads(disputed);
+      
+      setDisputes((data || []).map(dispute => dispute.lead_id));
     } catch (error) {
-      console.error('Error fetching disputed leads:', error);
+      console.error('Error fetching disputes:', error);
     }
   };
 
-  const handleDisputeLead = async (leadId: string, campaignId: string) => {
+  const openDisputeDialog = (leadId: string, campaignId: string) => {
+    setDisputeDialog({ open: true, leadId, campaignId });
+    setDisputeReason('');
+  };
+
+  const closeDisputeDialog = () => {
+    setDisputeDialog({ open: false, leadId: '', campaignId: '' });
+    setDisputeReason('');
+  };
+
+  const submitDispute = async () => {
+    if (!disputeDialog.leadId || !disputeDialog.campaignId) return;
+    
+    setSubmittingDispute(true);
+    
     try {
       const { error } = await supabase
         .from('lead_disputes')
-        .insert([
-          {
-            lead_id: leadId,
-            contractor_id: userId,
-            campaign_id: campaignId,
-            reason: 'Disputed by contractor'
-          }
-        ]);
-
+        .insert({
+          lead_id: disputeDialog.leadId,
+          contractor_id: userId,
+          campaign_id: disputeDialog.campaignId,
+          reason: disputeReason || 'No reason provided'
+        });
+      
       if (error) throw error;
-
-      setDisputedLeads(prev => ({ ...prev, [leadId]: true }));
-      trackInteraction('lead_disputed', 'contractor_dashboard');
-
-      toast({
-        title: "Lead reported",
-        description: "We have received your report and will review it",
+      
+      // Update local state
+      setDisputes(prev => [...prev, disputeDialog.leadId]);
+      
+      trackInteraction('lead_disputed', 'contractor_dashboard', {
+        lead_id: disputeDialog.leadId,
+        campaign_id: disputeDialog.campaignId
       });
+      
+      toast({
+        title: "Lead disputed",
+        description: "Your dispute has been recorded and will be reviewed.",
+      });
+      
+      closeDisputeDialog();
     } catch (error) {
-      console.error('Error disputing lead:', error);
+      console.error('Error submitting dispute:', error);
       toast({
         title: "Error",
-        description: "Failed to report lead",
+        description: "Failed to submit dispute",
         variant: "destructive",
       });
+    } finally {
+      setSubmittingDispute(false);
     }
   };
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">My Leads</h1>
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold">My Leads</h1>
+      </div>
       
       {loading ? (
         <div className="flex justify-center py-12">
@@ -149,8 +188,8 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
       ) : leads.length === 0 ? (
         <div className="bg-white rounded-lg shadow p-6 text-center">
           <h3 className="text-lg font-medium mb-2">No leads yet</h3>
-          <p className="text-gray-600">
-            Create campaigns to start receiving leads in your area
+          <p className="text-gray-600 mb-4">
+            Leads will appear here when they match your campaign criteria
           </p>
         </div>
       ) : (
@@ -161,6 +200,8 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
                 <TableHead>Date</TableHead>
                 <TableHead>Lead Type</TableHead>
                 <TableHead>Campaign</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Job Type</TableHead>
                 <TableHead>ZIP Code</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
@@ -168,29 +209,28 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
             <TableBody>
               {leads.map((lead) => (
                 <TableRow key={lead.lead_id}>
+                  <TableCell>{new Date(lead.created_at).toLocaleDateString()}</TableCell>
                   <TableCell>
-                    {new Date(lead.created_at).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="outline">
-                      {lead.formatted_job_type || lead.job_type}
+                    <Badge variant={lead.lead_type === 'priority' ? 'success' : 'secondary'}>
+                      {lead.lead_type === 'priority' ? 'Priority' : 'Standard'}
                     </Badge>
                   </TableCell>
-                  <TableCell>{lead.campaign_name}</TableCell>
+                  <TableCell>{campaigns[lead.campaign_id] || 'Unknown'}</TableCell>
+                  <TableCell className="font-medium">{lead.name}</TableCell>
+                  <TableCell>{lead.formatted_job_type || lead.job_type}</TableCell>
                   <TableCell>{lead.zip_code}</TableCell>
                   <TableCell>
-                    {disputedLeads[lead.lead_id] ? (
-                      <div className="flex items-center text-amber-600 text-sm">
-                        <AlertCircle className="h-4 w-4 mr-1" />
-                        Reported
-                      </div>
+                    {disputes.includes(lead.lead_id) ? (
+                      <Badge variant="secondary" className="cursor-not-allowed">Disputed</Badge>
                     ) : (
                       <Button 
                         variant="outline" 
-                        size="sm"
-                        onClick={() => handleDisputeLead(lead.lead_id, lead.campaign_id)}
+                        size="sm" 
+                        className="text-red-600 hover:bg-red-50 border-red-200"
+                        onClick={() => openDisputeDialog(lead.lead_id, lead.campaign_id)}
                       >
-                        Report Bad Lead
+                        <AlertCircle className="h-4 w-4 mr-1" />
+                        Report
                       </Button>
                     )}
                   </TableCell>
@@ -200,6 +240,46 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
           </Table>
         </div>
       )}
+      
+      <Dialog open={disputeDialog.open} onOpenChange={(open) => !open && closeDisputeDialog()}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Report Bad Lead</DialogTitle>
+            <DialogDescription>
+              Please provide a reason why this lead does not meet your requirements.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4 py-4">
+            <Textarea
+              placeholder="Reason for reporting this lead..."
+              value={disputeReason}
+              onChange={(e) => setDisputeReason(e.target.value)}
+              className="min-h-[100px]"
+            />
+          </div>
+          
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={closeDisputeDialog}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={submitDispute} 
+              disabled={submittingDispute}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              {submittingDispute ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Submitting...
+                </>
+              ) : (
+                'Submit Report'
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
