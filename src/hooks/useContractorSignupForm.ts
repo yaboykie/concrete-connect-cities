@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { toast } from '@/components/ui/use-toast';
 import * as Yup from 'yup';
 import { useAnalyticsTracking } from './useAnalyticsTracking';
+import { supabase } from '@/integrations/supabase/client';
 
 interface FormData {
   businessName: string;
@@ -173,7 +174,11 @@ export const useContractorSignupForm = ({
     if (onSubmit) {
       try {
         // Use the parent component's submit handler
-        await onSubmit(submissionData);
+        const result = await onSubmit(submissionData);
+        
+        if (!result.success) {
+          throw new Error(result.error || 'Submission failed');
+        }
         
         // Track successful submission
         trackInteraction('contractor_signup_success', 'contractor_signup', {
@@ -188,13 +193,14 @@ export const useContractorSignupForm = ({
         });
         
         toast({
-          title: "Thanks! Your account has been created.",
-          description: "You'll receive a confirmation shortly.",
+          title: "You're in!",
+          description: "Let's get your first 3 leads set up.",
         });
         
         setSubmissionSuccess(true);
       } catch (error) {
         console.error('Error in form submission:', error);
+        
         // Track submission error
         trackInteraction('contractor_signup_error', 'contractor_signup', {
           error_message: error instanceof Error ? error.message : 'Unknown error',
@@ -202,8 +208,8 @@ export const useContractorSignupForm = ({
         });
         
         toast({
-          title: "Submission Error",
-          description: "There was a problem submitting your request. Please try again.",
+          title: "Signup Error",
+          description: "That email or phone is already registered.",
           variant: "destructive",
           duration: 5000,
         });
@@ -216,8 +222,8 @@ export const useContractorSignupForm = ({
         console.log('Contractor signup data:', submissionData);
         
         toast({
-          title: "Thanks! Your account has been created.",
-          description: "You'll receive a confirmation shortly.",
+          title: "You're in!",
+          description: "Let's get your first 3 leads set up.",
         });
         
         setIsSubmitting(false);

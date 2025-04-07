@@ -4,18 +4,51 @@ import { Helmet } from 'react-helmet-async';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ContractorSignupForm from '@/components/contractor-signup/ContractorSignupForm';
+import { supabase } from '@/integrations/supabase/client';
 
 const ContractorSignup = () => {
-  // Mock onSubmit handler - in the future, this would connect to Supabase or an API
+  // Real onSubmit handler connected to Supabase
   const handleSubmit = async (data: any) => {
-    // Mock API call
-    console.log('Submitting contractor data:', data);
-    
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Return mock response
-    return { success: true };
+    try {
+      // Check if the user exists
+      const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.contact);
+      
+      // Create random password
+      const password = Math.random().toString(36).slice(-10);
+      
+      // Sign up the user in Supabase Auth
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        [isEmail ? 'email' : 'phone']: data.contact,
+        password
+      });
+      
+      if (authError) throw authError;
+      
+      // Insert into contractor_signups table
+      const { error: insertError } = await supabase
+        .from('contractor_signups')
+        .insert([
+          { 
+            id: authData.user?.id,
+            business_name: data.businessName,
+            name: data.contactName,
+            [isEmail ? 'email' : 'phone']: data.contact,
+            signup_source: window.location.href || 'direct'
+          }
+        ]);
+      
+      if (insertError) throw insertError;
+      
+      // Return success response
+      return { success: true, user: authData.user };
+      
+    } catch (error) {
+      console.error('Error in contractor signup:', error);
+      return { 
+        success: false, 
+        error: error instanceof Error ? error.message : 'Unknown error occurred'
+      };
+    }
   };
 
   return (
