@@ -67,7 +67,7 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
 
   const fetchDisputedLeads = async () => {
     try {
-      const { data, error } = await supabase.rpc<UserDisputeResponse[]>('get_user_disputes', { user_id: userId });
+      const { data, error } = await supabase.rpc<UserDisputeResponse[], { user_id: string }>('get_user_disputes', { user_id: userId });
       
       if (error) throw error;
       
@@ -100,7 +100,10 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
 
   const handleViewDispute = async (lead: Lead) => {
     try {
-      const { data, error } = await supabase.rpc<DisputeDetailResponse[]>('get_dispute_details', { 
+      const { data, error } = await supabase.rpc<DisputeDetailResponse[], { 
+        p_lead_id: string,
+        p_contractor_id: string
+      }>('get_dispute_details', { 
         p_lead_id: lead.lead_id,
         p_contractor_id: userId
       });
@@ -180,7 +183,12 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
         return;
       }
       
-      const { error } = await supabase.rpc('submit_lead_dispute', {
+      const { error } = await supabase.rpc<null, {
+        p_lead_id: string,
+        p_contractor_id: string,
+        p_campaign_id: string,
+        p_reason: string
+      }>('submit_lead_dispute', {
         p_lead_id: selectedLead.lead_id,
         p_contractor_id: userId,
         p_campaign_id: campaignData.campaign_id,
