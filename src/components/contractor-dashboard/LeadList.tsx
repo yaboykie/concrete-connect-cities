@@ -114,13 +114,13 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
 
   const fetchDisputedLeads = async () => {
     try {
-      const { data, error } = await supabase.rpc('get_user_disputes', { user_id: userId });
+      const { data, error } = await supabase.rpc<UserDisputeResponse[]>('get_user_disputes', { user_id: userId });
       
       if (error) throw error;
       
       if (data) {
         // Properly cast the data to the expected type and extract lead_id values
-        const leadIds = (data as UserDisputeResponse[]).map(item => item.lead_id);
+        const leadIds = data.map(item => item.lead_id);
         setDisputedLeads(leadIds);
       }
     } catch (error) {
@@ -147,16 +147,16 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
 
   const handleViewDispute = async (lead: Lead) => {
     try {
-      const { data, error } = await supabase.rpc('get_dispute_details', { 
+      const { data, error } = await supabase.rpc<DisputeDetailResponse[]>('get_dispute_details', { 
         p_lead_id: lead.lead_id,
         p_contractor_id: userId
       });
       
       if (error) throw error;
       
-      if (data && (data as DisputeDetailResponse[]).length > 0) {
+      if (data && data.length > 0) {
         // Cast the data to the expected type
-        const disputeData = (data as DisputeDetailResponse[])[0];
+        const disputeData = data[0];
         setCurrentDisputeDetails(disputeData);
         setIsViewDisputeOpen(true);
       } else {
