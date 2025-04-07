@@ -17,19 +17,30 @@ const ContractorSignup = () => {
       const password = Math.random().toString(36).slice(-10);
       
       // Sign up the user in Supabase Auth
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        [isEmail ? 'email' : 'phone']: data.contact,
-        password
-      });
+      const authData = isEmail 
+        ? await supabase.auth.signUp({
+            email: data.contact,
+            password
+          })
+        : await supabase.auth.signUp({
+            phone: data.contact,
+            password,
+            options: {
+              data: {
+                name: data.contactName,
+                business_name: data.businessName
+              }
+            }
+          });
       
-      if (authError) throw authError;
+      if (authData.error) throw authData.error;
       
       // Insert into contractor_signups table
       const { error: insertError } = await supabase
         .from('contractor_signups')
         .insert([
           { 
-            id: authData.user?.id,
+            id: authData.data.user?.id,
             business_name: data.businessName,
             name: data.contactName,
             [isEmail ? 'email' : 'phone']: data.contact,
@@ -40,7 +51,7 @@ const ContractorSignup = () => {
       if (insertError) throw insertError;
       
       // Return success response
-      return { success: true, user: authData.user };
+      return { success: true, user: authData.data.user };
       
     } catch (error) {
       console.error('Error in contractor signup:', error);

@@ -1,68 +1,66 @@
-
-import React, { useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet-async';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useUser } from '@/hooks/useUser';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Loader2 } from 'lucide-react';
+import CampaignList from './CampaignList';
+import LeadList from './LeadList';
 import { supabase } from '@/integrations/supabase/client';
+import { toast } from '@/components/ui/use-toast';
+import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import ContractorDashboardLayout from '@/components/contractor-dashboard/ContractorDashboardLayout';
-import CampaignList from '@/components/contractor-dashboard/CampaignList';
-import LeadList from '@/components/contractor-dashboard/LeadList';
-import { useAnalyticsTracking } from '@/hooks/useAnalyticsTracking';
-import { toast } from '@/components/ui/use-toast';
 
 const ContractorDashboard = () => {
-  const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const { user, loading: userLoading } = useUser();
   const [activeTab, setActiveTab] = useState('campaigns');
+  const [contractorData, setContractorData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const { trackInteraction } = useAnalyticsTracking();
 
   useEffect(() => {
-    const checkUser = async () => {
-      const { data } = await supabase.auth.getSession();
-      if (!data.session?.user) {
-        navigate('/contractorsignup');
-        return;
-      }
-      setUser(data.session.user);
+    if (!userLoading && !user) {
+      navigate('/login');
+    } else if (user) {
+      fetchContractorData();
+    }
+  }, [user, userLoading, navigate]);
+
+  const fetchContractorData = async () => {
+    if (!user?.id) return;
+    
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('contractor_signups')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+      
+      if (error) throw error;
+      
+      setContractorData(data);
+    } catch (error) {
+      console.error('Error fetching contractor data:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load your profile data",
+        variant: "destructive",
+      });
+    } finally {
       setLoading(false);
-      trackInteraction('dashboard_view_loaded', 'contractor_dashboard');
-    };
-
-    checkUser();
-
-    // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_OUT') {
-        navigate('/contractorsignup');
-      } else if (session?.user) {
-        setUser(session.user);
-      }
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [navigate, trackInteraction]);
-
-  const handleLogout = async () => {
-    trackInteraction('logout_click', 'contractor_dashboard');
-    await supabase.auth.signOut();
-    toast({
-      title: "Logged out successfully",
-      description: "You have been logged out of your account",
-    });
-    navigate('/contractorsignup');
+    }
   };
 
-  if (loading) {
+  if (userLoading || loading) {
     return (
       <>
         <Header />
-        <div className="container mx-auto px-4 py-16">
+        <div className="container mx-auto px-4 py-16 flex justify-center items-center min-h-[60vh]">
           <div className="text-center">
-            <p className="text-lg">Loading your dashboard...</p>
+            <Loader2 className="h-12 w-12 animate-spin text-blue-500 mx-auto mb-4" />
+            <h2 className="text-xl font-medium">Loading your dashboard...</h2>
           </div>
         </div>
         <Footer />
@@ -70,38 +68,77 @@ const ContractorDashboard = () => {
     );
   }
 
+  if (!user) {
+    return null; // Redirect handled in useEffect
+  }
+
   return (
     <>
       <Helmet>
         <title>Contractor Dashboard | Manage Your Campaigns</title>
-        <meta name="description" content="Manage your campaigns and leads as a contractor" />
       </Helmet>
-
+      
       <Header />
       
-      <ContractorDashboardLayout 
-        activeTab={activeTab} 
-        setActiveTab={setActiveTab} 
-        onLogout={handleLogout}
-        user={user}
-      >
-        {activeTab === 'campaigns' && (
-          <CampaignList userId={user.id} />
-        )}
+      <main className="container mx-auto px-4 py-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold mb-2">
+            Welcome, {contractorData?.business_name || 'Contractor'}
+          </h1>
+          <p className="text-gray-600">
+            Manage your campaigns and view your leads
+          </p>
+        </div>
         
-        {activeTab === 'leads' && (
-          <LeadList userId={user.id} />
-        )}
-        
-        {activeTab === 'billing' && (
-          <div className="p-6 bg-white rounded-lg shadow">
-            <h2 className="text-2xl font-bold mb-4">Billing</h2>
-            <p className="text-gray-600">
-              Billing functionality coming soon. Stay tuned for updates!
-            </p>
-          </div>
-        )}
-      </ContractorDashboardLayout>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className="bg-gray-100">
+            <TabsTrigger value="campaigns">Campaigns</TabsTrigger>
+            <TabsTrigger value="leads">Leads</TabsTrigger>
+            <TabsTrigger value="account">Account</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="campaigns" className="space-y-6">
+            <CampaignList userId={user.id} />
+          </TabsContent>
+          
+          <TabsContent value="leads" className="space-y-6">
+            <LeadList userId={user.id} />
+          </TabsContent>
+          
+          <TabsContent value="account" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Account Information</CardTitle>
+                <CardDescription>
+                  Your business and contact details
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <h3 className="font-medium text-sm text-gray-500">Business Name</h3>
+                  <p>{contractorData?.business_name || 'Not provided'}</p>
+                </div>
+                <div>
+                  <h3 className="font-medium text-sm text-gray-500">Contact Name</h3>
+                  <p>{contractorData?.name || 'Not provided'}</p>
+                </div>
+                <div>
+                  <h3 className="font-medium text-sm text-gray-500">Email</h3>
+                  <p>{contractorData?.email || 'Not provided'}</p>
+                </div>
+                <div>
+                  <h3 className="font-medium text-sm text-gray-500">Phone</h3>
+                  <p>{contractorData?.phone || 'Not provided'}</p>
+                </div>
+                <div>
+                  <h3 className="font-medium text-sm text-gray-500">Primary Location</h3>
+                  <p>{contractorData?.primary_town || 'Not provided'}</p>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </main>
       
       <Footer />
     </>

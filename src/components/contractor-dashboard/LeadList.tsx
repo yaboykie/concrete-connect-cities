@@ -71,10 +71,10 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
       // Add lead type based on some business logic (this is a placeholder)
       const processedLeads = (data || []).map(lead => ({
         ...lead,
-        lead_type: lead.job_type.includes('premium') ? 'priority' : 'standard'
+        lead_type: (lead.job_type.includes('premium') ? 'priority' : 'standard') as 'priority' | 'standard'
       }));
       
-      setLeads(processedLeads);
+      setLeads(processedLeads as Lead[]);
     } catch (error) {
       console.error('Error fetching leads:', error);
       toast({
@@ -109,14 +109,14 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
 
   const fetchDisputes = async () => {
     try {
+      // Use custom SQL query instead of direct table access for now
+      // until the types are regenerated
       const { data, error } = await supabase
-        .from('lead_disputes')
-        .select('lead_id')
-        .eq('contractor_id', userId);
+        .rpc('get_user_disputes', { user_id: userId });
       
       if (error) throw error;
       
-      setDisputes((data || []).map(dispute => dispute.lead_id));
+      setDisputes(data ? data.map((d: any) => d.lead_id) : []);
     } catch (error) {
       console.error('Error fetching disputes:', error);
     }
@@ -138,13 +138,13 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
     setSubmittingDispute(true);
     
     try {
+      // Use RPC call instead of direct table access
       const { error } = await supabase
-        .from('lead_disputes')
-        .insert({
-          lead_id: disputeDialog.leadId,
-          contractor_id: userId,
-          campaign_id: disputeDialog.campaignId,
-          reason: disputeReason || 'No reason provided'
+        .rpc('submit_lead_dispute', {
+          p_lead_id: disputeDialog.leadId,
+          p_contractor_id: userId,
+          p_campaign_id: disputeDialog.campaignId,
+          p_reason: disputeReason || 'No reason provided'
         });
       
       if (error) throw error;
