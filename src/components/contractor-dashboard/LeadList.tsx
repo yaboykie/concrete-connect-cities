@@ -54,6 +54,16 @@ interface DisputeDetails {
   created_at: string;
 }
 
+// Interface for RPC responses
+interface UserDisputeResponse {
+  lead_id: string;
+}
+
+interface DisputeDetailResponse {
+  reason: string;
+  created_at: string;
+}
+
 const DISPUTE_REASONS = [
   "Wrong number or unreachable",
   "Outside my service area",
@@ -110,7 +120,7 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
       
       if (data) {
         // Properly cast the data to the expected type and extract lead_id values
-        const leadIds = (data as { lead_id: string }[]).map(item => item.lead_id);
+        const leadIds = (data as UserDisputeResponse[]).map(item => item.lead_id);
         setDisputedLeads(leadIds);
       }
     } catch (error) {
@@ -144,9 +154,9 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
       
       if (error) throw error;
       
-      if (data && data.length > 0) {
+      if (data && (data as DisputeDetailResponse[]).length > 0) {
         // Cast the data to the expected type
-        const disputeData = data[0] as { reason: string, created_at: string };
+        const disputeData = (data as DisputeDetailResponse[])[0];
         setCurrentDisputeDetails(disputeData);
         setIsViewDisputeOpen(true);
       } else {
