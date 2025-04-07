@@ -77,11 +77,11 @@ export const useSimpleQuoteForm = ({
     }
   };
 
-  const validateField = async (fieldName: string, value: string): Promise<boolean> => {
+  const validateField = async (fieldName: string): Promise<boolean> => {
     try {
       // Create a schema just for this field
       const fieldSchema = Yup.reach(quoteFormSchema, fieldName);
-      await fieldSchema.validate(value);
+      await fieldSchema.validate(formData[fieldName as keyof FormData]);
       
       // Remove error for this field if it exists
       if (formErrors[fieldName]) {
@@ -116,7 +116,7 @@ export const useSimpleQuoteForm = ({
 
   const handleFieldBlur = (fieldName: string) => {
     // Validate just this field
-    validateField(fieldName, formData[fieldName as keyof FormData]);
+    validateField(fieldName);
     
     // Track field blur event
     trackInteraction(`${fieldName}_field_blur`, 'simple_quote_form', {
