@@ -13,10 +13,23 @@ import {
   DialogHeader, DialogTitle
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Loader2, AlertCircle } from 'lucide-react';
+import { Loader2, AlertCircle, Info } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow, format } from 'date-fns';
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 
 // Define Lead type with proper typing for lead_type
 interface Lead {
@@ -35,6 +48,20 @@ interface LeadListProps {
   userId: string;
 }
 
+// Interface for dispute details
+interface DisputeDetails {
+  reason: string;
+  created_at: string;
+}
+
+const DISPUTE_REASONS = [
+  "Wrong number or unreachable",
+  "Outside my service area",
+  "Homeowner hired someone else already",
+  "Not a real job (spam, competitor, etc.)",
+  "Other"
+];
+
 const LeadList: React.FC<LeadListProps> = ({ userId }) => {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
@@ -43,6 +70,9 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [disputeReason, setDisputeReason] = useState<string>('');
   const [submittingDispute, setSubmittingDispute] = useState(false);
+  const [selectedReason, setSelectedReason] = useState<string>('');
+  const [isViewDisputeOpen, setIsViewDisputeOpen] = useState(false);
+  const [currentDisputeDetails, setCurrentDisputeDetails] = useState<DisputeDetails | null>(null);
 
   useEffect(() => {
     fetchLeads();
@@ -89,12 +119,71 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
   };
 
   const handleDisputeLead = (lead: Lead) => {
+    // Check if already disputed
+    if (disputedLeads.includes(lead.lead_id)) {
+      toast({
+        title: "Already Disputed",
+        description: "You've already disputed this lead.",
+        variant: "default",
+      });
+      return;
+    }
+    
     setSelectedLead(lead);
+    setSelectedReason('');
+    setDisputeReason('');
     setIsDisputeDialogOpen(true);
   };
 
+  const handleViewDispute = async (lead: Lead) => {
+    try {
+      const { data, error } = await supabase.rpc('get_dispute_details', { 
+        p_lead_id: lead.lead_id,
+        p_contractor_id: userId
+      });
+      
+      if (error) throw error;
+      
+      if (data && data.length > 0) {
+        // Cast the data to the expected type
+        const disputeData = data[0] as { reason: string, created_at: string };
+        setCurrentDisputeDetails(disputeData);
+        setIsViewDisputeOpen(true);
+      } else {
+        toast({
+          title: "Error",
+          description: "No dispute details found",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching dispute details:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load dispute details",
+        variant: "destructive",
+      });
+    }
+  };
+
   const submitDispute = async () => {
-    if (!selectedLead || !disputeReason.trim()) return;
+    // Validate inputs
+    if (!selectedLead) return;
+    
+    let finalReason = selectedReason;
+    
+    // If "Other" is selected, use the custom reason text
+    if (selectedReason === "Other") {
+      if (!disputeReason.trim()) {
+        toast({
+          title: "Missing Reason",
+          description: "Please provide a reason for your dispute",
+          variant: "destructive",
+        });
+        return;
+      }
+      finalReason = disputeReason;
+    }
     
     try {
       setSubmittingDispute(true);
@@ -119,7 +208,7 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
         p_lead_id: selectedLead.lead_id,
         p_contractor_id: userId,
         p_campaign_id: campaignData.campaign_id,
-        p_reason: disputeReason
+        p_reason: finalReason
       });
       
       if (error) throw error;
@@ -132,6 +221,7 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
       setDisputedLeads([...disputedLeads, selectedLead.lead_id]);
       setIsDisputeDialogOpen(false);
       setDisputeReason('');
+      setSelectedReason('');
       
     } catch (error) {
       console.error('Error submitting dispute:', error);
@@ -142,6 +232,19 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
       });
     } finally {
       setSubmittingDispute(false);
+    }
+  };
+
+  // Handle reason selection change
+  const handleReasonChange = (value: string) => {
+    setSelectedReason(value);
+    
+    // If it's not "Other", use the selected reason as the dispute reason
+    if (value !== "Other") {
+      setDisputeReason(value);
+    } else {
+      // Clear the custom reason field when selecting "Other"
+      setDisputeReason('');
     }
   };
 
@@ -197,7 +300,14 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
                   </TableCell>
                   <TableCell>
                     {disputedLeads.includes(lead.lead_id) ? (
-                      <Badge variant="outline">Disputed</Badge>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => handleViewDispute(lead)}
+                        className="flex items-center gap-1"
+                      >
+                        <Info className="h-4 w-4" /> View Dispute
+                      </Button>
                     ) : (
                       <Button variant="outline" size="sm" onClick={() => handleDisputeLead(lead)}>
                         Dispute
@@ -211,6 +321,7 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
         </div>
       )}
 
+      {/* Dispute Dialog */}
       <Dialog open={isDisputeDialogOpen} onOpenChange={setIsDisputeDialogOpen}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
@@ -221,19 +332,43 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="space-y-2">
-              <label htmlFor="disputeReason" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed">
-                Reason for Dispute
+              <label htmlFor="disputeReason" className="text-sm font-medium leading-none">
+                Select Reason
               </label>
-              <textarea
-                id="disputeReason"
-                className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
-                placeholder="Enter your reason here"
-                value={disputeReason}
-                onChange={(e) => setDisputeReason(e.target.value)}
-              />
+              <Select value={selectedReason} onValueChange={handleReasonChange}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select a reason" />
+                </SelectTrigger>
+                <SelectContent>
+                  {DISPUTE_REASONS.map((reason) => (
+                    <SelectItem key={reason} value={reason}>
+                      {reason}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
+
+            {/* Custom reason field shown only when "Other" is selected */}
+            {selectedReason === "Other" && (
+              <div className="space-y-2">
+                <label htmlFor="customReason" className="text-sm font-medium leading-none">
+                  Custom Reason <span className="text-red-500">*</span>
+                </label>
+                <Textarea
+                  id="customReason"
+                  placeholder="Please explain why you're disputing this lead"
+                  value={disputeReason}
+                  onChange={(e) => setDisputeReason(e.target.value)}
+                  className="h-24"
+                />
+              </div>
+            )}
           </div>
-          <Button onClick={submitDispute} disabled={submittingDispute}>
+          <Button 
+            onClick={submitDispute} 
+            disabled={submittingDispute || !selectedReason || (selectedReason === "Other" && !disputeReason.trim())}
+          >
             {submittingDispute ? (
               <>
                 Submitting <Loader2 className="h-4 w-4 ml-2 animate-spin" />
@@ -241,6 +376,32 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
             ) : (
               "Submit Dispute"
             )}
+          </Button>
+        </DialogContent>
+      </Dialog>
+
+      {/* View Dispute Details Dialog */}
+      <Dialog open={isViewDisputeOpen} onOpenChange={setIsViewDisputeOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Dispute Details</DialogTitle>
+          </DialogHeader>
+          {currentDisputeDetails && (
+            <div className="grid gap-4 py-4">
+              <div>
+                <h4 className="text-sm font-medium mb-1">Reason</h4>
+                <p className="text-gray-700 p-3 bg-gray-50 rounded">{currentDisputeDetails.reason}</p>
+              </div>
+              <div>
+                <h4 className="text-sm font-medium mb-1">Submitted</h4>
+                <p className="text-gray-700">
+                  {format(new Date(currentDisputeDetails.created_at), 'PPpp')}
+                </p>
+              </div>
+            </div>
+          )}
+          <Button variant="outline" onClick={() => setIsViewDisputeOpen(false)}>
+            Close
           </Button>
         </DialogContent>
       </Dialog>

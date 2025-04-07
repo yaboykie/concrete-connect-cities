@@ -24,3 +24,17 @@ BEGIN
   VALUES (p_lead_id, p_contractor_id, p_campaign_id, p_reason);
 END;
 $$;
+
+-- Function to get dispute details for a specific lead and contractor
+CREATE OR REPLACE FUNCTION public.get_dispute_details(
+  p_lead_id TEXT,
+  p_contractor_id UUID
+)
+RETURNS TABLE(reason TEXT, created_at TIMESTAMPTZ) 
+LANGUAGE sql
+SECURITY definer
+AS $$
+  SELECT reason, created_at 
+  FROM public.lead_disputes 
+  WHERE lead_id = p_lead_id AND contractor_id = p_contractor_id;
+$$;
