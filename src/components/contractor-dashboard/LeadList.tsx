@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
@@ -67,11 +66,11 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
 
   const fetchDisputedLeads = async () => {
     try {
-      // Fix TypeScript error by declaring correct return type for Supabase RPC call
-      const { data, error } = await supabase.rpc<UserDisputeResponse[], { user_id: string }>(
+      // Use type assertion for the RPC call to solve TypeScript errors
+      const { data, error } = await supabase.rpc(
         'get_user_disputes', 
         { user_id: userId }
-      );
+      ) as { data: UserDisputeResponse[] | null, error: any };
       
       if (error) throw error;
       
@@ -103,17 +102,14 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
 
   const handleViewDispute = async (lead: Lead) => {
     try {
-      // Fix TypeScript error by declaring correct return type for Supabase RPC call
-      const { data, error } = await supabase.rpc<DisputeDetailResponse[], { 
-        p_lead_id: string,
-        p_contractor_id: string
-      }>(
+      // Use type assertion for the RPC call to solve TypeScript errors
+      const { data, error } = await supabase.rpc(
         'get_dispute_details', 
         { 
           p_lead_id: lead.lead_id,
           p_contractor_id: userId
         }
-      );
+      ) as { data: DisputeDetailResponse[] | null, error: any };
       
       if (error) throw error;
       
@@ -183,13 +179,8 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
         return;
       }
       
-      // Fix TypeScript error by declaring correct return type for Supabase RPC call
-      const { error } = await supabase.rpc<void, {
-        p_lead_id: string,
-        p_contractor_id: string,
-        p_campaign_id: string,
-        p_reason: string
-      }>(
+      // Use type assertion for the RPC call to solve TypeScript errors
+      const { error } = await supabase.rpc(
         'submit_lead_dispute', 
         {
           p_lead_id: selectedLead.lead_id,
@@ -197,7 +188,7 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
           p_campaign_id: campaignData.campaign_id,
           p_reason: finalReason
         }
-      );
+      ) as { data: null, error: any };
       
       if (error) throw error;
       
