@@ -1,5 +1,5 @@
 
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import SiteLayout from './components/layouts/SiteLayout';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
@@ -13,11 +13,7 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={
-            <SiteLayout>
-              <Home />
-            </SiteLayout>
-          }
+          element={<Navigate to="/driveway-concreters/locations" replace />}
         />
         <Route
           path="/driveway-concreters/locations/:state/:city"
