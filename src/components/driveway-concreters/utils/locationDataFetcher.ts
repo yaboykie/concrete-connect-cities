@@ -15,6 +15,19 @@ interface LocationFetchResult {
 // Simple in-memory cache to avoid repeated database calls
 const locationCache = new Map<string, LocationFetchResult>();
 
+// Supabase client initialization with better error handling
+const getSupabaseClient = () => {
+  const supabaseUrl = import.meta.env.VITE_PUBLIC_SUPABASE_URL || process.env.VITE_PUBLIC_SUPABASE_URL;
+  const supabaseKey = import.meta.env.VITE_PUBLIC_SUPABASE_KEY || process.env.VITE_PUBLIC_SUPABASE_KEY;
+  
+  if (!supabaseUrl || !supabaseKey) {
+    console.error('Supabase URL or key is missing. Check your environment variables.');
+    throw new Error('Supabase configuration is incomplete');
+  }
+  
+  return createClient(supabaseUrl, supabaseKey);
+};
+
 export function clearLocationCache(state?: string, city?: string) {
   if (state && city) {
     const key = `${state.toUpperCase()}_${city.replace(/-/g, ' ')}`;
@@ -53,46 +66,53 @@ export async function fetchLocationFromSupabase(
     console.log(`Fetching location map data for ${citySlug}, ${stateUpper}...`);
     
     // Create Supabase client
-    const supabase = createClient(
-      process.env.VITE_PUBLIC_SUPABASE_URL as string,
-      process.env.VITE_PUBLIC_SUPABASE_KEY as string,
-    );
+    try {
+      const supabase = getSupabaseClient();
+      
+      // Fixing the type error by correctly typing the RPC call
+      const { data, error } = await supabase.rpc(
+        'get_location_with_map_data',
+        {
+          p_state: stateUpper,
+          p_city_slug: citySlug,
+        }
+      );
 
-    // Fixing the type error by correctly typing the RPC call
-    const { data, error } = await supabase.rpc(
-      'get_location_with_map_data',
-      {
-        p_state: stateUpper,
-        p_city_slug: citySlug,
+      if (error) {
+        console.error('Error fetching location map data:', error);
+        return {
+          locationData: null,
+          mapData: null,
+          error: `Failed to fetch data: ${error.message}`,
+        };
       }
-    );
 
-    if (error) {
-      console.error('Error fetching location map data:', error);
+      // Check if data is valid
+      if (!Array.isArray(data) || data.length === 0) {
+        console.warn(`No valid data returned for ${citySlug}, ${stateUpper}. Using fallback.`);
+        return await fallbackLocationFetch(stateUpper, citySlug);
+      }
+
+      const response = data[0];
+      const result: LocationFetchResult = {
+        locationData: response.location_data ?? null,
+        mapData: response.map_data ?? null,
+        error: null,
+      };
+
+      // Cache the result
+      locationCache.set(cacheKey, result);
+      
+      console.log(`Successfully fetched data for ${citySlug}, ${stateUpper}:`, result);
+      return result;
+    } catch (clientError) {
+      console.error('Error creating Supabase client:', clientError);
       return {
         locationData: null,
         mapData: null,
-        error: `Failed to fetch data: ${error.message}`,
+        error: `Supabase client error: ${clientError instanceof Error ? clientError.message : String(clientError)}`,
       };
     }
-
-    // Check if data is valid
-    if (!Array.isArray(data) || data.length === 0) {
-      console.warn(`No valid data returned for ${citySlug}, ${stateUpper}. Using fallback.`);
-      return await fallbackLocationFetch(stateUpper, citySlug);
-    }
-
-    const response = data[0];
-    const result: LocationFetchResult = {
-      locationData: response.location_data ?? null,
-      mapData: response.map_data ?? null,
-      error: null,
-    };
-
-    // Cache the result
-    locationCache.set(cacheKey, result);
-
-    return result;
   } catch (err) {
     console.error('Unexpected error in fetchLocationMapData:', err);
     return {

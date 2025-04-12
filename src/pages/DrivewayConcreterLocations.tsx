@@ -36,7 +36,7 @@ const DrivewayConcreterLocations = () => {
       return;
     }
     
-    console.log(`Route params: state=${state}, city=${city}`);
+    console.log(`DrivewayConcreterLocations - Route params:`, { state, city, path: location.pathname });
     
     // If we have both state and city parameters, fetch city-specific content
     if (state && city) {
@@ -53,8 +53,16 @@ const DrivewayConcreterLocations = () => {
     try {
       setIsLoading(true);
       console.log(`Fetching content for ${state}/${city}...`);
+      
       const content = await getLocationContent(state, city);
-      console.log('Content fetched successfully:', content);
+      console.log('Content fetched successfully:', {
+        hasContent: !!content,
+        contentKeys: content ? Object.keys(content) : [],
+        fullLocation: content?.fullLocation,
+        services: content?.services?.length || 0,
+        faqs: content?.faqs?.length || 0
+      });
+      
       setLocationContent(content);
       setError(null);
       
@@ -67,7 +75,7 @@ const DrivewayConcreterLocations = () => {
       }
     } catch (err) {
       console.error("Error fetching location content:", err);
-      setError("Failed to load location data. Please try again later.");
+      setError(`Failed to load location data: ${err instanceof Error ? err.message : String(err)}`);
       
       // Show error toast
       toast({
@@ -95,7 +103,14 @@ const DrivewayConcreterLocations = () => {
   }
   
   if (error || !locationContent) {
-    return <ErrorView error={error} onRetry={() => window.location.reload()} />;
+    return <ErrorView 
+      error={error} 
+      details={`Failed to load content for ${city}, ${state}`}
+      onRetry={() => {
+        setIsLoading(true);
+        fetchLocationContent();
+      }} 
+    />;
   }
   
   return (
