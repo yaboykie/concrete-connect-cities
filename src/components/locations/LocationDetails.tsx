@@ -1,15 +1,12 @@
-
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { toast } from '@/components/ui/use-toast';
-import SiteLayout from '@/components/layouts/SiteLayout';
 import LocationDetailsView from '@/components/driveway-concreters/LocationDetailsView';
 import LoadingView from '@/components/driveway-concreters/LoadingView';
 import { getLocationContent } from '@/components/driveway-concreters/LocationContent';
 import { LocationContentType } from '@/components/driveway-concreters/types';
 import { getFallbackLocationContent } from '@/components/driveway-concreters/utils/fallbackContentGenerator';
 
-// Mock data for preview in development environment
 const mockData: LocationContentType = {
   title: 'Top-Rated Concrete Driveway Contractors in Phoenix, Arizona',
   serviceIntro: 'Looking for professional concrete driveway installation in Phoenix, Arizona? Our network of experienced local contractors specialize in creating beautiful, durable driveways that enhance your home\'s curb appeal and add lasting value to your property.',
@@ -68,7 +65,6 @@ const LocationDetails = () => {
         setIsLoading(true);
         console.log(`Fetching content for ${state}/${city}...`);
         
-        // Attempt to get location content
         const content = await getLocationContent(state, city);
         
         if (content) {
@@ -79,7 +75,6 @@ const LocationDetails = () => {
           setLocationContent(content);
           setError(null);
         } else {
-          // If no content is returned, use the mock data for preview
           console.log('No content found, using fallback content');
           const fallbackContent = getFallbackLocationContent(state, city);
           setLocationContent(fallbackContent);
@@ -87,11 +82,9 @@ const LocationDetails = () => {
       } catch (err) {
         console.error("Error fetching location content:", err);
         
-        // For preview purposes, use mock data instead of showing an error
         console.log('Error fetching data, using mock data for preview');
         setLocationContent(mockData);
         
-        // Still set the error for logging purposes
         setError(`Failed to load location data: ${err instanceof Error ? err.message : String(err)}`);
         
         toast({
@@ -108,22 +101,16 @@ const LocationDetails = () => {
   }, [state, city]);
   
   if (isLoading) {
-    return (
-      <SiteLayout>
-        <LoadingView />
-      </SiteLayout>
-    );
+    return <LoadingView />;
   }
   
   if (!locationContent) {
     return (
-      <SiteLayout>
-        <div className="container mx-auto px-4 py-16 text-center">
-          <h1 className="text-2xl font-bold mb-4">Location Not Available</h1>
-          <p className="mb-4">We couldn't find information for {city}, {state}.</p>
-          <p>Please try a different location or check back later.</p>
-        </div>
-      </SiteLayout>
+      <div className="container mx-auto px-4 py-16 text-center">
+        <h1 className="text-2xl font-bold mb-4">Location Not Available</h1>
+        <p className="mb-4">We couldn't find information for {city}, {state}.</p>
+        <p>Please try a different location or check back later.</p>
+      </div>
     );
   }
   
