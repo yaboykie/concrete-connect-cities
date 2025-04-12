@@ -12,6 +12,7 @@ function App() {
   return (
     <Router>
       <Routes>
+        {/* Home route - this renders the Home component */}
         <Route
           path="/"
           element={
