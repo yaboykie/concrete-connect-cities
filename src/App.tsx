@@ -10,15 +10,48 @@ import LocationDetails from './components/locations/LocationDetails';
 function App() {
   return (
     <Router>
-      <SiteLayout>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/driveway-concreters/locations/:state/:city" element={<LocationDetails />} />
-          <Route path="/driveway-concreters/locations/:state" element={<LocationsState />} />
-          <Route path="/driveway-concreters/locations" element={<LocationsRoot />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </SiteLayout>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <SiteLayout>
+              <Home />
+            </SiteLayout>
+          }
+        />
+        <Route
+          path="/driveway-concreters/locations/:state/:city"
+          element={
+            <SiteLayout>
+              <LocationDetails />
+            </SiteLayout>
+          }
+        />
+        <Route
+          path="/driveway-concreters/locations/:state"
+          element={
+            <SiteLayout>
+              <LocationsState />
+            </SiteLayout>
+          }
+        />
+        <Route
+          path="/driveway-concreters/locations"
+          element={
+            <SiteLayout>
+              <LocationsRoot />
+            </SiteLayout>
+          }
+        />
+        <Route
+          path="*"
+          element={
+            <SiteLayout>
+              <NotFound />
+            </SiteLayout>
+          }
+        />
+      </Routes>
     </Router>
   );
 }
