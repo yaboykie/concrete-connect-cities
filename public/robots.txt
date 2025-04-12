@@ -17,3 +17,4 @@ Allow: /
 
 # Reference to sitemap
 Sitemap: https://www.concreterquotes.com/sitemap.xml
+

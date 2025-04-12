@@ -7,7 +7,6 @@ import LeadTable, { Lead } from './leads/LeadTable';
 import DisputeModal, { DISPUTE_REASONS } from './leads/DisputeModal';
 import ViewDisputeModal, { DisputeDetails } from './leads/ViewDisputeModal';
 
-// Interface for RPC responses
 interface UserDisputeResponse {
   lead_id: string;
 }
@@ -67,12 +66,11 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
 
   const fetchDisputedLeads = async () => {
     try {
-      // Define type for the RPC response and arguments
-      type GetUserDisputesArgs = { user_id: string };
-      type GetUserDisputesResponse = { lead_id: string }[];
+      // Define type for the RPC response
+      type GetUserDisputesResponse = UserDisputeResponse[];
       
       const { data, error } = await supabase
-        .rpc<GetUserDisputesResponse>('get_user_disputes', { user_id: userId });
+        .rpc<GetUserDisputesResponse, { user_id: string }>('get_user_disputes', { user_id: userId });
       
       if (error) throw error;
       
@@ -104,11 +102,10 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
   const handleViewDispute = async (lead: Lead) => {
     try {
       // Define type for the RPC response and arguments
-      type GetDisputeDetailsArgs = { p_lead_id: string, p_contractor_id: string };
-      type GetDisputeDetailsResponse = { reason: string, created_at: string }[];
+      type GetDisputeDetailsResponse = DisputeDetailResponse[];
       
       const { data, error } = await supabase
-        .rpc<GetDisputeDetailsResponse>('get_dispute_details', {
+        .rpc<GetDisputeDetailsResponse, { p_lead_id: string, p_contractor_id: string }>('get_dispute_details', {
           p_lead_id: lead.lead_id,
           p_contractor_id: userId
         });
