@@ -50,8 +50,8 @@ export default function SupabaseCheck() {
       <div className="mt-4 text-sm text-gray-600">
         <p>Connection Details:</p>
         <ul className="list-disc pl-5 mt-1">
-          <li>URL: {supabase.supabaseUrl ? '✓ Configured' : '✗ Missing'}</li>
-          <li>API Key: {supabase.supabaseKey ? '✓ Configured' : '✗ Missing'}</li>
+          <li>URL: {import.meta.env.VITE_SUPABASE_URL ? '✓ Configured' : '✗ Missing'}</li>
+          <li>API Key: {import.meta.env.VITE_SUPABASE_ANON_KEY ? '✓ Configured' : '✗ Missing'}</li>
         </ul>
       </div>
     </div>
