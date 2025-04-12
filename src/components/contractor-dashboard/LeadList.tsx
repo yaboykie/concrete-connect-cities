@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
@@ -67,18 +66,16 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
 
   const fetchDisputedLeads = async () => {
     try {
-      // Properly type the RPC arguments
-      const rpcArgs: { user_id: string } = { user_id: userId };
+      // Properly type the RPC arguments and cast the result
+      const args = { user_id: userId };
       
-      const { data, error } = await supabase.rpc(
-        'get_user_disputes', 
-        rpcArgs
-      ) as { data: UserDisputeResponse[] | null, error: any };
+      const { data, error } = await supabase
+        .rpc<UserDisputeResponse[]>('get_user_disputes', args);
       
       if (error) throw error;
       
       if (data) {
-        const leadIds = Array.isArray(data) ? data.map(item => item.lead_id) : [];
+        const leadIds = data.map(item => item.lead_id);
         setDisputedLeads(leadIds);
       }
     } catch (error) {
@@ -104,23 +101,18 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
 
   const handleViewDispute = async (lead: Lead) => {
     try {
-      // Properly type the RPC arguments
-      const rpcArgs: { 
-        p_lead_id: string, 
-        p_contractor_id: string 
-      } = { 
+      // Properly type the RPC arguments and cast the result
+      const args = {
         p_lead_id: lead.lead_id,
         p_contractor_id: userId
       };
       
-      const { data, error } = await supabase.rpc(
-        'get_dispute_details', 
-        rpcArgs
-      ) as { data: DisputeDetailResponse[] | null, error: any };
+      const { data, error } = await supabase
+        .rpc<DisputeDetailResponse[]>('get_dispute_details', args);
       
       if (error) throw error;
       
-      if (data && Array.isArray(data) && data.length > 0) {
+      if (data && data.length > 0) {
         const disputeData = data[0];
         setCurrentDisputeDetails(disputeData);
         setIsViewDisputeOpen(true);
@@ -186,23 +178,16 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
         return;
       }
       
-      // Properly type the RPC arguments
-      const rpcArgs: {
-        p_lead_id: string,
-        p_contractor_id: string,
-        p_campaign_id: string,
-        p_reason: string
-      } = {
+      // Properly type the RPC arguments and cast the result
+      const args = {
         p_lead_id: selectedLead.lead_id,
         p_contractor_id: userId,
         p_campaign_id: campaignData.campaign_id,
         p_reason: finalReason
       };
       
-      const { error } = await supabase.rpc(
-        'submit_lead_dispute', 
-        rpcArgs
-      ) as { data: null, error: any };
+      const { error } = await supabase
+        .rpc<null>('submit_lead_dispute', args);
       
       if (error) throw error;
       
