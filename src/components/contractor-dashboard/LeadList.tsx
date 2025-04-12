@@ -1,269 +1,90 @@
 
-import React, { useState, useEffect } from 'react';
-import { Loader2 } from 'lucide-react';
-import { toast } from '@/components/ui/use-toast';
-import { supabase } from '@/integrations/supabase/client';
-import LeadTable, { Lead } from './leads/LeadTable';
-import DisputeModal, { DISPUTE_REASONS } from './leads/DisputeModal';
-import ViewDisputeModal, { DisputeDetails } from './leads/ViewDisputeModal';
+'use client'
 
-interface UserDisputeResponse {
-  lead_id: string;
-}
-
-interface DisputeDetailResponse {
-  reason: string;
-  created_at: string;
-}
+import React, { useEffect, useState } from 'react'
+import { supabase } from '@/integrations/supabase/client'
+import LeadTable, { Lead } from './leads/LeadTable'
+import DisputeModal, { DISPUTE_REASONS } from './leads/DisputeModal'
+import ViewDisputeModal, { DisputeDetails } from './leads/ViewDisputeModal'
 
 interface LeadListProps {
-  userId: string;
+  userId: string
 }
 
-const LeadList: React.FC<LeadListProps> = ({ userId }) => {
-  const [leads, setLeads] = useState<Lead[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [disputedLeads, setDisputedLeads] = useState<string[]>([]);
-  
-  // Dispute modal state
-  const [isDisputeDialogOpen, setIsDisputeDialogOpen] = useState(false);
-  const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
-  const [disputeReason, setDisputeReason] = useState<string>('');
-  const [submittingDispute, setSubmittingDispute] = useState(false);
-  const [selectedReason, setSelectedReason] = useState<string>('');
-  
-  // View dispute modal state
-  const [isViewDisputeOpen, setIsViewDisputeOpen] = useState(false);
-  const [currentDisputeDetails, setCurrentDisputeDetails] = useState<DisputeDetails | null>(null);
+export default function LeadList({ userId }: LeadListProps) {
+  const [leads, setLeads] = useState<Lead[]>([])
+  const [selectedLead, setSelectedLead] = useState<Lead | null>(null)
+  const [disputedLeads, setDisputedLeads] = useState<string[]>([])
+  const [disputeView, setDisputeView] = useState<DisputeDetails | null>(null)
+  const [showDisputeModal, setShowDisputeModal] = useState(false)
 
+  // 🧠 Load Disputed Leads
   useEffect(() => {
-    fetchLeads();
-    fetchDisputedLeads();
-  }, [userId]);
-
-  const fetchLeads = async () => {
-    try {
-      setLoading(true);
+    const fetchDisputedLeads = async () => {
       const { data, error } = await supabase
-        .from('leads')
-        .select('*')
-        .contains('matched_contractor_ids', [userId]);
-      
-      if (error) throw error;
-      
-      setLeads(data || []);
-    } catch (error) {
-      console.error('Error fetching leads:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load leads",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+        .rpc<{ lead_id: string }[], { user_id: string }>('get_user_disputes', { user_id: userId })
 
-  const fetchDisputedLeads = async () => {
-    try {
-      // Define type for the RPC response
-      type GetUserDisputesResponse = UserDisputeResponse[];
-      
-      const { data, error } = await supabase
-        .rpc<GetUserDisputesResponse, { user_id: string }>('get_user_disputes', { user_id: userId });
-      
-      if (error) throw error;
-      
-      if (data) {
-        const leadIds = data.map(item => item.lead_id);
-        setDisputedLeads(leadIds);
+      if (error) {
+        console.error('Error fetching disputed leads:', error)
+        return
       }
-    } catch (error) {
-      console.error('Error fetching disputed leads:', error);
-    }
-  };
 
-  const handleDisputeLead = (lead: Lead) => {
-    if (disputedLeads.includes(lead.lead_id)) {
-      toast({
-        title: "Already Disputed",
-        description: "You've already disputed this lead.",
-        variant: "default",
-      });
-      return;
+      setDisputedLeads(data.map(d => d.lead_id))
     }
-    
-    setSelectedLead(lead);
-    setSelectedReason('');
-    setDisputeReason('');
-    setIsDisputeDialogOpen(true);
-  };
 
+    fetchDisputedLeads()
+  }, [userId])
+
+  // 🧠 Handle Dispute View
   const handleViewDispute = async (lead: Lead) => {
-    try {
-      // Define type for the RPC response and arguments
-      type GetDisputeDetailsResponse = DisputeDetailResponse[];
-      
-      const { data, error } = await supabase
-        .rpc<GetDisputeDetailsResponse, { p_lead_id: string, p_contractor_id: string }>('get_dispute_details', {
+    const { data, error } = await supabase
+      .rpc<{ reason: string; created_at: string }[], { p_lead_id: string; p_contractor_id: string }>(
+        'get_dispute_details',
+        {
           p_lead_id: lead.lead_id,
-          p_contractor_id: userId
-        });
-      
-      if (error) throw error;
-      
-      if (data && data.length > 0) {
-        const disputeData = data[0];
-        setCurrentDisputeDetails(disputeData);
-        setIsViewDisputeOpen(true);
-      } else {
-        toast({
-          title: "Error",
-          description: "No dispute details found",
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
-      console.error('Error fetching dispute details:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load dispute details",
-        variant: "destructive",
-      });
-    }
-  };
+          p_contractor_id: userId,
+        }
+      )
 
-  const handleReasonChange = (value: string) => {
-    setSelectedReason(value);
-    
-    if (value !== "Other") {
-      setDisputeReason(value);
-    } else {
-      setDisputeReason('');
+    if (error) {
+      console.error('Error fetching dispute details:', error)
+      return
     }
-  };
 
-  const submitDispute = async () => {
-    if (!selectedLead) return;
-    
-    let finalReason = selectedReason;
-    
-    if (selectedReason === "Other") {
-      if (!disputeReason.trim()) {
-        toast({
-          title: "Missing Reason",
-          description: "Please provide a reason for your dispute",
-          variant: "destructive",
-        });
-        return;
-      }
-      finalReason = disputeReason;
+    if (data.length > 0) {
+      setDisputeView(data[0])
+      setSelectedLead(lead)
     }
-    
-    try {
-      setSubmittingDispute(true);
-      
-      const { data: campaignData } = await supabase
-        .from('campaigns')
-        .select('campaign_id')
-        .eq('contractor_id', userId)
-        .single();
-      
-      if (!campaignData?.campaign_id) {
-        toast({
-          title: "Error",
-          description: "Could not find a campaign for this dispute",
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      // Define type for the RPC arguments
-      type SubmitLeadDisputeArgs = {
-        p_lead_id: string;
-        p_contractor_id: string;
-        p_campaign_id: string;
-        p_reason: string;
-      };
-      
-      const args: SubmitLeadDisputeArgs = {
-        p_lead_id: selectedLead.lead_id,
-        p_contractor_id: userId,
-        p_campaign_id: campaignData.campaign_id,
-        p_reason: finalReason
-      };
-      
-      const { error } = await supabase.rpc('submit_lead_dispute', args);
-      
-      if (error) throw error;
-      
-      toast({
-        title: "Dispute Submitted",
-        description: "Your lead dispute has been submitted for review",
-      });
-      
-      if (selectedLead.lead_id) {
-        setDisputedLeads(prev => [...prev, selectedLead.lead_id]);
-      }
-      
-      setIsDisputeDialogOpen(false);
-      setDisputeReason('');
-      setSelectedReason('');
-      
-    } catch (error) {
-      console.error('Error submitting dispute:', error);
-      toast({
-        title: "Error",
-        description: "Failed to submit dispute",
-        variant: "destructive",
-      });
-    } finally {
-      setSubmittingDispute(false);
-    }
-  };
+  }
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold">My Leads</h1>
-      
-      {loading ? (
-        <div className="flex justify-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
-        </div>
-      ) : leads.length === 0 ? (
-        <div className="bg-white rounded-lg shadow p-6 text-center">
-          <h3 className="text-lg font-medium mb-2">No leads yet</h3>
-          <p className="text-gray-600 mb-4">
-            As leads become available that match your campaigns, they will appear here.
-          </p>
-        </div>
-      ) : (
-        <LeadTable 
-          leads={leads}
-          disputedLeads={disputedLeads}
-          onDispute={handleDisputeLead}
-          onViewDispute={handleViewDispute}
+    <div className="space-y-4">
+      <LeadTable
+        leads={leads}
+        disputedLeads={disputedLeads}
+        onDisputeClick={(lead) => {
+          setSelectedLead(lead)
+          setShowDisputeModal(true)
+        }}
+        onViewDispute={handleViewDispute}
+      />
+
+      {showDisputeModal && selectedLead && (
+        <DisputeModal
+          lead={selectedLead}
+          onClose={() => setShowDisputeModal(false)}
+          userId={userId}
+          reasons={DISPUTE_REASONS}
         />
       )}
 
-      <DisputeModal
-        open={isDisputeDialogOpen}
-        onOpenChange={setIsDisputeDialogOpen}
-        selectedReason={selectedReason}
-        setSelectedReason={handleReasonChange}
-        disputeReason={disputeReason}
-        setDisputeReason={setDisputeReason}
-        onSubmit={submitDispute}
-        submitting={submittingDispute}
-      />
-
-      <ViewDisputeModal
-        open={isViewDisputeOpen}
-        onOpenChange={setIsViewDisputeOpen}
-        disputeDetails={currentDisputeDetails}
-      />
+      {disputeView && selectedLead && (
+        <ViewDisputeModal
+          lead={selectedLead}
+          details={disputeView}
+          onClose={() => setDisputeView(null)}
+        />
+      )}
     </div>
-  );
-};
-
-export default LeadList;
+  )
+}
