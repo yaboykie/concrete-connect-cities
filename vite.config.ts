@@ -11,7 +11,8 @@ export default defineConfig(({ mode }) => ({
   ].filter(Boolean),
   server: {
     host: "::",
-    port: 8080
+    port: 8080,
+    allowedHosts: ['.lovableproject.com'] // Added wildcard match for lovableproject.com domains
   },
   resolve: {
     alias: {
