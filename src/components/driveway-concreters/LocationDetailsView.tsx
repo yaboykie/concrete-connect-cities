@@ -1,7 +1,5 @@
 
 import React, { useEffect } from 'react';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import LocationDetails from '@/components/driveway-concreters/LocationDetails';
 import SEOHead from '@/components/driveway-concreters/SEOHead';
 import { LocationContentType } from '@/components/driveway-concreters/types';
@@ -33,24 +31,19 @@ const LocationDetailsView: React.FC<LocationDetailsViewProps> = ({
   if (!locationContent || Object.keys(locationContent).length === 0) {
     console.error('LocationDetailsView received empty or invalid locationContent');
     return (
-      <div className="min-h-screen flex flex-col">
-        <Header />
-        <div className="flex-grow flex items-center justify-center">
-          <div className="text-center p-8">
-            <h2 className="text-2xl font-bold mb-4">Location data unavailable</h2>
-            <p className="mb-4">We're having trouble loading information for {city}, {state}.</p>
-            <p>Please try again later or check a different location.</p>
-          </div>
+      <div className="flex-grow flex items-center justify-center">
+        <div className="text-center p-8">
+          <h2 className="text-2xl font-bold mb-4">Location data unavailable</h2>
+          <p className="mb-4">We're having trouble loading information for {city}, {state}.</p>
+          <p>Please try again later or check a different location.</p>
         </div>
-        <Footer />
       </div>
     );
   }
   
   return (
-    <div className="min-h-screen flex flex-col">
+    <>
       <SEOHead locationContent={locationContent} state={state} city={city} />
-      <Header />
       <LocationDetails locationContent={locationContent} />
       {/* Add location-specific calculator for improved user experience */}
       <div className="bg-gray-50 py-12">
@@ -64,8 +57,7 @@ const LocationDetailsView: React.FC<LocationDetailsViewProps> = ({
           />
         </div>
       </div>
-      <Footer />
-    </div>
+    </>
   );
 };
 

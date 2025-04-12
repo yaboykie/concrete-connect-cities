@@ -128,13 +128,11 @@ const LocationDetails = () => {
   }
   
   return (
-    <SiteLayout>
-      <LocationDetailsView 
-        locationContent={locationContent} 
-        state={state || ''} 
-        city={city || ''} 
-      />
-    </SiteLayout>
+    <LocationDetailsView 
+      locationContent={locationContent} 
+      state={state || ''} 
+      city={city || ''} 
+    />
   );
 };
 
