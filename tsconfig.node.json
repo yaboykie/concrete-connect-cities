@@ -3,7 +3,9 @@
     "composite": true,
     "module": "esnext",
     "moduleResolution": "node",
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true
   },
   "include": ["vite.config.ts"]
 }
