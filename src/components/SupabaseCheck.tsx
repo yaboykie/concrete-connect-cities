@@ -12,8 +12,8 @@ export default function SupabaseCheck() {
       try {
         console.log("Testing Supabase connection...");
         console.log("Supabase client config:", {
-          url: supabase.supabaseUrl ? "Configured" : "Missing",
-          key: supabase.supabaseKey ? "Configured (hidden)" : "Missing"
+          url: import.meta.env.VITE_SUPABASE_URL ? "Configured" : "Missing",
+          key: import.meta.env.VITE_SUPABASE_ANON_KEY ? "Configured (hidden)" : "Missing"
         });
         
         const { data, error } = await supabase
@@ -68,8 +68,8 @@ export default function SupabaseCheck() {
         <ul className="list-disc pl-5 mt-1">
           <li>URL: {import.meta.env.VITE_SUPABASE_URL ? '✓ Configured' : '✗ Missing'}</li>
           <li>API Key: {import.meta.env.VITE_SUPABASE_ANON_KEY ? '✓ Configured' : '✗ Missing'}</li>
-          <li>Client URL: {supabase.supabaseUrl ? '✓ Configured' : '✗ Missing'}</li>
-          <li>Client Key: {supabase.supabaseKey ? '✓ Configured' : '✗ Missing'}</li>
+          <li>Client URL: {import.meta.env.VITE_SUPABASE_URL ? '✓ Configured' : '✗ Missing'}</li>
+          <li>Client Key: {import.meta.env.VITE_SUPABASE_ANON_KEY ? '✓ Configured' : '✗ Missing'}</li>
         </ul>
       </div>
     </div>
