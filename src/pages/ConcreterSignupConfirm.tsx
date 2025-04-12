@@ -1,6 +1,6 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
@@ -88,11 +88,6 @@ export default function ConcreterSignupConfirm() {
   
   return (
     <>
-      <Helmet>
-        <title>Select Your Lead Plan | Concreter Sign Up</title>
-        <meta name="description" content="Choose how many leads you want to receive each month" />
-      </Helmet>
-
       <Header />
       
       <main className="container mx-auto px-4 py-12 max-w-4xl">

@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { Helmet } from 'react-helmet-async';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ContractorSignupForm from '@/components/contractor-signup/ContractorSignupForm';
@@ -44,7 +43,7 @@ const ContractorSignup = () => {
             business_name: data.businessName,
             name: data.contactName,
             [isEmail ? 'email' : 'phone']: data.contact,
-            signup_source: window.location.href || 'direct'
+            signup_source: typeof window !== 'undefined' ? window.location.href || 'direct' : 'direct'
           }
         ]);
       
@@ -64,11 +63,6 @@ const ContractorSignup = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Contractor Sign Up | Join Our Network</title>
-        <meta name="description" content="Sign up as a contractor to join our network and receive leads." />
-      </Helmet>
-
       <Header />
       
       <main className="container mx-auto px-4 py-12 max-w-lg">

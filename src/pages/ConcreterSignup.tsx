@@ -1,7 +1,7 @@
+
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -78,11 +78,6 @@ export default function ConcreterSignup() {
 
   return (
     <>
-      <Helmet>
-        <title>Concreter Sign Up | $3 Trial for 3 Leads</title>
-        <meta name="description" content="Sign up to get your first 3 concrete leads for just $3 with our early bird offer" />
-      </Helmet>
-
       <Header />
       
       <main className="container mx-auto px-4 py-12 max-w-4xl">

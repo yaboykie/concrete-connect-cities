@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useUser } from '@/hooks/useUser';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -8,7 +9,6 @@ import LeadList from './LeadList';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/components/ui/use-toast';
 import { useNavigate } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
@@ -74,10 +74,6 @@ const ContractorDashboard = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Contractor Dashboard | Manage Your Campaigns</title>
-      </Helmet>
-      
       <Header />
       
       <main className="container mx-auto px-4 py-8">

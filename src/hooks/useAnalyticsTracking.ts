@@ -1,5 +1,5 @@
 
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 
 interface TrackingOptions {
   formName?: string;
@@ -12,18 +12,20 @@ export const useAnalyticsTracking = () => {
     formName: string = 'simple_quote_form',
     additionalData: Record<string, any> = {}
   ): void => {
-    if (window.gtag) {
-      // Use direct gtag for standard events
-      window.gtag('event', eventName, {
-        form_name: formName,
-        ...additionalData
-      });
-      
-      // For form-specific tracking events, use the enhanced tracking
-      if (typeof window.trackFormInteraction === 'function') {
-        window.trackFormInteraction(eventName, formName, additionalData);
+    useEffect(() => {
+      if (typeof window !== 'undefined' && window.gtag) {
+        // Use direct gtag for standard events
+        window.gtag('event', eventName, {
+          form_name: formName,
+          ...additionalData
+        });
+        
+        // For form-specific tracking events, use the enhanced tracking
+        if (typeof window.trackFormInteraction === 'function') {
+          window.trackFormInteraction(eventName, formName, additionalData);
+        }
       }
-    }
+    }, [eventName, formName, JSON.stringify(additionalData)]);
   }, []);
 
   return { trackInteraction };

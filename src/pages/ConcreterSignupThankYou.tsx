@@ -1,7 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
@@ -29,11 +28,6 @@ export default function ConcreterSignupThankYou() {
   
   return (
     <>
-      <Helmet>
-        <title>Thank You | Concreter Sign Up Successful</title>
-        <meta name="description" content="Thanks for joining our Early Bird Lead Plan!" />
-      </Helmet>
-
       <Header />
       
       <main className="container mx-auto px-4 py-12 max-w-4xl">
