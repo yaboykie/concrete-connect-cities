@@ -32,11 +32,9 @@ const Header = () => {
               <NavigationMenuList>
                 {/* Home Link */}
                 <NavigationMenuItem>
-                  <Link to="/">
-                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                      Home
-                    </NavigationMenuLink>
-                  </Link>
+                  <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+                    <Link to="/">Home</Link>
+                  </NavigationMenuLink>
                 </NavigationMenuItem>
                 
                 {/* Concrete Services Dropdown */}
@@ -90,6 +88,7 @@ const Header = () => {
             </Link>
           </div>
           
+          {/* Mobile menu button */}
           <div className="md:hidden flex items-center">
             <Button 
               variant="ghost" 
