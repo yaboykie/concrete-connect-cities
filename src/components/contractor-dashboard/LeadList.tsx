@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
@@ -66,6 +67,7 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
 
   const fetchDisputedLeads = async () => {
     try {
+      // Properly type the RPC arguments
       const rpcArgs: { user_id: string } = { user_id: userId };
       
       const { data, error } = await supabase.rpc(
@@ -102,6 +104,7 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
 
   const handleViewDispute = async (lead: Lead) => {
     try {
+      // Properly type the RPC arguments
       const rpcArgs: { 
         p_lead_id: string, 
         p_contractor_id: string 
@@ -183,6 +186,7 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
         return;
       }
       
+      // Properly type the RPC arguments
       const rpcArgs: {
         p_lead_id: string,
         p_contractor_id: string,
