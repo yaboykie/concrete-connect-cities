@@ -1,18 +1,19 @@
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
-import CityPage from './pages/CityPage';
 import NotFound from './pages/NotFound';
-import DrivewayConcreterLocations from './pages/DrivewayConcreterLocations';
+import LocationsRoot from './components/locations/LocationsRoot';
+import LocationsState from './components/locations/LocationsState';
+import LocationDetails from './components/locations/LocationDetails';
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/driveway-concreters/locations/:state/:city" element={<DrivewayConcreterLocations />} />
-        <Route path="/driveway-concreters/locations/:state" element={<DrivewayConcreterLocations />} />
-        <Route path="/driveway-concreters/locations" element={<DrivewayConcreterLocations />} />
+        <Route path="/driveway-concreters/locations/:state/:city" element={<LocationDetails />} />
+        <Route path="/driveway-concreters/locations/:state" element={<LocationsState />} />
+        <Route path="/driveway-concreters/locations" element={<LocationsRoot />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>

@@ -17,8 +17,9 @@ const locationCache = new Map<string, LocationFetchResult>();
 
 // Supabase client initialization with better error handling
 const getSupabaseClient = () => {
-  const supabaseUrl = import.meta.env.VITE_PUBLIC_SUPABASE_URL || process.env.VITE_PUBLIC_SUPABASE_URL;
-  const supabaseKey = import.meta.env.VITE_PUBLIC_SUPABASE_KEY || process.env.VITE_PUBLIC_SUPABASE_KEY;
+  // Use import.meta.env for Vite projects
+  const supabaseUrl = import.meta.env.VITE_PUBLIC_SUPABASE_URL;
+  const supabaseKey = import.meta.env.VITE_PUBLIC_SUPABASE_KEY;
   
   if (!supabaseUrl || !supabaseKey) {
     console.error('Supabase URL or key is missing. Check your environment variables.');
