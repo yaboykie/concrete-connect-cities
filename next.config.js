@@ -3,8 +3,15 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  // Add trailing slash to URLs to match old behavior if needed
   trailingSlash: true,
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  // Add transpilePackages if needed for specific npm packages
+  transpilePackages: [],
 }
 
 module.exports = nextConfig

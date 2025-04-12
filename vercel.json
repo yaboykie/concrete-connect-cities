@@ -1,9 +1,6 @@
 
 {
-  "rewrites": [
-    { "source": "/robots.txt", "destination": "/robots.txt" },
-    { "source": "/(.*)", "destination": "/index.html" }
-  ],
+  "buildCommand": "next build",
   "headers": [
     {
       "source": "/sitemap.xml",
@@ -12,6 +9,5 @@
         { "key": "Cache-Control", "value": "public, max-age=3600" }
       ]
     }
-  ],
-  "buildCommand": "npm run build && node scripts/generate-sitemap.js"
+  ]
 }
