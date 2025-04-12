@@ -67,11 +67,12 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
 
   const fetchDisputedLeads = async () => {
     try {
-      // Properly type the RPC arguments and cast the result
-      const args = { user_id: userId };
+      // Define type for the RPC response and arguments
+      type GetUserDisputesArgs = { user_id: string };
+      type GetUserDisputesResponse = { lead_id: string }[];
       
       const { data, error } = await supabase
-        .rpc<UserDisputeResponse, { user_id: string }>('get_user_disputes', args);
+        .rpc<GetUserDisputesResponse>('get_user_disputes', { user_id: userId });
       
       if (error) throw error;
       
@@ -102,14 +103,15 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
 
   const handleViewDispute = async (lead: Lead) => {
     try {
-      // Properly type the RPC arguments and cast the result
-      const args = {
-        p_lead_id: lead.lead_id,
-        p_contractor_id: userId
-      };
+      // Define type for the RPC response and arguments
+      type GetDisputeDetailsArgs = { p_lead_id: string, p_contractor_id: string };
+      type GetDisputeDetailsResponse = { reason: string, created_at: string }[];
       
       const { data, error } = await supabase
-        .rpc<DisputeDetailResponse, { p_lead_id: string, p_contractor_id: string }>('get_dispute_details', args);
+        .rpc<GetDisputeDetailsResponse>('get_dispute_details', {
+          p_lead_id: lead.lead_id,
+          p_contractor_id: userId
+        });
       
       if (error) throw error;
       
@@ -179,16 +181,22 @@ const LeadList: React.FC<LeadListProps> = ({ userId }) => {
         return;
       }
       
-      // Properly type the RPC arguments and cast the result
-      const args = {
+      // Define type for the RPC arguments
+      type SubmitLeadDisputeArgs = {
+        p_lead_id: string;
+        p_contractor_id: string;
+        p_campaign_id: string;
+        p_reason: string;
+      };
+      
+      const args: SubmitLeadDisputeArgs = {
         p_lead_id: selectedLead.lead_id,
         p_contractor_id: userId,
         p_campaign_id: campaignData.campaign_id,
         p_reason: finalReason
       };
       
-      const { error } = await supabase
-        .rpc<null, typeof args>('submit_lead_dispute', args);
+      const { error } = await supabase.rpc('submit_lead_dispute', args);
       
       if (error) throw error;
       
