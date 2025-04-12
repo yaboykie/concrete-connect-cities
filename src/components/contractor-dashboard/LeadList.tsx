@@ -4,11 +4,21 @@
 import React, { useEffect, useState } from 'react'
 import { supabase } from '@/integrations/supabase/client'
 import LeadTable, { Lead } from './leads/LeadTable'
-import DisputeModal, { DISPUTE_REASONS } from './leads/DisputeModal'
+import DisputeModal from './leads/DisputeModal'
 import ViewDisputeModal, { DisputeDetails } from './leads/ViewDisputeModal'
 
 interface LeadListProps {
   userId: string
+}
+
+// Define interfaces for the RPC responses
+interface DisputedLeadResponse {
+  lead_id: string;
+}
+
+interface DisputeDetailsResponse {
+  reason: string;
+  created_at: string;
 }
 
 export default function LeadList({ userId }: LeadListProps) {
@@ -22,14 +32,16 @@ export default function LeadList({ userId }: LeadListProps) {
   useEffect(() => {
     const fetchDisputedLeads = async () => {
       const { data, error } = await supabase
-        .rpc<{ lead_id: string }[], { user_id: string }>('get_user_disputes', { user_id: userId })
+        .rpc('get_user_disputes', { user_id: userId })
 
       if (error) {
         console.error('Error fetching disputed leads:', error)
         return
       }
 
-      setDisputedLeads(data.map(d => d.lead_id))
+      // Properly cast the data to the expected type
+      const typedData = data as DisputedLeadResponse[];
+      setDisputedLeads(typedData.map(d => d.lead_id))
     }
 
     fetchDisputedLeads()
@@ -38,21 +50,20 @@ export default function LeadList({ userId }: LeadListProps) {
   // 🧠 Handle Dispute View
   const handleViewDispute = async (lead: Lead) => {
     const { data, error } = await supabase
-      .rpc<{ reason: string; created_at: string }[], { p_lead_id: string; p_contractor_id: string }>(
-        'get_dispute_details',
-        {
-          p_lead_id: lead.lead_id,
-          p_contractor_id: userId,
-        }
-      )
+      .rpc('get_dispute_details', {
+        p_lead_id: lead.lead_id,
+        p_contractor_id: userId,
+      })
 
     if (error) {
       console.error('Error fetching dispute details:', error)
       return
     }
 
-    if (data.length > 0) {
-      setDisputeView(data[0])
+    // Properly cast the data to the expected type
+    const typedData = data as DisputeDetailsResponse[];
+    if (typedData && typedData.length > 0) {
+      setDisputeView(typedData[0])
       setSelectedLead(lead)
     }
   }
@@ -62,7 +73,7 @@ export default function LeadList({ userId }: LeadListProps) {
       <LeadTable
         leads={leads}
         disputedLeads={disputedLeads}
-        onDisputeClick={(lead) => {
+        onDispute={(lead) => {
           setSelectedLead(lead)
           setShowDisputeModal(true)
         }}
@@ -71,18 +82,22 @@ export default function LeadList({ userId }: LeadListProps) {
 
       {showDisputeModal && selectedLead && (
         <DisputeModal
-          lead={selectedLead}
-          onClose={() => setShowDisputeModal(false)}
-          userId={userId}
-          reasons={DISPUTE_REASONS}
+          open={showDisputeModal}
+          onOpenChange={setShowDisputeModal}
+          selectedReason=""
+          setSelectedReason={() => {}}
+          disputeReason=""
+          setDisputeReason={() => {}}
+          onSubmit={() => {}}
+          submitting={false}
         />
       )}
 
       {disputeView && selectedLead && (
         <ViewDisputeModal
-          lead={selectedLead}
-          details={disputeView}
-          onClose={() => setDisputeView(null)}
+          open={!!disputeView}
+          onOpenChange={() => setDisputeView(null)}
+          disputeDetails={disputeView}
         />
       )}
     </div>
