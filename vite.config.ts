@@ -25,7 +25,7 @@ export default defineConfig(({ mode }) => ({
     }
   },
   esbuild: {
-    // Remove any references to tsconfig.node.json
+    // Use tsconfig.node.json for esbuild
     tsconfigRaw: {
       compilerOptions: {
         target: 'esnext',
