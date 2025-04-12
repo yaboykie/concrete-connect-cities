@@ -1,7 +1,8 @@
 
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import path from 'path'
+// Import path using ES module syntax instead of CommonJS
+import * as path from 'path'
 import { componentTagger } from "lovable-tagger"
 
 export default defineConfig(({ mode }) => ({
