@@ -1,6 +1,8 @@
 
 {
-  "buildCommand": "next build",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "framework": "nextjs",
   "headers": [
     {
       "source": "/sitemap.xml",
