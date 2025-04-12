@@ -6,6 +6,7 @@ import NotFound from './pages/NotFound';
 import LocationsRoot from './components/locations/LocationsRoot';
 import LocationsState from './components/locations/LocationsState';
 import LocationDetails from './components/locations/LocationDetails';
+import SupabaseCheck from './components/SupabaseCheck';
 
 function App() {
   return (
@@ -16,6 +17,14 @@ function App() {
           element={
             <SiteLayout>
               <Home />
+            </SiteLayout>
+          }
+        />
+        <Route
+          path="/supabase-check"
+          element={
+            <SiteLayout>
+              <SupabaseCheck />
             </SiteLayout>
           }
         />

@@ -62,6 +62,42 @@ export type Database = {
           },
         ]
       }
+      concrete_estimates: {
+        Row: {
+          avg_sqft_high: number | null
+          avg_sqft_low: number | null
+          concrete_style: string | null
+          id: string
+          job_type: string | null
+          max_price_sqft: number | null
+          min_price_sqft: number | null
+          region_notes: string | null
+          state_code: string | null
+        }
+        Insert: {
+          avg_sqft_high?: number | null
+          avg_sqft_low?: number | null
+          concrete_style?: string | null
+          id: string
+          job_type?: string | null
+          max_price_sqft?: number | null
+          min_price_sqft?: number | null
+          region_notes?: string | null
+          state_code?: string | null
+        }
+        Update: {
+          avg_sqft_high?: number | null
+          avg_sqft_low?: number | null
+          concrete_style?: string | null
+          id?: string
+          job_type?: string | null
+          max_price_sqft?: number | null
+          min_price_sqft?: number | null
+          region_notes?: string | null
+          state_code?: string | null
+        }
+        Relationships: []
+      }
       contractor_signups: {
         Row: {
           business_name: string | null
