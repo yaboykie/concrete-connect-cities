@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from '@/components/ui/use-toast';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
@@ -57,11 +57,7 @@ const CampaignList: React.FC<CampaignListProps> = ({ userId }) => {
       setCampaigns(typedCampaigns);
     } catch (error) {
       console.error('Error fetching campaigns:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load campaigns",
-        variant: "destructive",
-      });
+      toast.error("Failed to load campaigns");
     } finally {
       setLoading(false);
     }
@@ -71,9 +67,8 @@ const CampaignList: React.FC<CampaignListProps> = ({ userId }) => {
     fetchCampaigns();
     setIsModalOpen(false);
     trackInteraction('campaign_created', 'contractor_dashboard');
-    toast({
-      title: "Campaign created",
-      description: "You're now eligible to receive matching leads",
+    toast.success("Campaign created", {
+      description: "You're now eligible to receive matching leads"
     });
   };
 

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import { CheckCircle } from 'lucide-react';
 import {
   Select,
@@ -19,7 +19,6 @@ interface QuoteFormProps {
 }
 
 const QuoteForm: React.FC<QuoteFormProps> = ({ location = "", service = "" }) => {
-  const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -45,10 +44,8 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ location = "", service = "" }) =>
     
     // Simulate form submission
     setTimeout(() => {
-      toast({
-        title: "Quote Request Submitted!",
-        description: "A concrete specialist will contact you shortly.",
-        duration: 5000,
+      toast.success("Quote Request Submitted!", {
+        description: "A concrete specialist will contact you shortly."
       });
       setIsSubmitting(false);
       setFormData({

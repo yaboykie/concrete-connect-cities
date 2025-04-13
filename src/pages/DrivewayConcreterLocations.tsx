@@ -1,9 +1,9 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { getLocationContent, getPerformanceMetrics } from '@/components/driveway-concreters/LocationContent';
 import { LocationContentType } from '@/components/driveway-concreters/types';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import { handleLegacyUrl } from '@/components/driveway-concreters/utils/urlUtils';
 import MainLocationsView from '@/components/driveway-concreters/MainLocationsView';
 import StateLocationsView from '@/components/driveway-concreters/StateLocationsView';
@@ -26,7 +26,6 @@ const DrivewayConcreterLocations = () => {
   const [error, setError] = React.useState<string | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
-  const { toast } = useToast();
   
   useEffect(() => {
     // Set cache control headers
@@ -79,10 +78,8 @@ const DrivewayConcreterLocations = () => {
       setError(`Failed to load location data: ${err instanceof Error ? err.message : String(err)}`);
       
       // Show error toast
-      toast({
-        title: "Error loading location data",
-        description: "We're having trouble loading this location. Please try again later.",
-        variant: "destructive"
+      toast.error("Error loading location data", {
+        description: "We're having trouble loading this location. Please try again later."
       });
     } finally {
       setIsLoading(false);

@@ -7,7 +7,7 @@ import { Loader2 } from 'lucide-react';
 import CampaignList from './CampaignList';
 import LeadList from './LeadList';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from '@/components/ui/use-toast';
+import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -43,11 +43,7 @@ const ContractorDashboard = () => {
       setContractorData(data);
     } catch (error) {
       console.error('Error fetching contractor data:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load your profile data",
-        variant: "destructive",
-      });
+      toast.error("Failed to load your profile data");
     } finally {
       setLoading(false);
     }

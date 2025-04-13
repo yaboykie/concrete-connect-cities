@@ -1,12 +1,20 @@
 
 import { useState } from "react";
-import { toast as sonnerToast, type Toast as SonnerToast } from "sonner";
+import { toast as sonnerToast } from "sonner";
 
-export type Toast = SonnerToast;
+// Define our toast types
+export interface Toast {
+  id: string;
+  title?: React.ReactNode;
+  description?: React.ReactNode;
+  action?: React.ReactNode;
+  variant?: "default" | "destructive" | "success";
+  duration?: number;
+}
 
 type ToastProps = {
-  title?: string;
-  description?: string;
+  title?: React.ReactNode;
+  description?: React.ReactNode;
   variant?: "default" | "destructive" | "success";
   duration?: number;
   action?: React.ReactNode;
@@ -38,7 +46,7 @@ export const useToast = () => {
       });
     }
     
-    setToasts((prevToasts) => [...prevToasts, { id, ...props } as unknown as Toast]);
+    setToasts((prevToasts) => [...prevToasts, { id, title, description, variant, ...rest }]);
     return id;
   };
 

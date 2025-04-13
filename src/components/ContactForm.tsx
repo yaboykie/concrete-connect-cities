@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import {
   Form,
   FormControl,
@@ -46,7 +46,6 @@ const ContactForm = ({ onSuccess, closeModal }: ContactFormProps) => {
   const [leadId, setLeadId] = useState<string | null>(null);
   const [matchCount, setMatchCount] = useState<number | null>(null);
   const [matchedCampaignId, setMatchedCampaignId] = useState<string | null>(null);
-  const { toast } = useToast();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -80,10 +79,8 @@ const ContactForm = ({ onSuccess, closeModal }: ContactFormProps) => {
         setMatchedCampaignId(responseData.matched_campaign_id || null);
       }
 
-      toast({
-        title: "Thank you!",
-        description: "Your quote request has been received. We'll get back to you soon.",
-        duration: 5000,
+      toast.success("Thank you!", {
+        description: "Your quote request has been received. We'll get back to you soon."
       });
 
       form.reset();
@@ -99,11 +96,8 @@ const ContactForm = ({ onSuccess, closeModal }: ContactFormProps) => {
       console.error('Error submitting form:', error);
       const errorMessage = error instanceof Error ? error.message : 'Unable to submit your request';
       setConnectionError(errorMessage);
-      toast({
-        title: "Something went wrong",
-        description: "Unable to submit your request. Please try again later.",
-        variant: "destructive",
-        duration: 5000,
+      toast.error("Something went wrong", {
+        description: "Unable to submit your request. Please try again later."
       });
     } finally {
       setIsSubmitting(false);

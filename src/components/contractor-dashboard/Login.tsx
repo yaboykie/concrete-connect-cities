@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2 } from 'lucide-react';
-import { toast } from '@/components/ui/use-toast';
+import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/hooks/useUser';
 import Header from '@/components/Header';
@@ -45,19 +45,16 @@ const ContractorLogin = () => {
       }
 
       if (data.user) {
-        toast({
-          title: "Login successful",
-          description: "Welcome back!",
+        toast.success("Login successful", {
+          description: "Welcome back!"
         });
         navigate('/contractor/dashboard');
       }
     } catch (err: any) {
       console.error('Login error:', err);
       setError(err.message || 'Failed to log in. Please try again.');
-      toast({
-        variant: "destructive",
-        title: "Login failed",
-        description: err.message || 'Invalid email or password.',
+      toast.error("Login failed", {
+        description: err.message || 'Invalid email or password.'
       });
     } finally {
       setLoading(false);

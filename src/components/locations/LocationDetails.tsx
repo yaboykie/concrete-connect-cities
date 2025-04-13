@@ -1,6 +1,7 @@
+
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { toast } from '@/components/ui/use-toast';
+import { toast } from 'sonner';
 import LocationDetailsView from '@/components/driveway-concreters/LocationDetailsView';
 import LoadingView from '@/components/driveway-concreters/LoadingView';
 import { getLocationContent } from '@/components/driveway-concreters/LocationContent';
@@ -87,10 +88,8 @@ const LocationDetails = () => {
         
         setError(`Failed to load location data: ${err instanceof Error ? err.message : String(err)}`);
         
-        toast({
-          title: "Using preview data",
-          description: "We're showing preview data for this location.",
-          variant: "default"
+        toast("Using preview data", {
+          description: "We're showing preview data for this location."
         });
       } finally {
         setIsLoading(false);
