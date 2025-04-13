@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
@@ -50,6 +49,7 @@ export default function StateDrivewayCalculator({
           max: item.max_price_sqft
         };
       });
+      console.log('Fetched pricing data:', prices);
       setPricing(prices);
     };
     fetch();
@@ -95,7 +95,13 @@ export default function StateDrivewayCalculator({
   };
 
   const finishLabel = finishMap[finishId];
+  console.log('Current finish ID:', finishId);
+  console.log('Finish label being used:', finishLabel);
+  console.log('Available pricing data keys:', Object.keys(pricing));
+  
   const price = pricing[finishLabel];
+  console.log('Price found:', price);
+  
   const minCost = price ? (area * price.min).toFixed(0) : '';
   const maxCost = price ? (area * price.max).toFixed(0) : '';
 
