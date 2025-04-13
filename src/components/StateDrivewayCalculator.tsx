@@ -56,7 +56,7 @@ export default function StateDrivewayCalculator({
   }, [state]);
 
   const finishMap: Record<string, string> = {
-    plain: 'Plain Grey',
+    plain: 'Plain Concrete',
     exposed: 'Exposed Aggregate',
     stamped: 'Stamped Concrete',
     coloured: 'Coloured Concrete',
