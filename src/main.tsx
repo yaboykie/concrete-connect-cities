@@ -9,7 +9,7 @@ import './index.css';
 // More detailed deployment verification
 console.log('-------------------------------------');
 console.log('Build timestamp:', new Date().toISOString());
-console.log('Vercel deployment verification check');
+console.log('Vercel deployment verification check - updated buildCommand');
 console.log('-------------------------------------');
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
