@@ -1,6 +1,6 @@
 
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react-swc'
+import react from '@vitejs/plugin-react'
 import * as path from 'path'
 import { componentTagger } from "lovable-tagger"
 
@@ -12,7 +12,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
-    allowedHosts: ['.lovableproject.com'] // Added wildcard match for lovableproject.com domains
+    allowedHosts: ['.lovableproject.com'] 
   },
   resolve: {
     alias: {
@@ -25,7 +25,6 @@ export default defineConfig(({ mode }) => ({
     }
   },
   esbuild: {
-    // Use tsconfig.node.json for esbuild
     tsconfigRaw: {
       compilerOptions: {
         target: 'esnext',
