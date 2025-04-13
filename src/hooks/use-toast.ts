@@ -30,20 +30,20 @@ export const useToast = () => {
     // Use the appropriate sonner method based on variant
     let id: string;
     if (variant === "destructive") {
-      id = sonnerToast.error(title || "", {
+      id = String(sonnerToast.error(title || "", {
         description,
         ...rest
-      });
+      }));
     } else if (variant === "success") {
-      id = sonnerToast.success(title || "", {
+      id = String(sonnerToast.success(title || "", {
         description,
         ...rest
-      });
+      }));
     } else {
-      id = sonnerToast(title || "", {
+      id = String(sonnerToast(title || "", {
         description,
         ...rest
-      });
+      }));
     }
     
     setToasts((prevToasts) => [...prevToasts, { id, title, description, variant, ...rest }]);
