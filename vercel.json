@@ -1,9 +1,8 @@
-
 {
   "buildCommand": "vite build",
   "outputDirectory": "dist",
   "framework": "vite",
-  "installCommand": "npm install --no-package-lock && npm install vite@5.1.4 @vitejs/plugin-react-swc@3.7.1",
+  "installCommand": "rm -f package-lock.json && npm install --legacy-peer-deps",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ],
