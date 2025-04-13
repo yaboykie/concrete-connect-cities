@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { getLocationContent, getPerformanceMetrics } from '@/components/driveway-concreters/LocationContent';
@@ -20,9 +21,9 @@ const setCacheControlHeaders = () => {
 
 const DrivewayConcreterLocations = () => {
   const { state, city } = useParams<{ state: string; city: string }>();
-  const [locationContent, setLocationContent] = useState<LocationContentType | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [locationContent, setLocationContent] = React.useState<LocationContentType | null>(null);
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [error, setError] = React.useState<string | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();

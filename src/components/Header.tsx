@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Button } from '@/components/ui/button';
 import { MapPin, Phone, Menu, X, ChevronRight, LogIn } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -15,7 +15,8 @@ import {
 import QuoteFormModal from './QuoteFormModal';
 
 const Header = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  // Initialize state with React.useState instead of just useState
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
 
   return (
     <header className="bg-white shadow-sm">

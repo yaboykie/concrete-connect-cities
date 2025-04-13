@@ -1,8 +1,8 @@
 
 import { useState } from "react";
-import { toast as sonnerToast, type ToastT } from "sonner";
+import { toast as sonnerToast, type Toast as SonnerToast } from "sonner";
 
-export type Toast = ToastT;
+export type Toast = SonnerToast;
 
 type ToastProps = {
   title?: string;
@@ -61,4 +61,5 @@ export const useToast = () => {
   };
 };
 
+// Export the sonner toast directly for simple use cases
 export { toast } from "sonner";
