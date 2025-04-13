@@ -6,8 +6,11 @@ import App from './App';
 import './styles/globals.css';
 import './index.css';
 
-// Added console log to verify new deployment
+// More detailed deployment verification
+console.log('-------------------------------------');
 console.log('Build timestamp:', new Date().toISOString());
+console.log('Vercel deployment verification check');
+console.log('-------------------------------------');
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
