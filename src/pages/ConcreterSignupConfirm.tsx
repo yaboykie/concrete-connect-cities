@@ -1,10 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
-import { toast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
@@ -13,6 +12,7 @@ export default function ConcreterSignupConfirm() {
   const [leadCount, setLeadCount] = useState(10);
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
+  const { toast } = useToast();
   
   // Calculate the price based on lead count
   const monthlyPrice = leadCount * 20;

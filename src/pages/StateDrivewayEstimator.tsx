@@ -5,12 +5,13 @@ import StateDrivewayCalculator from '@/components/StateDrivewayCalculator';
 import SEO from '@/components/SEO';
 import SimpleQuoteForm from '@/components/driveway-concreters/components/SimpleQuoteForm';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { UTMParams } from '@/types';
 
 export default function StateDrivewayEstimator() {
   const { state } = useParams<{ state: string }>();
   const location = useLocation();
+  const { toast } = useToast();
   const stateDisplayName = state ? state.charAt(0).toUpperCase() + state.slice(1) : '';
   const [utmParams, setUtmParams] = useState<UTMParams>({});
   

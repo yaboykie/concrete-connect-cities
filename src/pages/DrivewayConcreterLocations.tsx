@@ -1,9 +1,8 @@
-
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { getLocationContent, getPerformanceMetrics } from '@/components/driveway-concreters/LocationContent';
 import { LocationContentType } from '@/components/driveway-concreters/types';
-import { toast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { handleLegacyUrl } from '@/components/driveway-concreters/utils/urlUtils';
 import MainLocationsView from '@/components/driveway-concreters/MainLocationsView';
 import StateLocationsView from '@/components/driveway-concreters/StateLocationsView';
@@ -26,6 +25,7 @@ const DrivewayConcreterLocations = () => {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const { toast } = useToast();
   
   useEffect(() => {
     // Set cache control headers

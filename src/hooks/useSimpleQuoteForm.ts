@@ -1,6 +1,5 @@
-
 import { useState, useEffect } from 'react';
-import { toast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { UTMParams } from '@/types';
 import { supabase } from '@/integrations/supabase/client';
 import { useAnalyticsTracking } from './useAnalyticsTracking';
@@ -47,6 +46,8 @@ export const useSimpleQuoteForm = ({
   utmParams = {}, 
   stateLocation = '' 
 }: UseSimpleQuoteFormProps) => {
+  const { toast } = useToast();
+  const { trackInteraction } = useAnalyticsTracking();
   const [formData, setFormData] = useState<FormData>({
     name: '',
     zipCode: '',
@@ -56,7 +57,6 @@ export const useSimpleQuoteForm = ({
   const [formErrors, setFormErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionSuccess, setSubmissionSuccess] = useState(false);
-  const { trackInteraction } = useAnalyticsTracking();
 
   const validateForm = async (): Promise<boolean> => {
     try {
@@ -79,11 +79,9 @@ export const useSimpleQuoteForm = ({
 
   const validateField = async (fieldName: string): Promise<boolean> => {
     try {
-      // Create a schema just for this field - adding the type cast to fix the TypeScript error
       const fieldSchema = Yup.reach(quoteFormSchema, fieldName) as Yup.AnySchema;
       await fieldSchema.validate(formData[fieldName as keyof FormData]);
       
-      // Remove error for this field if it exists
       if (formErrors[fieldName]) {
         const newErrors = { ...formErrors };
         delete newErrors[fieldName];
@@ -91,7 +89,6 @@ export const useSimpleQuoteForm = ({
       }
       return true;
     } catch (err: any) {
-      // Set just this field's error
       setFormErrors(prev => ({
         ...prev,
         [fieldName]: err.message
@@ -104,7 +101,6 @@ export const useSimpleQuoteForm = ({
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     
-    // Clear the error for this field when user makes changes
     if (formErrors[name]) {
       setFormErrors(prev => {
         const newErrors = { ...prev };
@@ -115,10 +111,8 @@ export const useSimpleQuoteForm = ({
   };
 
   const handleFieldBlur = (fieldName: string) => {
-    // Validate just this field
     validateField(fieldName);
     
-    // Track field blur event
     trackInteraction(`${fieldName}_field_blur`, 'simple_quote_form', {
       state: stateLocation
     });
@@ -133,12 +127,10 @@ export const useSimpleQuoteForm = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Track form submission attempt
     trackInteraction('form_submit_attempt', 'simple_quote_form', {
       state: stateLocation
     });
     
-    // Form validation
     const isValid = await validateForm();
     if (!isValid) {
       trackInteraction('form_validation_error', 'simple_quote_form', {
@@ -150,7 +142,6 @@ export const useSimpleQuoteForm = ({
     
     setIsSubmitting(true);
     
-    // Prepare form data with UTM parameters
     const submissionData = {
       ...formData,
       ...utmParams,
@@ -161,14 +152,12 @@ export const useSimpleQuoteForm = ({
     
     if (onSubmit) {
       try {
-        // Use the parent component's submit handler
         const response = await onSubmit(submissionData);
         
-        // Track successful conversion if the conversion tracking is available
         if (response?.lead_id && typeof window.trackFormConversion === 'function') {
           window.trackFormConversion(
-            'AW-676763112',     // Your conversion ID
-            'form_submission',  // Conversion label - update this with your actual label
+            'AW-676763112',
+            'form_submission',
             {
               ...submissionData,
               lead_id: response.lead_id
@@ -176,14 +165,12 @@ export const useSimpleQuoteForm = ({
           );
         }
         
-        // Track successful submission
         trackInteraction('form_submit_success', 'simple_quote_form', {
           lead_id: response?.lead_id || 'unknown',
           matched_contractors: response?.matched_contractors || 0,
           state: stateLocation
         });
         
-        // Reset form on success
         setFormData({
           name: '',
           zipCode: '',
@@ -193,7 +180,6 @@ export const useSimpleQuoteForm = ({
         setSubmissionSuccess(true);
       } catch (error) {
         console.error('Error in form submission:', error);
-        // Track submission error
         trackInteraction('form_submit_error', 'simple_quote_form', {
           error_message: error instanceof Error ? error.message : 'Unknown error',
           state: stateLocation
@@ -209,13 +195,11 @@ export const useSimpleQuoteForm = ({
         setIsSubmitting(false);
       }
     } else {
-      // Fallback to default behavior if no onSubmit is provided
       setTimeout(() => {
         toast({
           title: "Quote Request Submitted",
           description: "We'll match you with local driveway concreters shortly. Thank you!",
         });
-        setIsSubmitting(false);
         setFormData({
           name: '',
           zipCode: '',

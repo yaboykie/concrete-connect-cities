@@ -7,12 +7,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ArrowDown } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 export default function HomePage() {
   const [showExitModal, setShowExitModal] = useState(false);
   const [exitEmail, setExitEmail] = useState('');
   const [scrollPercentage, setScrollPercentage] = useState(0);
   const calculatorRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
   
   // Track scroll position to trigger exit intent modal
   useEffect(() => {
@@ -44,8 +46,12 @@ export default function HomePage() {
     e.preventDefault();
     // Here you would send the email to your backend
     setShowExitModal(false);
-    // Show success toast
-    alert("We've sent your estimate to " + exitEmail);
+    // Show success toast using our updated toast format
+    toast({
+      title: "Email Sent",
+      description: `We've sent your estimate to ${exitEmail}`,
+      duration: 5000
+    });
     setExitEmail('');
   };
 

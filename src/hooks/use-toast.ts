@@ -4,12 +4,42 @@ import { toast as sonnerToast, type ToastT } from "sonner";
 
 export type Toast = ToastT;
 
+type ToastProps = {
+  title?: string;
+  description?: string;
+  variant?: "default" | "destructive" | "success";
+  duration?: number;
+  action?: React.ReactNode;
+};
+
 export const useToast = () => {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
-  const toast = (props: Toast) => {
-    const id = sonnerToast(props);
-    setToasts((prevToasts) => [...prevToasts, { ...props, id }]);
+  const toast = (props: ToastProps) => {
+    // Convert our props format to sonner format
+    const { title, description, variant, ...rest } = props;
+    
+    // Use the appropriate sonner method based on variant
+    let id: string;
+    if (variant === "destructive") {
+      id = sonnerToast.error(title || "", {
+        description,
+        ...rest
+      });
+    } else if (variant === "success") {
+      id = sonnerToast.success(title || "", {
+        description,
+        ...rest
+      });
+    } else {
+      id = sonnerToast(title || "", {
+        description,
+        ...rest
+      });
+    }
+    
+    setToasts((prevToasts) => [...prevToasts, { id, ...props } as unknown as Toast]);
+    return id;
   };
 
   const dismiss = (toastId?: string) => {

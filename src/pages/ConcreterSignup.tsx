@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
-import { toast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
@@ -39,6 +39,7 @@ export default function ConcreterSignup() {
       jobTypes: [],
     },
   });
+  const { toast } = useToast();
 
   const onSubmit = async (data: ConcreterSignupFormValues) => {
     try {

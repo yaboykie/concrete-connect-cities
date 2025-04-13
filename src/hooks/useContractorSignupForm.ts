@@ -1,6 +1,5 @@
-
 import { useState } from 'react';
-import { toast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import * as Yup from 'yup';
 import { useAnalyticsTracking } from './useAnalyticsTracking';
 import { supabase } from '@/integrations/supabase/client';
@@ -44,6 +43,7 @@ export const useContractorSignupForm = ({
   onSubmit, 
   stateLocation = '' 
 }: UseContractorSignupFormProps) => {
+  const { toast } = useToast();
   const [formData, setFormData] = useState<FormData>({
     businessName: '',
     contactName: '',
@@ -75,11 +75,9 @@ export const useContractorSignupForm = ({
 
   const validateField = async (fieldName: string): Promise<boolean> => {
     try {
-      // Create a schema just for this field
       const fieldSchema = Yup.reach(contractorSignupSchema, fieldName) as Yup.AnySchema;
       await fieldSchema.validate(formData[fieldName as keyof FormData]);
       
-      // Remove error for this field if it exists
       if (formErrors[fieldName]) {
         const newErrors = { ...formErrors };
         delete newErrors[fieldName];
@@ -87,7 +85,6 @@ export const useContractorSignupForm = ({
       }
       return true;
     } catch (err: any) {
-      // Set just this field's error
       setFormErrors(prev => ({
         ...prev,
         [fieldName]: err.message
@@ -100,7 +97,6 @@ export const useContractorSignupForm = ({
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     
-    // Clear the error for this field when user makes changes
     if (formErrors[name]) {
       setFormErrors(prev => {
         const newErrors = { ...prev };
@@ -111,10 +107,8 @@ export const useContractorSignupForm = ({
   };
 
   const handleFieldBlur = (fieldName: string) => {
-    // Validate just this field
     validateField(fieldName);
     
-    // Track field blur event
     trackInteraction(`${fieldName}_field_blur`, 'contractor_signup', {
       state: stateLocation
     });
@@ -129,17 +123,13 @@ export const useContractorSignupForm = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Track form submission attempt
     trackInteraction('contractor_signup_submit_attempt', 'contractor_signup', {
       state: stateLocation
     });
     
-    // Check if honeypot field was filled
     if (formData.website) {
-      // Silently reject spam submissions
       console.log("Potential spam submission detected");
       setTimeout(() => {
-        // Show success message to avoid alerting bots
         toast({
           title: "Thanks! Your account has been created.",
           description: "You'll receive a confirmation shortly.",
@@ -153,7 +143,6 @@ export const useContractorSignupForm = ({
       return;
     }
     
-    // Form validation
     const isValid = await validateForm();
     if (!isValid) {
       trackInteraction('contractor_signup_error', 'contractor_signup', {
@@ -165,7 +154,6 @@ export const useContractorSignupForm = ({
     
     setIsSubmitting(true);
     
-    // Prepare form data
     const submissionData = {
       ...formData,
       form_type: 'contractor_signup',
@@ -173,19 +161,16 @@ export const useContractorSignupForm = ({
     
     if (onSubmit) {
       try {
-        // Use the parent component's submit handler
         const result = await onSubmit(submissionData);
         
         if (!result.success) {
           throw new Error(result.error || 'Submission failed');
         }
         
-        // Track successful submission
         trackInteraction('contractor_signup_success', 'contractor_signup', {
           state: stateLocation
         });
         
-        // Reset form on success
         setFormData({
           businessName: '',
           contactName: '',
@@ -201,7 +186,6 @@ export const useContractorSignupForm = ({
       } catch (error) {
         console.error('Error in form submission:', error);
         
-        // Track submission error
         trackInteraction('contractor_signup_error', 'contractor_signup', {
           error_message: error instanceof Error ? error.message : 'Unknown error',
           state: stateLocation
@@ -217,28 +201,23 @@ export const useContractorSignupForm = ({
         setIsSubmitting(false);
       }
     } else {
-      // Fallback to simulate submission
-      setTimeout(() => {
-        console.log('Contractor signup data:', submissionData);
-        
-        toast({
-          title: "You're in!",
-          description: "Let's get your first 3 leads set up.",
-        });
-        
-        setIsSubmitting(false);
-        setFormData({
-          businessName: '',
-          contactName: '',
-          contact: ''
-        });
-        
-        setSubmissionSuccess(true);
-        
-        trackInteraction('contractor_signup_success', 'contractor_signup', {
-          state: stateLocation
-        });
-      }, 1500);
+      toast({
+        title: "You're in!",
+        description: "Let's get your first 3 leads set up.",
+      });
+      
+      setIsSubmitting(false);
+      setFormData({
+        businessName: '',
+        contactName: '',
+        contact: ''
+      });
+      
+      setSubmissionSuccess(true);
+      
+      trackInteraction('contractor_signup_success', 'contractor_signup', {
+        state: stateLocation
+      });
     }
   };
 
