@@ -12,8 +12,8 @@ const nextConfig = {
   },
   // Add transpilePackages if needed for specific npm packages
   transpilePackages: [],
-  // Ensure we're using the correct output directory
-  distDir: 'dist',
+  // Use the default Next.js output directory
+  distDir: '.next',
 }
 
 module.exports = nextConfig
