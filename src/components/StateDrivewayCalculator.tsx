@@ -45,9 +45,9 @@ export default function StateDrivewayCalculator({
       const data = await getFinishPricingByState(formattedState);
       const prices: Record<string, { min: number; max: number }> = {};
       data.forEach((item: any) => {
-        prices[item.finish] = {
-          min: item.min_rate,
-          max: item.max_rate
+        prices[item.concrete_style] = {
+          min: item.min_price_sqft,
+          max: item.max_price_sqft
         };
       });
       setPricing(prices);
@@ -167,7 +167,7 @@ export default function StateDrivewayCalculator({
         onInteraction={handleInteraction}
       />
 
-      {price && area > 0 && (
+      {price && area > 0 ? (
         <Card className="mt-6 bg-brand-yellow/20 border border-brand-yellow mb-4">
           <CardContent className="pt-6">
             <p className="mb-2">📐 <strong>Estimated Area:</strong> {area} sq ft</p>
@@ -184,6 +184,12 @@ export default function StateDrivewayCalculator({
             )}
           </CardContent>
         </Card>
+      ) : (
+        <div className="mt-6 p-4 bg-gray-50 rounded-md border border-gray-200 mb-4">
+          <p className="text-sm text-gray-700 text-center">
+            We're still gathering pricing data for this selection. Please continue and we'll guide you.
+          </p>
+        </div>
       )}
 
       <div className="mt-4">
