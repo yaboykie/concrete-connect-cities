@@ -50,6 +50,7 @@ export default function HomePage() {
     toast({
       title: "Email Sent",
       description: `We've sent your estimate to ${exitEmail}`,
+      variant: "success",
       duration: 5000
     });
     setExitEmail('');
@@ -57,7 +58,7 @@ export default function HomePage() {
 
   return (
     <main className="flex-grow">
-      {/* SECTION 1 – Hero Block */}
+      {/* ROW 1 – HERO SECTION */}
       <section className="bg-white py-16 px-4">
         <div className="container mx-auto max-w-4xl text-center">
           <h1 className="text-3xl font-bold text-gray-900 leading-tight">
@@ -68,23 +69,41 @@ export default function HomePage() {
             We'll show you real pricing based on your home's location and the type of concrete you're after — no chasing tradies, no inflated bids, just clear info for homeowners.
           </p>
 
-          <p className="mt-2 text-sm text-gray-500 italic">
-            All concreters on our platform are rated 4.7★ or higher on Google.
+          <p className="mt-2 text-sm text-gray-600 italic">
+            Know what concrete should cost before speaking to a tradie — so you're in control, not guessing, when the real quotes come in.
           </p>
 
           <Button 
             onClick={scrollToCalculator}
-            className="mt-4 bg-black text-white px-6 py-3 rounded-md hover:bg-gray-800 transition"
+            className="mt-6 bg-black text-white px-6 py-3 rounded-md hover:bg-gray-800 transition"
           >
             Start My Estimate <ArrowDown className="ml-2 h-4 w-4" />
           </Button>
         </div>
       </section>
       
-      {/* SECTION 2 – Estimate Calculator */}
+      {/* ROW 2 – TWO-COLUMN ESTIMATE SECTION */}
       <section className="bg-gray-50 py-12 px-4" ref={calculatorRef}>
-        <div className="container mx-auto max-w-4xl">
-          <StateDrivewayCalculator />
+        <div className="container mx-auto max-w-6xl">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Left Column (2/3 width) - Calculator */}
+            <div className="lg:col-span-2">
+              <StateDrivewayCalculator />
+            </div>
+            
+            {/* Right Column (1/3 width) - Trust Copy */}
+            <div className="bg-white p-6 rounded-lg shadow-sm h-fit">
+              <h2 className="text-lg font-semibold text-gray-800 mb-2">
+                How This Estimate Works
+              </h2>
+              <p className="text-sm text-gray-600">
+                This estimate pulls real data from concreters in your state — including driveways, patios, shed slabs and more.
+              </p>
+              <p className="mt-2 text-sm text-gray-600">
+                It's not a quote — it's a price guide based on typical job size and finish quality. So when the quotes come in, you already know what's fair.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
       
@@ -176,7 +195,7 @@ export default function HomePage() {
           </h2>
 
           <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-gray-50 p-4 rounded-md shadow-sm">
+            <div className="bg-white p-4 rounded-md shadow-sm">
               <p className="text-sm text-gray-800">
                 "I was getting quotes from $6,000 to $14,000 for the same driveway. ConcreterQuotes showed me what was actually normal in my area — and matched me with two concreters who didn't play games. We had the job booked in 48 hours."
               </p>
@@ -185,7 +204,7 @@ export default function HomePage() {
               </p>
             </div>
 
-            <div className="bg-gray-50 p-4 rounded-md shadow-sm">
+            <div className="bg-white p-4 rounded-md shadow-sm">
               <p className="text-sm text-gray-800">
                 "I'd put off replacing our slab for years because I didn't know where to start. Within 15 minutes I had a price range, and by the end of the day I had a quote. No chasing. No voicemails."
               </p>
@@ -194,7 +213,7 @@ export default function HomePage() {
               </p>
             </div>
 
-            <div className="bg-gray-50 p-4 rounded-md shadow-sm">
+            <div className="bg-white p-4 rounded-md shadow-sm">
               <p className="text-sm text-gray-800">
                 "Everyone says they'll get back to you. These guys actually did — fast. I picked the concreter who explained everything in detail and showed up when he said he would."
               </p>
@@ -203,7 +222,7 @@ export default function HomePage() {
               </p>
             </div>
 
-            <div className="bg-gray-50 p-4 rounded-md shadow-sm">
+            <div className="bg-white p-4 rounded-md shadow-sm">
               <p className="text-sm text-gray-800">
                 "I'm not a contractor. I didn't want to guess at the price or get talked down. The estimate made it simple. The contractor did exactly what he said he'd do."
               </p>
