@@ -1,81 +1,15 @@
 
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>concrete-connect-cities</title>
-    <meta name="description" content="Lovable Generated Project" />
-    <meta name="author" content="Lovable" />
-
-    <meta property="og:title" content="Lovable Generated Project" />
-    <meta property="og:description" content="Lovable Generated Project" />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@lovable_dev" />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-    
-    <!-- Google tag (gtag.js) - GA4 -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-676763112"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      // Configure your GA4 and Ads accounts
-      gtag('config', 'AW-676763112');
-      
-      // Track form submissions as conversions
-      function trackFormConversion(conversionId, conversionLabel, formData) {
-        if (window.gtag) {
-          gtag('event', 'conversion', {
-            'send_to': conversionId + '/' + conversionLabel,
-            'value': 1.0,
-            'transaction_id': formData.lead_id || Date.now().toString(),
-            'user_data': {
-              'email': formData.email || formData.contact || '',
-              'phone_number': formData.phone || '',
-              'address': {
-                'postal_code': formData.zipCode || ''
-              }
-            }
-          });
-          
-          // Also track as a Google Analytics 4 event with lead data
-          gtag('event', 'lead_submitted', {
-            'lead_id': formData.lead_id || Date.now().toString(),
-            'form_type': formData.form_type || 'quote_request',
-            'job_type': formData.jobType || 'driveway',
-            'location': formData.state || formData.zipCode || '',
-            'utm_source': formData.utm_source || '',
-            'utm_medium': formData.utm_medium || '',
-            'utm_campaign': formData.utm_campaign || '',
-            'utm_term': formData.utm_term || '',
-            'utm_content': formData.utm_content || '',
-            'page_path': formData.page_path || window.location.pathname,
-            'landing_url': formData.landing_url || window.location.href
-          });
-        }
-      }
-      
-      // Enhanced form tracking
-      function trackFormInteraction(action, formName, additionalData) {
-        if (window.gtag) {
-          gtag('event', action, {
-            'form_name': formName,
-            ...additionalData
-          });
-        }
-      }
-    </script>
-  </head>
-
-  <body>
-    <div id="root"></div>
-    <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
-    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ConcreterQuotes - Instant Concrete Estimates</title>
+  <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
 </html>

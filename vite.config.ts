@@ -36,7 +36,9 @@ export default defineConfig(({ mode }) => ({
     target: 'esnext',
     outDir: 'dist',
     rollupOptions: {
-      input: 'src/main.tsx'
+      input: {
+        main: 'index.html',
+      }
     }
   },
   appType: 'spa'
