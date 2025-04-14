@@ -20,33 +20,19 @@ const processPricingData = (data: any[]) => {
   
   if (data && data.length > 0) {
     data.forEach(item => {
-      if (item['Finish Type'] && item['Price/Sqft']) {
+      if (item['Finish Type']) {
         try {
-          // Store the pricing data directly as strings
           const finishType = item['Finish Type'];
-          const uiFinishLabel = item['UI Finish Label'] || finishType;
           
+          // Store pricing with the finish type as key
           prices[finishType] = {
             pricePerSqft: item['Price/Sqft'] || 'Not available',
             avgSize: item['Avg Size'] || 'Not available',
             totalRange: item['Total Range'] || 'Not available'
           };
           
-          // Store with lowercase key for case-insensitive matching
+          // Also store with lowercase key for case-insensitive matching
           prices[finishType.toLowerCase()] = {
-            pricePerSqft: item['Price/Sqft'] || 'Not available',
-            avgSize: item['Avg Size'] || 'Not available',
-            totalRange: item['Total Range'] || 'Not available'
-          };
-          
-          // Also store with the UI Finish Label
-          prices[uiFinishLabel] = {
-            pricePerSqft: item['Price/Sqft'] || 'Not available',
-            avgSize: item['Avg Size'] || 'Not available',
-            totalRange: item['Total Range'] || 'Not available'
-          };
-          
-          prices[uiFinishLabel.toLowerCase()] = {
             pricePerSqft: item['Price/Sqft'] || 'Not available',
             avgSize: item['Avg Size'] || 'Not available',
             totalRange: item['Total Range'] || 'Not available'
@@ -142,33 +128,22 @@ export const useDrivewayCalculator = (state: string | undefined, onInteraction?:
     handleInteraction();
   };
 
-  // Get the display name for the selected finish
+  // Get the UI finish label for the selected finish ID
   const finishLabel = finishIdToLabel[finishId] || finishId;
   
-  // Get the database finish type using the mapping
+  // Get the database finish type from the UI label using our mapping
   const databaseFinishType = labelToFinishType[finishLabel];
   
   console.log('UI Finish Label:', finishLabel);
   console.log('Database Finish Type:', databaseFinishType);
   
-  // Look for price in processed pricing data using database finish type
+  // Look for price in processed pricing data using the mapped database finish type
   let price = pricing[databaseFinishType];
   
-  // If not found by finish type, try the UI label
-  if (!price) {
-    price = pricing[finishLabel];
-    console.log('Trying UI label match:', finishLabel, price);
-  }
-  
-  // Try lowercase versions if still not found
-  if (!price) {
-    price = pricing[databaseFinishType?.toLowerCase() || ''];
-    console.log('Trying lowercase finish type match:', databaseFinishType?.toLowerCase(), price);
-    
-    if (!price) {
-      price = pricing[finishLabel.toLowerCase()];
-      console.log('Trying lowercase UI label match:', finishLabel.toLowerCase(), price);
-    }
+  // Try lowercase version if not found
+  if (!price && databaseFinishType) {
+    price = pricing[databaseFinishType.toLowerCase()];
+    console.log('Trying lowercase finish type match:', databaseFinishType.toLowerCase(), price);
   }
 
   return {

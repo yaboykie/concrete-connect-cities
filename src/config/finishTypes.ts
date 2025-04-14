@@ -39,7 +39,8 @@ export const finishIdToLabel: Record<string, string> = {
   'brushed': 'Brushed Finish'
 };
 
-// Mapping between UI finish labels and database finish types
+// Updated mapping between UI finish labels and database finish types
+// This is the critical mapping that ensures we query the right finish type in Supabase
 export const labelToFinishType: Record<string, string> = {
   'Plain Concrete': 'Broom Finish',
   'Brushed Finish': 'Broom Finish',
