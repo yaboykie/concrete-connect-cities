@@ -37,6 +37,15 @@ const processPricingData = (data: any[]) => {
             avgSize: item['Avg Size'] || 'Not available',
             totalRange: item['Total Range'] || 'Not available'
           };
+          
+          // Store by UI Finish Label if available
+          if (item['UI Finish Label']) {
+            prices[item['UI Finish Label']] = {
+              pricePerSqft: item['Price/Sqft'] || 'Not available',
+              avgSize: item['Avg Size'] || 'Not available',
+              totalRange: item['Total Range'] || 'Not available'
+            };
+          }
         } catch (e) {
           console.error('Error processing price data:', e);
         }
@@ -55,10 +64,10 @@ export const useDrivewayCalculator = (state: string | undefined, onInteraction?:
   const [custom, setCustom] = useState<DrivewaySize>({ width: 0, length: 0 });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [selectedState, setSelectedState] = useState(state || 'California');
+  const [selectedState, setSelectedState] = useState(state || 'Texas');
 
   useEffect(() => {
-    const stateToFetch = selectedState || 'California';
+    const stateToFetch = selectedState || 'Texas';
     const fetch = async () => {
       try {
         setIsLoading(true);
@@ -137,13 +146,36 @@ export const useDrivewayCalculator = (state: string | undefined, onInteraction?:
   console.log('UI Finish Label:', finishLabel);
   console.log('Database Finish Type:', databaseFinishType);
   
-  // Look for price in processed pricing data using the mapped database finish type
-  let price = pricing[databaseFinishType];
+  // Try multiple methods to find pricing data
+  let price = null;
   
-  // Try lowercase version if not found
-  if (!price && databaseFinishType) {
-    price = pricing[databaseFinishType.toLowerCase()];
-    console.log('Trying lowercase finish type match:', databaseFinishType.toLowerCase(), price);
+  // First try exact match with database finish type
+  if (databaseFinishType) {
+    price = pricing[databaseFinishType];
+    
+    // If not found, try lowercase version
+    if (!price) {
+      price = pricing[databaseFinishType.toLowerCase()];
+      console.log('Trying lowercase finish type match:', databaseFinishType.toLowerCase(), price);
+    }
+    
+    // If still not found, try UI finish label directly
+    if (!price) {
+      price = pricing[finishLabel];
+      console.log('Trying UI finish label match:', finishLabel, price);
+      
+      if (!price) {
+        price = pricing[finishLabel.toLowerCase()];
+        console.log('Trying lowercase UI finish label match:', finishLabel.toLowerCase(), price);
+      }
+    }
+  }
+  
+  // If no price found for the specific finish, get any price from the data
+  if (!price && Object.keys(pricing).length > 0) {
+    const firstFinishType = Object.keys(pricing)[0];
+    price = pricing[firstFinishType];
+    console.log('Using fallback price from first available finish type:', firstFinishType);
   }
 
   return {

@@ -41,18 +41,18 @@ export async function getFinishPricingByState(state: string) {
     
     // If still no results, get any available data as fallback
     if (!data || data.length === 0) {
-      console.log('No state-specific data found, retrieving general pricing data...');
+      console.log('No state-specific data found, retrieving default pricing from Texas...');
       const { data: fallbackData, error: fallbackError } = await supabase
         .from('concrete_driveway_estimate')
         .select('*')
-        .limit(10);
+        .ilike('State', 'Texas');
         
       if (fallbackError) {
         console.error('Fallback query error:', fallbackError);
         return [];
       }
       
-      console.log(`Retrieved ${fallbackData?.length || 0} fallback pricing records`);
+      console.log(`Retrieved ${fallbackData?.length || 0} fallback pricing records from Texas`);
       return fallbackData || [];
     }
     

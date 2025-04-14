@@ -24,7 +24,7 @@ export default function PriceEstimateDisplay({
         <h3 className="text-lg font-medium text-gray-800">
           {area <= 0
             ? "Please enter valid dimensions to get an estimate"
-            : "We're still gathering pricing data for this selection. Please continue and we'll guide you."}
+            : `We're showing you our standard pricing guide. For exact quotes in ${stateName}, please continue below.`}
         </h3>
         <Button className="mt-4" onClick={onGetQuotes}>Get Free Quotes</Button>
       </div>
@@ -50,6 +50,11 @@ export default function PriceEstimateDisplay({
       <div className="mt-3 text-xs text-gray-500 text-center">
         <p>Driveway size: {area} sqft</p>
         {estimateDisclaimer && <p className="mt-1">{estimateDisclaimer}</p>}
+        {stateName !== 'Texas' && (
+          <p className="mt-1 text-amber-600">
+            Note: This estimate is based on available pricing data and may vary in your location.
+          </p>
+        )}
       </div>
       
       <div className="mt-6 text-center">

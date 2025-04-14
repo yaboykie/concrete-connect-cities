@@ -7,18 +7,18 @@ interface StateSelectorProps {
   onChange: (state: string) => void;
 }
 
-// Updated with the 10 required states only
+// Available states, with Texas first since we have data for it
 const availableStates = [
+  { name: "Texas" },
+  { name: "California" },
+  { name: "Florida" },
+  { name: "Arizona" },
   { name: "Washington" },
   { name: "Pennsylvania" },
   { name: "Ohio" },
   { name: "Illinois" },
   { name: "Georgia" },
-  { name: "North Carolina" },
-  { name: "Arizona" },
-  { name: "California" },
-  { name: "Florida" },
-  { name: "Texas" }
+  { name: "North Carolina" }
 ];
 
 export default function StateSelector({ selectedState, onChange }: StateSelectorProps) {

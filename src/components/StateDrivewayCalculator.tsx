@@ -28,8 +28,23 @@ export default function StateDrivewayCalculator({
   const params = useParams<{ state: string }>();
   const stateFromParam = params.state;
   
-  // Use stateName prop if provided, otherwise use from URL params, fallback to "ca"
-  const initialState = (propStateName || stateFromParam || "ca").toLowerCase();
+  // Use stateName prop if provided, otherwise use from URL params, fallback to "Texas"
+  const initialState = (propStateName || stateFromParam || "Texas").toLowerCase();
+  const stateMap: Record<string, string> = {
+    'tx': 'Texas',
+    'ca': 'California',
+    'fl': 'Florida',
+    'az': 'Arizona',
+    'wa': 'Washington',
+    'pa': 'Pennsylvania',
+    'oh': 'Ohio',
+    'il': 'Illinois',
+    'ga': 'Georgia',
+    'nc': 'North Carolina'
+  };
+  
+  // Map state codes to full names
+  const mappedInitialState = stateMap[initialState] || initialState;
   
   // Show that we detected the state
   const { toast } = useToast();
@@ -51,37 +66,20 @@ export default function StateDrivewayCalculator({
     handleCustomSizeChange,
     handleScrollToQuoteForm,
     handleStateChange
-  } = useDrivewayCalculator(initialState, onInteraction);
+  } = useDrivewayCalculator(mappedInitialState, onInteraction);
 
   // Show toast when state changes
   useEffect(() => {
     if (selectedState) {
       toast({
-        description: `Loading concrete prices for ${selectedState.toUpperCase()}...`,
+        description: `Loading concrete prices for ${selectedState}...`,
         duration: 3000,
       });
     }
   }, [selectedState, toast]);
 
-  // Get state display name from state code
-  const getStateDisplayName = (stateCode: string) => {
-    const stateMap: Record<string, string> = {
-      'wa': 'Washington',
-      'pa': 'Pennsylvania',
-      'oh': 'Ohio',
-      'il': 'Illinois',
-      'ga': 'Georgia',
-      'nc': 'North Carolina',
-      'az': 'Arizona',
-      'ca': 'California',
-      'fl': 'Florida',
-      'tx': 'Texas'
-    };
-    
-    return stateMap[stateCode.toLowerCase()] || stateCode.toUpperCase();
-  };
-  
-  const stateDisplayName = getStateDisplayName(selectedState);
+  // Get state display name
+  const stateDisplayName = selectedState;
 
   console.log("Current price data:", price);
   console.log("Current area:", area);
@@ -123,9 +121,9 @@ export default function StateDrivewayCalculator({
           </p>
         </div>
       ) : error ? (
-        <div className="mt-6 p-4 bg-red-50 rounded-md border border-red-200 mb-4">
-          <p className="text-sm text-red-700 text-center">
-            {error}
+        <div className="mt-6 p-4 bg-amber-50 rounded-md border border-amber-200 mb-4">
+          <p className="text-sm text-amber-700 text-center">
+            {error} We're showing you our standard pricing guide instead.
           </p>
         </div>
       ) : (
