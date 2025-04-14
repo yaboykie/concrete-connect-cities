@@ -68,6 +68,16 @@ const processPricingData = (data: any[]) => {
   return prices;
 };
 
+// Default fallback prices in case processing fails
+const defaultPrices = {
+  'Plain Concrete': { pricePerSqft: '$5-7', avgSize: '500-600 sqft', totalRange: '$2,500-$4,200' },
+  'Stamped Concrete': { pricePerSqft: '$12-18', avgSize: '500-600 sqft', totalRange: '$6,000-$10,800' },
+  'Exposed Aggregate': { pricePerSqft: '$10-13', avgSize: '500-600 sqft', totalRange: '$5,000-$7,800' },
+  'Coloured Concrete': { pricePerSqft: '$8-12', avgSize: '500-600 sqft', totalRange: '$4,000-$7,200' },
+  'Pebble Finish': { pricePerSqft: '$9-12', avgSize: '500-600 sqft', totalRange: '$4,500-$7,200' },
+  'Brushed Finish': { pricePerSqft: '$5-8', avgSize: '500-600 sqft', totalRange: '$2,500-$4,800' }
+};
+
 export const useDrivewayCalculator = (state: string | undefined, onInteraction?: () => void) => {
   const [pricing, setPricing] = useState<Record<string, { pricePerSqft: string; avgSize: string; totalRange: string }>>({});
   const [finishId, setFinishId] = useState('plain');
@@ -92,24 +102,35 @@ export const useDrivewayCalculator = (state: string | undefined, onInteraction?:
         
         if (data && data.length > 0) {
           const processedPricing = processPricingData(data);
-          setPricing(processedPricing);
           
-          // Check if data is for the selected state or fallback
-          const isSpecificData = data.some(item => 
-            item.State && item.State.toLowerCase() === stateToFetch.toLowerCase()
-          );
-          
-          setDataSource(isSpecificData ? 'specific' : 'fallback');
-          console.log(`Using ${isSpecificData ? 'specific' : 'fallback'} pricing data`);
+          // Only use processed pricing if it has entries
+          if (Object.keys(processedPricing).length > 0) {
+            setPricing(processedPricing);
+            
+            // Check if data is for the selected state or fallback
+            const isSpecificData = data.some(item => 
+              item.State && item.State.toLowerCase() === stateToFetch.toLowerCase()
+            );
+            
+            setDataSource(isSpecificData ? 'specific' : 'fallback');
+            console.log(`Using ${isSpecificData ? 'specific' : 'fallback'} pricing data`);
+          } else {
+            // If processing failed, use default prices
+            console.log('Pricing data processing failed, using defaults');
+            setPricing(defaultPrices);
+            setDataSource('fallback');
+          }
           
         } else {
           console.log('No pricing data found for state:', stateToFetch);
-          setPricing({});
-          setError('No pricing data available for this location');
+          setPricing(defaultPrices);
+          setDataSource('fallback');
         }
       } catch (err) {
         console.error('Error fetching pricing data:', err);
         setError('Failed to fetch pricing data');
+        setPricing(defaultPrices);
+        setDataSource('fallback');
       } finally {
         setIsLoading(false);
       }
@@ -191,11 +212,16 @@ export const useDrivewayCalculator = (state: string | undefined, onInteraction?:
       price = pricing[databaseFinishType.toLowerCase()];
       console.log('Found price using lowercase database finish type:', databaseFinishType.toLowerCase());
     }
-    // Finally use the first price found in the data
+    // Finally use the first price found in the data or default price for the finish
     else if (Object.keys(pricing).length > 0) {
       const firstFinishType = Object.keys(pricing)[0];
       price = pricing[firstFinishType];
       console.log('Using fallback price from first available finish type:', firstFinishType);
+    } 
+    // Last resort - use default price for the finish
+    else if (defaultPrices[finishLabel]) {
+      price = defaultPrices[finishLabel];
+      console.log('Using default price for finish:', finishLabel);
     }
   }
 
