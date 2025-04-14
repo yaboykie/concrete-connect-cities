@@ -6,11 +6,12 @@ import App from './App';
 import './styles/globals.css';
 import './index.css';
 
-// More detailed deployment verification
+// More detailed deployment verification and environment logging
 console.log('-------------------------------------');
 console.log('Build timestamp:', new Date().toISOString());
-console.log('Vercel deployment verification check - updated buildCommand and devCommand with explicit vite installation');
+console.log('Vercel deployment verification - Updated buildCommand and devCommand');
 console.log('Environment:', process.env.NODE_ENV || 'unknown');
+console.log('Vite version check - attempting to resolve vite installation issue');
 console.log('-------------------------------------');
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

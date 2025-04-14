@@ -12,7 +12,7 @@ export async function getFinishPricingByState(state: string) {
   });
   
   try {
-    // Try with exact state name match (case insensitive)
+    // Get all pricing data without filtering by state at the database level
     const { data, error } = await supabase
       .from('concrete_driveway_estimate')
       .select('*');
@@ -23,7 +23,12 @@ export async function getFinishPricingByState(state: string) {
     }
     
     // Print all retrieved records for debugging
-    console.log('Retrieved all pricing records from database:', data);
+    console.log('Retrieved pricing records from database:', data?.length || 0);
+    
+    if (!data || data.length === 0) {
+      console.log('No pricing data available in the database');
+      return [];
+    }
     
     // Filter for matching state (if any)
     let stateData = data.filter(item => 
@@ -38,7 +43,7 @@ export async function getFinishPricingByState(state: string) {
       );
     }
     
-    console.log(`Using ${stateData.length} pricing records:`, stateData);
+    console.log(`Using ${stateData.length} pricing records for ${formattedState}`);
     return stateData;
   } catch (err) {
     console.error('Unexpected error in getFinishPricingByState:', err);
