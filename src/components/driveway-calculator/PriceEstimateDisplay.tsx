@@ -3,7 +3,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 
 interface PriceEstimateDisplayProps {
-  price?: { min: number; max: number } | null;
+  price?: { pricePerSqft: string; avgSize: string; totalRange: string } | null;
   area: number;
   stateName: string;
   estimateDisclaimer?: string;
@@ -31,20 +31,6 @@ export default function PriceEstimateDisplay({
     );
   }
 
-  // Prices are per sq ft
-  const minTotal = Math.round(price.min * area);
-  const maxTotal = Math.round(price.max * area);
-
-  // Format currency
-  const formatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    maximumFractionDigits: 0,
-  });
-
-  // Format price per sq ft
-  const pricePerSqFt = `${formatter.format(price.min)} - ${formatter.format(price.max)} per sq.ft.`;
-
   return (
     <div className="mt-6 p-6 bg-blue-50 rounded-lg border border-blue-100">
       <h3 className="text-xl font-bold text-center">Your {stateName} Driveway Estimate</h3>
@@ -56,7 +42,7 @@ export default function PriceEstimateDisplay({
         </div>
         <div className="mb-4 md:mb-0">
           <p className="text-sm text-gray-600">Cost Per Square Foot:</p>
-          <p className="font-medium">{pricePerSqFt}</p>
+          <p className="font-medium">{price.pricePerSqft}</p>
         </div>
       </div>
       
@@ -64,9 +50,15 @@ export default function PriceEstimateDisplay({
         <div className="flex justify-between items-center">
           <span className="font-medium">Estimated Total:</span>
           <span className="text-xl font-bold text-blue-700">
-            {formatter.format(minTotal)} - {formatter.format(maxTotal)}
+            {price.totalRange}
           </span>
         </div>
+        
+        {price.avgSize && (
+          <div className="mt-2 text-sm text-gray-600">
+            <span>Average Size: {price.avgSize}</span>
+          </div>
+        )}
       </div>
       
       {estimateDisclaimer && (

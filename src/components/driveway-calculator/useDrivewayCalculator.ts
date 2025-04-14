@@ -13,37 +13,43 @@ export const presets = {
   Large: { width: 20, length: 30, description: '3+ cars: 20×30 ft' }
 };
 
-// This will process data from the concrete_driveway_estimate table
+// Process data from the concrete_driveway_estimate table
 const processPricingData = (data: any[]) => {
-  const prices: Record<string, { min: number; max: number }> = {};
+  const prices: Record<string, { pricePerSqft: string; avgSize: string; totalRange: string }> = {};
   
   if (data && data.length > 0) {
     data.forEach(item => {
       if (item['Finish Type'] && item['Price/Sqft']) {
         try {
-          // Extract min and max prices from the Price/Sqft field (format like "$6-$10")
-          const priceText = item['Price/Sqft'];
-          const priceMatch = priceText.match(/\$(\d+(?:\.\d+)?)-\$(\d+(?:\.\d+)?)/);
+          // Store the pricing data directly as strings
+          const finishType = item['Finish Type'];
+          const uiFinishLabel = item['UI Finish Label'] || finishType;
           
-          if (priceMatch && priceMatch.length >= 3) {
-            const minPrice = parseFloat(priceMatch[1]);
-            const maxPrice = parseFloat(priceMatch[2]);
-            
-            if (!isNaN(minPrice) && !isNaN(maxPrice)) {
-              // Store with both original case and lowercase for matching flexibility
-              const finishType = item['Finish Type'];
-              prices[finishType] = { min: minPrice, max: maxPrice };
-              prices[finishType.toLowerCase()] = { min: minPrice, max: maxPrice };
-              
-              // Also store with the UI Finish Label if available
-              if (item['UI Finish Label']) {
-                prices[item['UI Finish Label']] = { min: minPrice, max: maxPrice };
-                prices[item['UI Finish Label'].toLowerCase()] = { min: minPrice, max: maxPrice };
-              }
-            }
-          } else {
-            console.log('Unable to parse price range from:', priceText);
-          }
+          prices[finishType] = {
+            pricePerSqft: item['Price/Sqft'] || 'Not available',
+            avgSize: item['Avg Size'] || 'Not available',
+            totalRange: item['Total Range'] || 'Not available'
+          };
+          
+          // Store with lowercase key for case-insensitive matching
+          prices[finishType.toLowerCase()] = {
+            pricePerSqft: item['Price/Sqft'] || 'Not available',
+            avgSize: item['Avg Size'] || 'Not available',
+            totalRange: item['Total Range'] || 'Not available'
+          };
+          
+          // Also store with the UI Finish Label
+          prices[uiFinishLabel] = {
+            pricePerSqft: item['Price/Sqft'] || 'Not available',
+            avgSize: item['Avg Size'] || 'Not available',
+            totalRange: item['Total Range'] || 'Not available'
+          };
+          
+          prices[uiFinishLabel.toLowerCase()] = {
+            pricePerSqft: item['Price/Sqft'] || 'Not available',
+            avgSize: item['Avg Size'] || 'Not available',
+            totalRange: item['Total Range'] || 'Not available'
+          };
         } catch (e) {
           console.error('Error processing price data:', e);
         }
@@ -56,7 +62,7 @@ const processPricingData = (data: any[]) => {
 };
 
 export const useDrivewayCalculator = (state: string | undefined, onInteraction?: () => void) => {
-  const [pricing, setPricing] = useState<Record<string, { min: number; max: number }>>({});
+  const [pricing, setPricing] = useState<Record<string, { pricePerSqft: string; avgSize: string; totalRange: string }>>({});
   const [finishId, setFinishId] = useState('plain');
   const [sizePreset, setSizePreset] = useState('Medium');
   const [custom, setCustom] = useState<DrivewaySize>({ width: 0, length: 0 });
@@ -154,7 +160,7 @@ export const useDrivewayCalculator = (state: string | undefined, onInteraction?:
   // If not found, try lowercase version
   if (!price) {
     price = pricing[finishLabel.toLowerCase()];
-    console.log('Trying lowercase match:', finishLabel.toLowerCase(), pricing[finishLabel.toLowerCase()]);
+    console.log('Trying lowercase match:', finishLabel.toLowerCase(), price);
   }
 
   return {
