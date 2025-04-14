@@ -1,100 +1,81 @@
 
 import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { useToast } from '@/hooks/use-toast';
+import { Button } from '@/components/ui/button';
 
 interface PriceEstimateDisplayProps {
-  price: { min: number; max: number } | null;
+  price?: { min: number; max: number } | null;
   area: number;
   stateName: string;
   estimateDisclaimer?: string;
   onGetQuotes: (e: React.MouseEvent) => void;
 }
 
-const PriceEstimateDisplay: React.FC<PriceEstimateDisplayProps> = ({
+export default function PriceEstimateDisplay({
   price,
   area,
   stateName,
   estimateDisclaimer,
   onGetQuotes
-}) => {
-  // Format numbers for display
-  const formatCurrency = (num: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      maximumFractionDigits: 0
-    }).format(num);
-  };
+}: PriceEstimateDisplayProps) {
+  // If we don't have pricing data or area is invalid
+  if (!price || area <= 0) {
+    return (
+      <div className="mt-6 p-6 bg-gray-50 rounded-lg border border-gray-100 text-center">
+        <h3 className="text-lg font-medium text-gray-800">
+          {area <= 0
+            ? "Please enter valid dimensions to get an estimate"
+            : "We're still gathering pricing data for this selection. Please continue and we'll guide you."}
+        </h3>
+        <Button className="mt-4" onClick={onGetQuotes}>Get Free Quotes</Button>
+      </div>
+    );
+  }
 
-  // Only calculate costs if we have valid price and area
-  const hasValidPrice = price && typeof price.min === 'number' && typeof price.max === 'number';
-  const hasValidArea = area > 0;
-  
-  const minCost = hasValidPrice && hasValidArea ? formatCurrency(area * price.min) : '';
-  const maxCost = hasValidPrice && hasValidArea ? formatCurrency(area * price.max) : '';
+  // Prices are per sq ft
+  const minTotal = Math.round(price.min * area);
+  const maxTotal = Math.round(price.max * area);
 
-  console.log("PriceEstimateDisplay - Price data:", price);
-  console.log("PriceEstimateDisplay - Area:", area);
-  console.log("PriceEstimateDisplay - Calculated costs:", { minCost, maxCost });
+  // Format currency
+  const formatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 0,
+  });
 
-  const { toast } = useToast();
-
-  // Helper function to show a toast notification
-  const showNoDataToast = () => {
-    toast({
-      description: `We're still gathering pricing data for ${stateName}. Please try a different state or concrete type.`,
-      duration: 5000,
-    });
-  };
+  // Format price per sq ft
+  const pricePerSqFt = `${formatter.format(price.min)} - ${formatter.format(price.max)} per sq.ft.`;
 
   return (
-    <>
-      {hasValidPrice && hasValidArea ? (
-        <Card className="mt-6 bg-brand-yellow/20 border border-brand-yellow mb-4">
-          <CardContent className="pt-6">
-            <p className="mb-2">📐 <strong>Estimated Area:</strong> {area} sq ft</p>
-            <p className="mb-2 text-lg font-bold">💲 <strong>Estimated Price Range:</strong> {minCost} – {maxCost}</p>
-            <p className="text-sm text-gray-600">📍 Based on average {stateName} prices (updated 2025).</p>
-            <p className="text-sm text-gray-600 mt-1">
-              💬 Final pricing depends on site conditions like concrete depth, access, and prep work. This is a ballpark estimate.
-            </p>
-            <p className="text-sm text-gray-500 italic mt-2">
-              "According to Forbes, upgrading your driveway can instantly improve how your home looks from the street — and may even increase its resale value."
-            </p>
-            {estimateDisclaimer && (
-              <p className="text-sm text-gray-600 mt-2">{estimateDisclaimer}</p>
-            )}
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="mt-6 p-4 bg-gray-50 rounded-md border border-gray-200 mb-4">
-          <p className="text-sm text-gray-700 text-center">
-            We're still gathering pricing data for this selection. Please continue and we'll guide you.
-          </p>
-          <button 
-            onClick={showNoDataToast}
-            className="mt-2 text-sm text-blue-600 hover:underline mx-auto block"
-          >
-            Why am I seeing this message?
-          </button>
+    <div className="mt-6 p-6 bg-blue-50 rounded-lg border border-blue-100">
+      <h3 className="text-xl font-bold text-center">Your {stateName} Driveway Estimate</h3>
+      
+      <div className="flex flex-col md:flex-row justify-between items-center mt-4">
+        <div className="mb-4 md:mb-0">
+          <p className="text-sm text-gray-600">Driveway Size:</p>
+          <p className="font-medium">{area} sq.ft.</p>
         </div>
-      )}
-
-      <div className="mt-4">
-        <a 
-          href="#quote-form" 
-          onClick={onGetQuotes}
-          className="cta-button block w-full text-center text-lg py-4 rounded-md bg-black text-white font-semibold hover:bg-gray-800 transition-all"
-        >
-          👍 Estimate Look Good? Get 2–3 Free Quotes Now
-        </a>
-        <p className="text-center text-sm mt-3 text-gray-700">
-          These top-rated concreters are ready to go — most have slots available this month and are taking new projects now.
-        </p>
+        <div className="mb-4 md:mb-0">
+          <p className="text-sm text-gray-600">Cost Per Square Foot:</p>
+          <p className="font-medium">{pricePerSqFt}</p>
+        </div>
       </div>
-    </>
+      
+      <div className="mt-6 bg-white p-4 rounded-lg border border-gray-200">
+        <div className="flex justify-between items-center">
+          <span className="font-medium">Estimated Total:</span>
+          <span className="text-xl font-bold text-blue-700">
+            {formatter.format(minTotal)} - {formatter.format(maxTotal)}
+          </span>
+        </div>
+      </div>
+      
+      {estimateDisclaimer && (
+        <p className="mt-3 text-xs text-gray-500 text-center">{estimateDisclaimer}</p>
+      )}
+      
+      <div className="mt-6 text-center">
+        <Button size="lg" onClick={onGetQuotes}>Get Free Quotes</Button>
+      </div>
+    </div>
   );
-};
-
-export default PriceEstimateDisplay;
+}

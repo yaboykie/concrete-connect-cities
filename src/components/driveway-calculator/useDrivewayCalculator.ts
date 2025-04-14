@@ -13,6 +13,48 @@ export const presets = {
   Large: { width: 20, length: 30, description: '3+ cars: 20×30 ft' }
 };
 
+// This will process data from the concrete_driveway_estimate table
+const processPricingData = (data: any[]) => {
+  const prices: Record<string, { min: number; max: number }> = {};
+  
+  if (data && data.length > 0) {
+    data.forEach(item => {
+      if (item['Finish Type'] && item['Price/Sqft']) {
+        try {
+          // Extract min and max prices from the Price/Sqft field (format like "$6-$10")
+          const priceText = item['Price/Sqft'];
+          const priceMatch = priceText.match(/\$(\d+(?:\.\d+)?)-\$(\d+(?:\.\d+)?)/);
+          
+          if (priceMatch && priceMatch.length >= 3) {
+            const minPrice = parseFloat(priceMatch[1]);
+            const maxPrice = parseFloat(priceMatch[2]);
+            
+            if (!isNaN(minPrice) && !isNaN(maxPrice)) {
+              // Store with both original case and lowercase for matching flexibility
+              const finishType = item['Finish Type'];
+              prices[finishType] = { min: minPrice, max: maxPrice };
+              prices[finishType.toLowerCase()] = { min: minPrice, max: maxPrice };
+              
+              // Also store with the UI Finish Label if available
+              if (item['UI Finish Label']) {
+                prices[item['UI Finish Label']] = { min: minPrice, max: maxPrice };
+                prices[item['UI Finish Label'].toLowerCase()] = { min: minPrice, max: maxPrice };
+              }
+            }
+          } else {
+            console.log('Unable to parse price range from:', priceText);
+          }
+        } catch (e) {
+          console.error('Error processing price data:', e);
+        }
+      }
+    });
+  }
+  
+  console.log('Processed pricing data:', prices);
+  return prices;
+};
+
 export const useDrivewayCalculator = (state: string | undefined, onInteraction?: () => void) => {
   const [pricing, setPricing] = useState<Record<string, { min: number; max: number }>>({});
   const [finishId, setFinishId] = useState('plain');
@@ -20,48 +62,25 @@ export const useDrivewayCalculator = (state: string | undefined, onInteraction?:
   const [custom, setCustom] = useState<DrivewaySize>({ width: 0, length: 0 });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedState, setSelectedState] = useState(state || 'ca');
 
   useEffect(() => {
-    if (!state) return;
-    
+    const stateToFetch = selectedState || 'ca';
     const fetch = async () => {
       try {
         setIsLoading(true);
         setError(null);
         
-        console.log('Fetching data for state:', state);
+        console.log('Fetching data for state:', stateToFetch);
         
-        const data = await getFinishPricingByState(state);
+        const data = await getFinishPricingByState(stateToFetch);
         console.log('Received pricing data:', data);
         
-        const prices: Record<string, { min: number; max: number }> = {};
-        
         if (data && data.length > 0) {
-          // Store raw data first as a fallback
-          data.forEach((item: any) => {
-            if (item.concrete_style && typeof item.min_price_sqft !== 'undefined' && typeof item.max_price_sqft !== 'undefined') {
-              // Convert string values to numbers if needed
-              const minPrice = typeof item.min_price_sqft === 'string' ? parseFloat(item.min_price_sqft) : Number(item.min_price_sqft);
-              const maxPrice = typeof item.max_price_sqft === 'string' ? parseFloat(item.max_price_sqft) : Number(item.max_price_sqft);
-              
-              // Store with original case as in database
-              prices[item.concrete_style] = {
-                min: minPrice,
-                max: maxPrice
-              };
-              
-              // Also store lowercase version for case-insensitive matching
-              prices[item.concrete_style.toLowerCase()] = {
-                min: minPrice,
-                max: maxPrice
-              };
-            }
-          });
-          
-          console.log('Processed pricing data:', prices);
-          setPricing(prices);
+          const processedPricing = processPricingData(data);
+          setPricing(processedPricing);
         } else {
-          console.log('No pricing data found for state:', state);
+          console.log('No pricing data found for state:', stateToFetch);
           setPricing({});
           setError('No pricing data available for this location');
         }
@@ -74,7 +93,7 @@ export const useDrivewayCalculator = (state: string | undefined, onInteraction?:
     };
     
     fetch();
-  }, [state]);
+  }, [selectedState]);
 
   const isCustom = sizePreset === 'Custom';
   const width = isCustom ? parseFloat(custom.width.toString() || '0') : presets[sizePreset as keyof typeof presets].width;
@@ -86,7 +105,7 @@ export const useDrivewayCalculator = (state: string | undefined, onInteraction?:
     'plain': 'Plain Concrete',
     'exposed': 'Exposed Aggregate',
     'stamped': 'Stamped Concrete',
-    'coloured': 'Coloured Concrete',
+    'coloured': 'Colored Concrete',  // Note: Different spelling from database
     'pebble': 'Pebble Finish',
     'brushed': 'Brushed Finish'
   };
@@ -107,6 +126,11 @@ export const useDrivewayCalculator = (state: string | undefined, onInteraction?:
     handleInteraction();
   };
 
+  const handleStateChange = (newState: string) => {
+    setSelectedState(newState);
+    handleInteraction();
+  };
+
   const handleCustomSizeChange = (dimension: 'width' | 'length', value: number) => {
     setCustom(prev => ({ ...prev, [dimension]: value }));
     handleInteraction();
@@ -124,18 +148,14 @@ export const useDrivewayCalculator = (state: string | undefined, onInteraction?:
   // Get the display name for the selected finish
   const finishLabel = finishMap[finishId] || finishId;
   
-  // First try to get price using exact match
+  // Look for price in processed pricing data
   let price = pricing[finishLabel];
   
   // If not found, try lowercase version
   if (!price) {
     price = pricing[finishLabel.toLowerCase()];
+    console.log('Trying lowercase match:', finishLabel.toLowerCase(), pricing[finishLabel.toLowerCase()]);
   }
-  
-  console.log('Current pricing data:', pricing);
-  console.log('Selected finish:', finishLabel);
-  console.log('Price for selected finish:', price);
-  console.log('Trying lowercase match:', finishLabel.toLowerCase(), pricing[finishLabel.toLowerCase()]);
 
   return {
     pricing,
@@ -149,10 +169,12 @@ export const useDrivewayCalculator = (state: string | undefined, onInteraction?:
     price,
     isLoading,
     error,
+    selectedState,
     handleSizeChange,
     handleFinishChange,
     handleCustomSizeChange,
     handleScrollToQuoteForm,
+    handleStateChange,
     presets
   };
 };

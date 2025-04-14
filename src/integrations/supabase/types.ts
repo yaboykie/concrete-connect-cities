@@ -62,6 +62,39 @@ export type Database = {
           },
         ]
       }
+      concrete_driveway_estimate: {
+        Row: {
+          "Avg Size": string | null
+          "Finish Type": string | null
+          ID: number
+          Notes: string | null
+          "Price/Sqft": string | null
+          State: string | null
+          "Total Range": string | null
+          "UI Finish Label": string | null
+        }
+        Insert: {
+          "Avg Size"?: string | null
+          "Finish Type"?: string | null
+          ID: number
+          Notes?: string | null
+          "Price/Sqft"?: string | null
+          State?: string | null
+          "Total Range"?: string | null
+          "UI Finish Label"?: string | null
+        }
+        Update: {
+          "Avg Size"?: string | null
+          "Finish Type"?: string | null
+          ID?: number
+          Notes?: string | null
+          "Price/Sqft"?: string | null
+          State?: string | null
+          "Total Range"?: string | null
+          "UI Finish Label"?: string | null
+        }
+        Relationships: []
+      }
       concrete_estimates: {
         Row: {
           avg_sqft_high: number | null

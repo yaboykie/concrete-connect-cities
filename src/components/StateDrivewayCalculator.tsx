@@ -7,6 +7,7 @@ import SizePresetSelector from './driveway-calculator/SizePresetSelector';
 import CustomSizeInputs from './driveway-calculator/CustomSizeInputs';
 import PriceEstimateDisplay from './driveway-calculator/PriceEstimateDisplay';
 import CalculatorIntro from './driveway-calculator/CalculatorIntro';
+import StateSelector from './driveway-calculator/StateSelector';
 import { useToast } from '@/hooks/use-toast';
 
 interface StateDrivewayCalculatorProps {
@@ -27,21 +28,11 @@ export default function StateDrivewayCalculator({
   const params = useParams<{ state: string }>();
   const stateFromParam = params.state;
   
-  // Use stateName prop if provided, otherwise use from URL params, fallback to "California"
-  // Make sure it's lowercase for consistent database querying
-  const stateToUse = (propStateName || stateFromParam || "California").toLowerCase();
+  // Use stateName prop if provided, otherwise use from URL params, fallback to "ca"
+  const initialState = (propStateName || stateFromParam || "ca").toLowerCase();
   
   // Show that we detected the state
   const { toast } = useToast();
-  
-  useEffect(() => {
-    toast({
-      description: `Loading concrete prices for ${stateToUse}...`,
-      duration: 3000,
-    });
-    
-    console.log("Using state for calculator:", stateToUse);
-  }, [stateToUse, toast]);
   
   const {
     finishId,
@@ -54,21 +45,56 @@ export default function StateDrivewayCalculator({
     price,
     isLoading,
     error,
+    selectedState,
     handleSizeChange,
     handleFinishChange,
     handleCustomSizeChange,
-    handleScrollToQuoteForm
-  } = useDrivewayCalculator(stateToUse, onInteraction);
+    handleScrollToQuoteForm,
+    handleStateChange
+  } = useDrivewayCalculator(initialState, onInteraction);
 
-  // For display, capitalize first letter
-  const stateDisplayName = stateToUse ? stateToUse.charAt(0).toUpperCase() + stateToUse.slice(1) : '';
+  // Show toast when state changes
+  useEffect(() => {
+    if (selectedState) {
+      toast({
+        description: `Loading concrete prices for ${selectedState.toUpperCase()}...`,
+        duration: 3000,
+      });
+    }
+  }, [selectedState, toast]);
+
+  // Get state display name from state code
+  const getStateDisplayName = (stateCode: string) => {
+    const stateMap: Record<string, string> = {
+      'wa': 'Washington',
+      'pa': 'Pennsylvania',
+      'oh': 'Ohio',
+      'il': 'Illinois',
+      'ga': 'Georgia',
+      'nc': 'North Carolina',
+      'az': 'Arizona',
+      'ca': 'California',
+      'fl': 'Florida',
+      'tx': 'Texas'
+    };
+    
+    return stateMap[stateCode.toLowerCase()] || stateCode.toUpperCase();
+  };
+  
+  const stateDisplayName = getStateDisplayName(selectedState);
 
   console.log("Current price data:", price);
   console.log("Current area:", area);
+  console.log("Selected state:", selectedState);
 
   return (
     <div className="calculator bg-white p-6 rounded-lg shadow-lg max-w-2xl mx-auto">
       <CalculatorIntro stateName={stateDisplayName} />
+      
+      <StateSelector 
+        selectedState={selectedState}
+        onChange={handleStateChange}
+      />
       
       <SizePresetSelector 
         presets={presets} 
@@ -93,7 +119,7 @@ export default function StateDrivewayCalculator({
       {isLoading ? (
         <div className="mt-6 p-4 bg-gray-50 rounded-md border border-gray-200 mb-4">
           <p className="text-sm text-gray-700 text-center">
-            Loading pricing data...
+            Loading pricing data for {stateDisplayName}...
           </p>
         </div>
       ) : error ? (

@@ -6,13 +6,11 @@ export async function getFinishPricingByState(state: string) {
   const formattedState = state.trim().toLowerCase();
   console.log('Fetching pricing data for state:', formattedState);
   
-  // Log the query we're about to make
-  console.log(`Querying concrete_estimates where state_code ilike "${formattedState}"`);
-  
+  // Query from the concrete_driveway_estimate table
   const { data, error } = await supabase
-    .from('concrete_estimates')
+    .from('concrete_driveway_estimate')
     .select('*')
-    .ilike('state_code', formattedState);
+    .ilike('State', `%${formattedState}%`);
     
   if (error) {
     console.error('Error fetching finish pricing:', error);
@@ -20,29 +18,15 @@ export async function getFinishPricingByState(state: string) {
   }
   
   // Log what we got back
-  console.log(`Retrieved ${data?.length || 0} pricing records:`, data);
+  console.log(`Retrieved ${data?.length || 0} pricing records from concrete_driveway_estimate:`, data);
   
-  // If we have no data, try a more flexible search as fallback
+  // If we have no data, try with a more general search as fallback
   if (!data || data.length === 0) {
-    console.log('No data found with exact match, trying with fallback search');
+    console.log('No data found with state match, trying fallback query');
     
-    // First try with a partial match on the state name
-    const { data: partialData, error: partialError } = await supabase
-      .from('concrete_estimates')
-      .select('*')
-      .ilike('state_code', `%${formattedState}%`);
-      
-    if (partialError) {
-      console.error('Error fetching finish pricing with partial match:', partialError);
-    } else if (partialData && partialData.length > 0) {
-      console.log(`Found ${partialData.length} records with partial state match:`, partialData);
-      return partialData;
-    }
-    
-    // If partial match failed, get any available pricing data as a last resort
-    console.log('No data found with partial match, retrieving any available pricing data');
+    // Fallback: get any data
     const { data: fallbackData, error: fallbackError } = await supabase
-      .from('concrete_estimates')
+      .from('concrete_driveway_estimate')
       .select('*')
       .limit(10);
       
