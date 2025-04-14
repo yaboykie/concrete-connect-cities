@@ -15,5 +15,6 @@
         { "key": "Cache-Control", "value": "public, max-age=3600" }
       ]
     }
-  ]
+  ],
+  "devCommand": "npm install vite@latest && npx vite"
 }

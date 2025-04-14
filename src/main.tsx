@@ -9,7 +9,8 @@ import './index.css';
 // More detailed deployment verification
 console.log('-------------------------------------');
 console.log('Build timestamp:', new Date().toISOString());
-console.log('Vercel deployment verification check - updated buildCommand with explicit vite installation');
+console.log('Vercel deployment verification check - updated buildCommand and devCommand with explicit vite installation');
+console.log('Environment:', process.env.NODE_ENV || 'unknown');
 console.log('-------------------------------------');
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
