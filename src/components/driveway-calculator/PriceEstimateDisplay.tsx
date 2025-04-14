@@ -8,6 +8,7 @@ interface PriceEstimateDisplayProps {
   stateName: string;
   estimateDisclaimer?: string;
   onGetQuotes: (e: React.MouseEvent) => void;
+  dataSource?: string;
 }
 
 export default function PriceEstimateDisplay({
@@ -15,7 +16,8 @@ export default function PriceEstimateDisplay({
   area,
   stateName,
   estimateDisclaimer,
-  onGetQuotes
+  onGetQuotes,
+  dataSource = 'specific'
 }: PriceEstimateDisplayProps) {
   // If we don't have pricing data or area is invalid
   if (!price || area <= 0) {
@@ -30,6 +32,8 @@ export default function PriceEstimateDisplay({
       </div>
     );
   }
+
+  const isFallbackData = dataSource === 'fallback';
 
   return (
     <div className="mt-6 p-6 bg-blue-50 rounded-lg border border-blue-100">
@@ -50,9 +54,10 @@ export default function PriceEstimateDisplay({
       <div className="mt-3 text-xs text-gray-500 text-center">
         <p>Driveway size: {area} sqft</p>
         {estimateDisclaimer && <p className="mt-1">{estimateDisclaimer}</p>}
-        {stateName !== 'Texas' && (
+        {isFallbackData && (
           <p className="mt-1 text-amber-600">
-            Note: This estimate is based on available pricing data and may vary in your location.
+            Note: We don't have specific pricing for {stateName} yet. 
+            This estimate is based on Texas pricing data and serves as a general guide.
           </p>
         )}
       </div>

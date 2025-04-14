@@ -18,37 +18,38 @@ export const presets = {
 const processPricingData = (data: any[]) => {
   const prices: Record<string, { pricePerSqft: string; avgSize: string; totalRange: string }> = {};
   
+  console.log('Processing pricing data:', data);
+  
   if (data && data.length > 0) {
     data.forEach(item => {
-      if (item['Finish Type']) {
-        try {
-          const finishType = item['Finish Type'];
-          
-          // Store pricing with the finish type as key
-          prices[finishType] = {
+      try {
+        // Use any finish type we can find in the data
+        const finishType = item['Finish Type'] || 'Unknown';
+        
+        // Store pricing with the finish type as key
+        prices[finishType] = {
+          pricePerSqft: item['Price/Sqft'] || 'Not available',
+          avgSize: item['Avg Size'] || 'Not available',
+          totalRange: item['Total Range'] || 'Not available'
+        };
+        
+        // Also store with lowercase key for case-insensitive matching
+        prices[finishType.toLowerCase()] = {
+          pricePerSqft: item['Price/Sqft'] || 'Not available',
+          avgSize: item['Avg Size'] || 'Not available',
+          totalRange: item['Total Range'] || 'Not available'
+        };
+        
+        // Store by UI Finish Label if available
+        if (item['UI Finish Label']) {
+          prices[item['UI Finish Label']] = {
             pricePerSqft: item['Price/Sqft'] || 'Not available',
             avgSize: item['Avg Size'] || 'Not available',
             totalRange: item['Total Range'] || 'Not available'
           };
-          
-          // Also store with lowercase key for case-insensitive matching
-          prices[finishType.toLowerCase()] = {
-            pricePerSqft: item['Price/Sqft'] || 'Not available',
-            avgSize: item['Avg Size'] || 'Not available',
-            totalRange: item['Total Range'] || 'Not available'
-          };
-          
-          // Store by UI Finish Label if available
-          if (item['UI Finish Label']) {
-            prices[item['UI Finish Label']] = {
-              pricePerSqft: item['Price/Sqft'] || 'Not available',
-              avgSize: item['Avg Size'] || 'Not available',
-              totalRange: item['Total Range'] || 'Not available'
-            };
-          }
-        } catch (e) {
-          console.error('Error processing price data:', e);
         }
+      } catch (e) {
+        console.error('Error processing price data for item:', item, e);
       }
     });
   }
@@ -65,6 +66,7 @@ export const useDrivewayCalculator = (state: string | undefined, onInteraction?:
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedState, setSelectedState] = useState(state || 'Texas');
+  const [dataSource, setDataSource] = useState<string>('specific'); // 'specific' or 'fallback'
 
   useEffect(() => {
     const stateToFetch = selectedState || 'Texas';
@@ -81,6 +83,15 @@ export const useDrivewayCalculator = (state: string | undefined, onInteraction?:
         if (data && data.length > 0) {
           const processedPricing = processPricingData(data);
           setPricing(processedPricing);
+          
+          // Check if data is for the selected state or fallback
+          const isSpecificData = data.some(item => 
+            item.State && item.State.toLowerCase() === stateToFetch.toLowerCase()
+          );
+          
+          setDataSource(isSpecificData ? 'specific' : 'fallback');
+          console.log(`Using ${isSpecificData ? 'specific' : 'fallback'} pricing data`);
+          
         } else {
           console.log('No pricing data found for state:', stateToFetch);
           setPricing({});
@@ -146,33 +157,31 @@ export const useDrivewayCalculator = (state: string | undefined, onInteraction?:
   console.log('UI Finish Label:', finishLabel);
   console.log('Database Finish Type:', databaseFinishType);
   
-  // Try multiple methods to find pricing data
+  // Try multiple ways to find pricing data
   let price = null;
   
   // First try exact match with database finish type
-  if (databaseFinishType) {
+  if (databaseFinishType && pricing[databaseFinishType]) {
     price = pricing[databaseFinishType];
-    
-    // If not found, try lowercase version
-    if (!price) {
-      price = pricing[databaseFinishType.toLowerCase()];
-      console.log('Trying lowercase finish type match:', databaseFinishType.toLowerCase(), price);
-    }
-    
-    // If still not found, try UI finish label directly
-    if (!price) {
-      price = pricing[finishLabel];
-      console.log('Trying UI finish label match:', finishLabel, price);
-      
-      if (!price) {
-        price = pricing[finishLabel.toLowerCase()];
-        console.log('Trying lowercase UI finish label match:', finishLabel.toLowerCase(), price);
-      }
-    }
+    console.log('Found price using database finish type:', databaseFinishType);
   }
-  
-  // If no price found for the specific finish, get any price from the data
-  if (!price && Object.keys(pricing).length > 0) {
+  // Then try lowercase database finish type
+  else if (databaseFinishType && pricing[databaseFinishType.toLowerCase()]) {
+    price = pricing[databaseFinishType.toLowerCase()];
+    console.log('Found price using lowercase database finish type:', databaseFinishType.toLowerCase());
+  }
+  // Then try UI finish label
+  else if (pricing[finishLabel]) {
+    price = pricing[finishLabel];
+    console.log('Found price using UI finish label:', finishLabel);
+  }
+  // Then try lowercase UI finish label
+  else if (pricing[finishLabel.toLowerCase()]) {
+    price = pricing[finishLabel.toLowerCase()];
+    console.log('Found price using lowercase UI finish label:', finishLabel.toLowerCase());
+  }
+  // Finally use the first price found in the data
+  else if (Object.keys(pricing).length > 0) {
     const firstFinishType = Object.keys(pricing)[0];
     price = pricing[firstFinishType];
     console.log('Using fallback price from first available finish type:', firstFinishType);
@@ -191,6 +200,7 @@ export const useDrivewayCalculator = (state: string | undefined, onInteraction?:
     isLoading,
     error,
     selectedState,
+    dataSource,
     handleSizeChange,
     handleFinishChange,
     handleCustomSizeChange,

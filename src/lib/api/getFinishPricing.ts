@@ -13,51 +13,33 @@ export async function getFinishPricingByState(state: string) {
   
   try {
     // Try with exact state name match (case insensitive)
-    let { data, error } = await supabase
+    const { data, error } = await supabase
       .from('concrete_driveway_estimate')
-      .select('*')
-      .ilike('State', formattedState);
+      .select('*');
       
     if (error) {
-      console.error('Error fetching finish pricing with exact match:', error);
+      console.error('Error fetching finish pricing:', error);
       return [];
     }
     
-    // If no results found, try a more lenient search
-    if (!data || data.length === 0) {
-      console.log('No exact state match found. Trying partial match...');
-      const { data: partialData, error: partialError } = await supabase
-        .from('concrete_driveway_estimate')
-        .select('*')
-        .ilike('State', `%${formattedState}%`);
-        
-      if (partialError) {
-        console.error('Error fetching finish pricing with partial match:', partialError);
-      } else if (partialData && partialData.length > 0) {
-        console.log(`Found ${partialData.length} records using partial match`);
-        data = partialData;
-      }
+    // Print all retrieved records for debugging
+    console.log('Retrieved all pricing records from database:', data);
+    
+    // Filter for matching state (if any)
+    let stateData = data.filter(item => 
+      item.State && item.State.toLowerCase() === formattedState.toLowerCase()
+    );
+    
+    // If no state-specific data found, use Texas data
+    if (!stateData || stateData.length === 0) {
+      console.log(`No data for "${formattedState}", using Texas data as fallback`);
+      stateData = data.filter(item => 
+        item.State && item.State.toLowerCase() === 'texas'
+      );
     }
     
-    // If still no results, get any available data as fallback
-    if (!data || data.length === 0) {
-      console.log('No state-specific data found, retrieving default pricing from Texas...');
-      const { data: fallbackData, error: fallbackError } = await supabase
-        .from('concrete_driveway_estimate')
-        .select('*')
-        .ilike('State', 'Texas');
-        
-      if (fallbackError) {
-        console.error('Fallback query error:', fallbackError);
-        return [];
-      }
-      
-      console.log(`Retrieved ${fallbackData?.length || 0} fallback pricing records from Texas`);
-      return fallbackData || [];
-    }
-    
-    console.log(`Retrieved ${data.length} pricing records for state:`, formattedState);
-    return data;
+    console.log(`Using ${stateData.length} pricing records:`, stateData);
+    return stateData;
   } catch (err) {
     console.error('Unexpected error in getFinishPricingByState:', err);
     return [];

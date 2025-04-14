@@ -61,6 +61,7 @@ export default function StateDrivewayCalculator({
     isLoading,
     error,
     selectedState,
+    dataSource,
     handleSizeChange,
     handleFinishChange,
     handleCustomSizeChange,
@@ -84,6 +85,7 @@ export default function StateDrivewayCalculator({
   console.log("Current price data:", price);
   console.log("Current area:", area);
   console.log("Selected state:", selectedState);
+  console.log("Data source:", dataSource);
 
   return (
     <div className="calculator bg-white p-6 rounded-lg shadow-lg max-w-2xl mx-auto">
@@ -133,6 +135,7 @@ export default function StateDrivewayCalculator({
           stateName={stateDisplayName}
           estimateDisclaimer={estimateDisclaimer}
           onGetQuotes={handleScrollToQuoteForm}
+          dataSource={dataSource}
         />
       )}
 
