@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDrivewayCalculator, presets } from './driveway-calculator/useDrivewayCalculator';
 import FinishSelector from '@/components/FinishSelector';
@@ -7,6 +7,7 @@ import SizePresetSelector from './driveway-calculator/SizePresetSelector';
 import CustomSizeInputs from './driveway-calculator/CustomSizeInputs';
 import PriceEstimateDisplay from './driveway-calculator/PriceEstimateDisplay';
 import CalculatorIntro from './driveway-calculator/CalculatorIntro';
+import { toast } from '@/hooks/use-toast';
 
 interface StateDrivewayCalculatorProps {
   afterContent?: React.ReactNode;
@@ -29,7 +30,16 @@ export default function StateDrivewayCalculator({
   // Use stateName prop if provided, otherwise use from URL params, fallback to "California"
   const stateToUse = propStateName || stateFromParam || "California";
   
-  console.log("Using state for calculator:", stateToUse);
+  // Show that we detected the state
+  useEffect(() => {
+    toast({
+      title: `Using ${stateToUse} pricing data`,
+      description: `Loading concrete prices for ${stateToUse}...`,
+      duration: 3000,
+    });
+    
+    console.log("Using state for calculator:", stateToUse);
+  }, [stateToUse]);
   
   const {
     finishId,

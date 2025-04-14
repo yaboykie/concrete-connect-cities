@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
+import { toast } from '@/hooks/use-toast';
 
 interface PriceEstimateDisplayProps {
   price: { min: number; max: number } | null;
@@ -26,16 +27,29 @@ const PriceEstimateDisplay: React.FC<PriceEstimateDisplayProps> = ({
     }).format(num);
   };
 
-  const minCost = price && area > 0 ? formatCurrency(area * price.min) : '';
-  const maxCost = price && area > 0 ? formatCurrency(area * price.max) : '';
+  // Only calculate costs if we have valid price and area
+  const hasValidPrice = price && typeof price.min === 'number' && typeof price.max === 'number';
+  const hasValidArea = area > 0;
+  
+  const minCost = hasValidPrice && hasValidArea ? formatCurrency(area * price.min) : '';
+  const maxCost = hasValidPrice && hasValidArea ? formatCurrency(area * price.max) : '';
 
   console.log("PriceEstimateDisplay - Price data:", price);
   console.log("PriceEstimateDisplay - Area:", area);
   console.log("PriceEstimateDisplay - Calculated costs:", { minCost, maxCost });
 
+  // Helper function to show a toast notification
+  const showNoDataToast = () => {
+    toast({
+      title: "Data not found",
+      description: `We're still gathering pricing data for ${stateName}. Please try a different state or concrete type.`,
+      duration: 5000,
+    });
+  };
+
   return (
     <>
-      {price && area > 0 ? (
+      {hasValidPrice && hasValidArea ? (
         <Card className="mt-6 bg-brand-yellow/20 border border-brand-yellow mb-4">
           <CardContent className="pt-6">
             <p className="mb-2">📐 <strong>Estimated Area:</strong> {area} sq ft</p>
@@ -57,6 +71,12 @@ const PriceEstimateDisplay: React.FC<PriceEstimateDisplayProps> = ({
           <p className="text-sm text-gray-700 text-center">
             We're still gathering pricing data for this selection. Please continue and we'll guide you.
           </p>
+          <button 
+            onClick={showNoDataToast}
+            className="mt-2 text-sm text-blue-600 hover:underline mx-auto block"
+          >
+            Why am I seeing this message?
+          </button>
         </div>
       )}
 

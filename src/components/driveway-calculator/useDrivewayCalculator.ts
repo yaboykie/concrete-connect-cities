@@ -29,25 +29,26 @@ export const useDrivewayCalculator = (state: string | undefined, onInteraction?:
         setIsLoading(true);
         setError(null);
         
-        const formattedState = state.charAt(0).toUpperCase() + state.slice(1);
-        console.log('Fetching data for state:', formattedState);
+        console.log('Fetching data for state:', state);
         
-        const data = await getFinishPricingByState(formattedState);
-        console.log('Received data:', data);
+        const data = await getFinishPricingByState(state);
+        console.log('Received pricing data:', data);
         
         const prices: Record<string, { min: number; max: number }> = {};
         
         if (data && data.length > 0) {
           data.forEach((item: any) => {
+            // Convert column names to match what we're receiving
+            // This is important - make sure these property names match the actual column names
             prices[item.concrete_style] = {
-              min: item.min_price_sqft,
-              max: item.max_price_sqft
+              min: item.min_price_sqft || 0, 
+              max: item.max_price_sqft || 0
             };
           });
           console.log('Processed pricing data:', prices);
           setPricing(prices);
         } else {
-          console.log('No pricing data found for state:', formattedState);
+          console.log('No pricing data found for state:', state);
           setPricing({});
         }
       } catch (err) {
@@ -66,6 +67,7 @@ export const useDrivewayCalculator = (state: string | undefined, onInteraction?:
   const length = isCustom ? parseFloat(custom.length.toString() || '0') : presets[sizePreset as keyof typeof presets].length;
   const area = width * length;
 
+  // Map finish IDs to concrete_styles from the database
   const finishMap: Record<string, string> = {
     plain: 'Plain Concrete',
     exposed: 'Exposed Aggregate',
@@ -105,8 +107,15 @@ export const useDrivewayCalculator = (state: string | undefined, onInteraction?:
     handleInteraction();
   };
 
+  // Get the display name for the selected finish
   const finishLabel = finishMap[finishId];
+  
+  // Get the price for the selected finish
   const price = pricing[finishLabel];
+
+  console.log('Current pricing data:', pricing);
+  console.log('Selected finish:', finishLabel);
+  console.log('Price for selected finish:', price);
 
   return {
     pricing,
