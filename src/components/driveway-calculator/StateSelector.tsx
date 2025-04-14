@@ -8,16 +8,16 @@ interface StateSelectorProps {
 }
 
 const availableStates = [
-  { code: "wa", name: "Washington (WA)" },
-  { code: "pa", name: "Pennsylvania (PA)" },
-  { code: "oh", name: "Ohio (OH)" },
-  { code: "il", name: "Illinois (IL)" },
-  { code: "ga", name: "Georgia (GA)" },
-  { code: "nc", name: "North Carolina (NC)" },
-  { code: "az", name: "Arizona (AZ)" },
-  { code: "ca", name: "California (CA)" },
-  { code: "fl", name: "Florida (FL)" },
-  { code: "tx", name: "Texas (TX)" }
+  { code: "wa", name: "Washington" },
+  { code: "pa", name: "Pennsylvania" },
+  { code: "oh", name: "Ohio" },
+  { code: "il", name: "Illinois" },
+  { code: "ga", name: "Georgia" },
+  { code: "nc", name: "North Carolina" },
+  { code: "az", name: "Arizona" },
+  { code: "ca", name: "California" },
+  { code: "fl", name: "Florida" },
+  { code: "tx", name: "Texas" }
 ];
 
 export default function StateSelector({ selectedState, onChange }: StateSelectorProps) {
@@ -36,7 +36,7 @@ export default function StateSelector({ selectedState, onChange }: StateSelector
         </SelectTrigger>
         <SelectContent>
           {availableStates.map((state) => (
-            <SelectItem key={state.code} value={state.code}>
+            <SelectItem key={state.code} value={state.name}>
               {state.name}
             </SelectItem>
           ))}

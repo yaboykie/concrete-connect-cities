@@ -62,10 +62,10 @@ export const useDrivewayCalculator = (state: string | undefined, onInteraction?:
   const [custom, setCustom] = useState<DrivewaySize>({ width: 0, length: 0 });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [selectedState, setSelectedState] = useState(state || 'ca');
+  const [selectedState, setSelectedState] = useState(state || 'California');
 
   useEffect(() => {
-    const stateToFetch = selectedState || 'ca';
+    const stateToFetch = selectedState || 'California';
     const fetch = async () => {
       try {
         setIsLoading(true);

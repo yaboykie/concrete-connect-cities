@@ -2,12 +2,11 @@
 import { supabase } from '@/integrations/supabase/client';
 
 export async function getFinishPricingByState(state: string) {
-  // Format state for consistency by standardizing case (lowercase) and trimming
-  const formattedState = state.trim().toLowerCase();
+  // Format state for consistency
+  const formattedState = state.trim();
   console.log('Fetching pricing data for state:', formattedState);
   
   try {
-    // Query from the concrete_driveway_estimate table (note the change to this table name)
     const { data, error } = await supabase
       .from('concrete_driveway_estimate')
       .select('*')
@@ -18,21 +17,17 @@ export async function getFinishPricingByState(state: string) {
       return [];
     }
     
-    // Log what we got back
-    console.log(`Retrieved ${data?.length || 0} pricing records from concrete_driveway_estimate:`, data);
+    console.log(`Retrieved ${data?.length || 0} pricing records:`, data);
     
-    // If we have no data, try with a more general search as fallback
+    // If no data found, try a more lenient search
     if (!data || data.length === 0) {
-      console.log('No data found with state match, trying fallback query');
-      
-      // Fallback: get any data
       const { data: fallbackData, error: fallbackError } = await supabase
         .from('concrete_driveway_estimate')
         .select('*')
         .limit(10);
         
       if (fallbackError) {
-        console.error('Error fetching finish pricing with fallback:', fallbackError);
+        console.error('Fallback query error:', fallbackError);
         return [];
       }
       
