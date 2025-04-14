@@ -7,7 +7,7 @@ import SizePresetSelector from './driveway-calculator/SizePresetSelector';
 import CustomSizeInputs from './driveway-calculator/CustomSizeInputs';
 import PriceEstimateDisplay from './driveway-calculator/PriceEstimateDisplay';
 import CalculatorIntro from './driveway-calculator/CalculatorIntro';
-import { toast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks/use-toast';
 
 interface StateDrivewayCalculatorProps {
   afterContent?: React.ReactNode;
@@ -31,15 +31,16 @@ export default function StateDrivewayCalculator({
   const stateToUse = propStateName || stateFromParam || "California";
   
   // Show that we detected the state
+  const { toast } = useToast();
+  
   useEffect(() => {
     toast({
-      title: `Using ${stateToUse} pricing data`,
       description: `Loading concrete prices for ${stateToUse}...`,
       duration: 3000,
     });
     
     console.log("Using state for calculator:", stateToUse);
-  }, [stateToUse]);
+  }, [stateToUse, toast]);
   
   const {
     finishId,

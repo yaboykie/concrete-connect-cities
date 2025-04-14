@@ -14,7 +14,7 @@ const CalculatorSection: React.FC<CalculatorSectionProps> = ({ calculatorRef }) 
           {/* Left Column (2/3 width) - Calculator */}
           <div className="lg:col-span-2">
             <StateDrivewayCalculator 
-              stateName="California" 
+              stateName="california" 
               estimateDisclaimer="These estimates are based on real project data from our network of concrete contractors."
             />
           </div>

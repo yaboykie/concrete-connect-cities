@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { toast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks/use-toast';
 
 interface PriceEstimateDisplayProps {
   price: { min: number; max: number } | null;
@@ -38,10 +38,11 @@ const PriceEstimateDisplay: React.FC<PriceEstimateDisplayProps> = ({
   console.log("PriceEstimateDisplay - Area:", area);
   console.log("PriceEstimateDisplay - Calculated costs:", { minCost, maxCost });
 
+  const { toast } = useToast();
+
   // Helper function to show a toast notification
   const showNoDataToast = () => {
     toast({
-      title: "Data not found",
       description: `We're still gathering pricing data for ${stateName}. Please try a different state or concrete type.`,
       duration: 5000,
     });

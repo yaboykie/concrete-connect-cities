@@ -12,7 +12,7 @@ export async function getFinishPricingByState(state: string) {
   const { data, error } = await supabase
     .from('concrete_estimates')
     .select('*')
-    .eq('state_code', formattedState);
+    .ilike('state_code', formattedState);
     
   if (error) {
     console.error('Error fetching finish pricing:', error);
@@ -22,14 +22,14 @@ export async function getFinishPricingByState(state: string) {
   // Log what we got back
   console.log(`Retrieved ${data?.length || 0} pricing records:`, data);
   
-  // If we have no data, try a case-insensitive search as fallback
+  // If we have no data, try a more flexible search as fallback
   if (!data || data.length === 0) {
-    console.log('No data found with exact match, trying with ilike');
+    console.log('No data found with exact match, trying with partial match');
     
     const { data: fallbackData, error: fallbackError } = await supabase
       .from('concrete_estimates')
       .select('*')
-      .ilike('state_code', `%${formattedState}%`);
+      .limit(10);
       
     if (fallbackError) {
       console.error('Error fetching finish pricing with fallback:', fallbackError);

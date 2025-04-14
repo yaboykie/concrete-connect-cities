@@ -38,12 +38,13 @@ export const useDrivewayCalculator = (state: string | undefined, onInteraction?:
         
         if (data && data.length > 0) {
           data.forEach((item: any) => {
-            // Convert column names to match what we're receiving
-            // This is important - make sure these property names match the actual column names
-            prices[item.concrete_style] = {
-              min: item.min_price_sqft || 0, 
-              max: item.max_price_sqft || 0
-            };
+            // Match the column names from the concrete_estimates table exactly
+            if (item.concrete_style && item.min_price_sqft !== null && item.max_price_sqft !== null) {
+              prices[item.concrete_style] = {
+                min: Number(item.min_price_sqft), 
+                max: Number(item.max_price_sqft)
+              };
+            }
           });
           console.log('Processed pricing data:', prices);
           setPricing(prices);
@@ -108,7 +109,7 @@ export const useDrivewayCalculator = (state: string | undefined, onInteraction?:
   };
 
   // Get the display name for the selected finish
-  const finishLabel = finishMap[finishId];
+  const finishLabel = finishMap[finishId] || finishId;
   
   // Get the price for the selected finish
   const price = pricing[finishLabel];
