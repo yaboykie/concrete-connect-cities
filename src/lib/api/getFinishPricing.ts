@@ -29,17 +29,25 @@ export async function getFinishPricingByState(state: string) {
       console.log('No pricing data available in the database');
       return [];
     }
+
+    // Log all UI Finish Label values in the data for debugging
+    console.log('Available UI Finish Label values:', 
+      [...new Set(data.map(item => item['UI Finish Label']))].filter(Boolean));
+    
+    // Log all State values in the data for debugging
+    console.log('Available State values:', 
+      [...new Set(data.map(item => item['State']))].filter(Boolean));
     
     // Filter for matching state (if any)
     let stateData = data.filter(item => 
-      item.State && item.State.toLowerCase() === formattedState.toLowerCase()
+      item['State'] && item['State'].toLowerCase() === formattedState.toLowerCase()
     );
     
     // If no state-specific data found, use Texas data
     if (!stateData || stateData.length === 0) {
       console.log(`No data for "${formattedState}", using Texas data as fallback`);
       stateData = data.filter(item => 
-        item.State && item.State.toLowerCase() === 'texas'
+        item['State'] && item['State'].toLowerCase() === 'texas'
       );
     }
     
