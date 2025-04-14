@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { getFinishPricingByState } from '@/lib/api/getFinishPricing';
+import { finishIdToLabel, labelToFinishType } from '@/config/finishTypes';
 
 interface DrivewaySize {
   width: number;
@@ -106,16 +107,6 @@ export const useDrivewayCalculator = (state: string | undefined, onInteraction?:
   const length = isCustom ? parseFloat(custom.length.toString() || '0') : presets[sizePreset as keyof typeof presets].length;
   const area = width * length;
 
-  // Map finish IDs to concrete_styles from the database
-  const finishMap: Record<string, string> = {
-    'plain': 'Plain Concrete',
-    'exposed': 'Exposed Aggregate',
-    'stamped': 'Stamped Concrete',
-    'coloured': 'Coloured Concrete',
-    'pebble': 'Pebble Finish',
-    'brushed': 'Brushed Finish'
-  };
-
   const handleInteraction = () => {
     if (onInteraction) {
       onInteraction();
@@ -152,15 +143,32 @@ export const useDrivewayCalculator = (state: string | undefined, onInteraction?:
   };
 
   // Get the display name for the selected finish
-  const finishLabel = finishMap[finishId] || finishId;
+  const finishLabel = finishIdToLabel[finishId] || finishId;
   
-  // Look for price in processed pricing data
-  let price = pricing[finishLabel];
+  // Get the database finish type using the mapping
+  const databaseFinishType = labelToFinishType[finishLabel];
   
-  // If not found, try lowercase version
+  console.log('UI Finish Label:', finishLabel);
+  console.log('Database Finish Type:', databaseFinishType);
+  
+  // Look for price in processed pricing data using database finish type
+  let price = pricing[databaseFinishType];
+  
+  // If not found by finish type, try the UI label
   if (!price) {
-    price = pricing[finishLabel.toLowerCase()];
-    console.log('Trying lowercase match:', finishLabel.toLowerCase(), price);
+    price = pricing[finishLabel];
+    console.log('Trying UI label match:', finishLabel, price);
+  }
+  
+  // Try lowercase versions if still not found
+  if (!price) {
+    price = pricing[databaseFinishType?.toLowerCase() || ''];
+    console.log('Trying lowercase finish type match:', databaseFinishType?.toLowerCase(), price);
+    
+    if (!price) {
+      price = pricing[finishLabel.toLowerCase()];
+      console.log('Trying lowercase UI label match:', finishLabel.toLowerCase(), price);
+    }
   }
 
   return {

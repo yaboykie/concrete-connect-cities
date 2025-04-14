@@ -35,35 +35,22 @@ export default function PriceEstimateDisplay({
     <div className="mt-6 p-6 bg-blue-50 rounded-lg border border-blue-100">
       <h3 className="text-xl font-bold text-center">Your {stateName} Driveway Estimate</h3>
       
-      <div className="flex flex-col md:flex-row justify-between items-center mt-4">
-        <div className="mb-4 md:mb-0">
-          <p className="text-sm text-gray-600">Driveway Size:</p>
-          <p className="font-medium">{area} sq.ft.</p>
-        </div>
-        <div className="mb-4 md:mb-0">
-          <p className="text-sm text-gray-600">Cost Per Square Foot:</p>
-          <p className="font-medium">{price.pricePerSqft}</p>
-        </div>
+      <div className="mt-4 bg-white p-4 rounded-lg border border-gray-200">
+        <p className="text-sm text-gray-700 mb-2">
+          <strong>Price per Sqft:</strong> {price.pricePerSqft}
+        </p>
+        <p className="text-sm text-gray-700 mb-2">
+          <strong>Typical Job Size:</strong> {price.avgSize} sqft
+        </p>
+        <p className="text-sm text-gray-700 font-medium">
+          <strong>Estimated Total Range:</strong> {price.totalRange}
+        </p>
       </div>
       
-      <div className="mt-6 bg-white p-4 rounded-lg border border-gray-200">
-        <div className="flex justify-between items-center">
-          <span className="font-medium">Estimated Total:</span>
-          <span className="text-xl font-bold text-blue-700">
-            {price.totalRange}
-          </span>
-        </div>
-        
-        {price.avgSize && (
-          <div className="mt-2 text-sm text-gray-600">
-            <span>Average Size: {price.avgSize}</span>
-          </div>
-        )}
+      <div className="mt-3 text-xs text-gray-500 text-center">
+        <p>Driveway size: {area} sqft</p>
+        {estimateDisclaimer && <p className="mt-1">{estimateDisclaimer}</p>}
       </div>
-      
-      {estimateDisclaimer && (
-        <p className="mt-3 text-xs text-gray-500 text-center">{estimateDisclaimer}</p>
-      )}
       
       <div className="mt-6 text-center">
         <Button size="lg" onClick={onGetQuotes}>Get Free Quotes</Button>

@@ -7,7 +7,7 @@ interface StateSelectorProps {
   onChange: (state: string) => void;
 }
 
-// Updated with full state names only
+// Updated with the 10 required states only
 const availableStates = [
   { name: "Washington" },
   { name: "Pennsylvania" },

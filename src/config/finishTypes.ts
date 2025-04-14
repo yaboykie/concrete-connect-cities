@@ -38,3 +38,13 @@ export const finishIdToLabel: Record<string, string> = {
   'pebble': 'Pebble Finish',
   'brushed': 'Brushed Finish'
 };
+
+// Mapping between UI finish labels and database finish types
+export const labelToFinishType: Record<string, string> = {
+  'Plain Concrete': 'Broom Finish',
+  'Brushed Finish': 'Broom Finish',
+  'Stamped Concrete': 'Stamped Concrete',
+  'Exposed Aggregate': 'Exposed Aggregate',
+  'Pebble Finish': 'Exposed Aggregate',
+  'Coloured Concrete': 'Colored/Dyed'
+};

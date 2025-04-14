@@ -1,5 +1,6 @@
 
 import { supabase } from '@/integrations/supabase/client';
+import { labelToFinishType } from '@/config/finishTypes';
 
 export async function getFinishPricingByState(state: string) {
   // Format state for consistency
