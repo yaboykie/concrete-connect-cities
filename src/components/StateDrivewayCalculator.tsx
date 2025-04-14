@@ -28,7 +28,8 @@ export default function StateDrivewayCalculator({
   const stateFromParam = params.state;
   
   // Use stateName prop if provided, otherwise use from URL params, fallback to "California"
-  const stateToUse = propStateName || stateFromParam || "California";
+  // Make sure it's lowercase for consistent database querying
+  const stateToUse = (propStateName || stateFromParam || "California").toLowerCase();
   
   // Show that we detected the state
   const { toast } = useToast();
@@ -59,6 +60,7 @@ export default function StateDrivewayCalculator({
     handleScrollToQuoteForm
   } = useDrivewayCalculator(stateToUse, onInteraction);
 
+  // For display, capitalize first letter
   const stateDisplayName = stateToUse ? stateToUse.charAt(0).toUpperCase() + stateToUse.slice(1) : '';
 
   console.log("Current price data:", price);

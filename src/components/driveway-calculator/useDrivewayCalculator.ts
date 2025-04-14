@@ -37,20 +37,33 @@ export const useDrivewayCalculator = (state: string | undefined, onInteraction?:
         const prices: Record<string, { min: number; max: number }> = {};
         
         if (data && data.length > 0) {
+          // Store raw data first as a fallback
           data.forEach((item: any) => {
-            // Match the column names from the concrete_estimates table exactly
-            if (item.concrete_style && item.min_price_sqft !== null && item.max_price_sqft !== null) {
+            if (item.concrete_style && typeof item.min_price_sqft !== 'undefined' && typeof item.max_price_sqft !== 'undefined') {
+              // Convert string values to numbers if needed
+              const minPrice = typeof item.min_price_sqft === 'string' ? parseFloat(item.min_price_sqft) : Number(item.min_price_sqft);
+              const maxPrice = typeof item.max_price_sqft === 'string' ? parseFloat(item.max_price_sqft) : Number(item.max_price_sqft);
+              
+              // Store with original case as in database
               prices[item.concrete_style] = {
-                min: Number(item.min_price_sqft), 
-                max: Number(item.max_price_sqft)
+                min: minPrice,
+                max: maxPrice
+              };
+              
+              // Also store lowercase version for case-insensitive matching
+              prices[item.concrete_style.toLowerCase()] = {
+                min: minPrice,
+                max: maxPrice
               };
             }
           });
+          
           console.log('Processed pricing data:', prices);
           setPricing(prices);
         } else {
           console.log('No pricing data found for state:', state);
           setPricing({});
+          setError('No pricing data available for this location');
         }
       } catch (err) {
         console.error('Error fetching pricing data:', err);
@@ -70,12 +83,12 @@ export const useDrivewayCalculator = (state: string | undefined, onInteraction?:
 
   // Map finish IDs to concrete_styles from the database
   const finishMap: Record<string, string> = {
-    plain: 'Plain Concrete',
-    exposed: 'Exposed Aggregate',
-    stamped: 'Stamped Concrete',
-    coloured: 'Coloured Concrete',
-    pebble: 'Pebble Finish',
-    brushed: 'Brushed Finish'
+    'plain': 'Plain Concrete',
+    'exposed': 'Exposed Aggregate',
+    'stamped': 'Stamped Concrete',
+    'coloured': 'Coloured Concrete',
+    'pebble': 'Pebble Finish',
+    'brushed': 'Brushed Finish'
   };
 
   const handleInteraction = () => {
@@ -111,12 +124,18 @@ export const useDrivewayCalculator = (state: string | undefined, onInteraction?:
   // Get the display name for the selected finish
   const finishLabel = finishMap[finishId] || finishId;
   
-  // Get the price for the selected finish
-  const price = pricing[finishLabel];
-
+  // First try to get price using exact match
+  let price = pricing[finishLabel];
+  
+  // If not found, try lowercase version
+  if (!price) {
+    price = pricing[finishLabel.toLowerCase()];
+  }
+  
   console.log('Current pricing data:', pricing);
   console.log('Selected finish:', finishLabel);
   console.log('Price for selected finish:', price);
+  console.log('Trying lowercase match:', finishLabel.toLowerCase(), pricing[finishLabel.toLowerCase()]);
 
   return {
     pricing,
