@@ -33,6 +33,25 @@ export default function PriceEstimateDisplay({
     );
   }
 
+  // Calculate the estimated price range based on the actual area
+  const calculatePriceRange = () => {
+    // Extract numbers from the pricePerSqft string (e.g., "$5-7" -> [5, 7])
+    const priceMatch = price.pricePerSqft.match(/\$(\d+)-(\d+)/);
+    if (!priceMatch) return price.totalRange; // Fallback to the default range
+
+    const minPrice = parseInt(priceMatch[1]);
+    const maxPrice = parseInt(priceMatch[2]);
+    
+    // Calculate the price range based on the actual area
+    const minTotal = minPrice * area;
+    const maxTotal = maxPrice * area;
+    
+    return `$${minTotal.toLocaleString()}-${maxTotal.toLocaleString()}`;
+  };
+
+  // Get the calculated price range
+  const calculatedPriceRange = calculatePriceRange();
+
   // Determine data source message
   const getDataSourceMessage = () => {
     switch(dataSource) {
@@ -66,8 +85,11 @@ export default function PriceEstimateDisplay({
         <p className="text-sm text-gray-700 mb-2">
           <strong>Typical Job Size:</strong> {price.avgSize} sqft
         </p>
-        <p className="text-sm text-gray-700 font-medium">
-          <strong>Estimated Total Range:</strong> {price.totalRange}
+        <p className="text-sm text-gray-700 mb-2">
+          <strong>Typical Total Range:</strong> {price.totalRange}
+        </p>
+        <p className="text-sm font-medium text-gray-800">
+          <strong>Your Estimated Cost:</strong> {calculatedPriceRange} ({area} sqft)
         </p>
       </div>
       
