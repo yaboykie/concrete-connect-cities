@@ -1,3 +1,4 @@
+
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import SiteLayout from './components/layouts/SiteLayout';
 import Home from './pages/Home';
@@ -7,6 +8,7 @@ import LocationsState from './components/locations/LocationsState';
 import LocationDetails from './components/locations/LocationDetails';
 import SupabaseCheck from './components/SupabaseCheck';
 import ArizonaCostEstimator from './pages/ArizonaCostEstimator';
+import StateDrivewayEstimator from './pages/StateDrivewayEstimator';
 
 function App() {
   return (
@@ -57,6 +59,14 @@ function App() {
           element={
             <SiteLayout>
               <ArizonaCostEstimator />
+            </SiteLayout>
+          }
+        />
+        <Route
+          path="/:state-driveway-cost-calculator"
+          element={
+            <SiteLayout>
+              <StateDrivewayEstimator />
             </SiteLayout>
           }
         />

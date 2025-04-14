@@ -1,6 +1,15 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Mail, Send } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 interface PriceEstimateDisplayProps {
   price?: { pricePerSqft: string; avgSize: string; totalRange: string } | null;
@@ -11,6 +20,16 @@ interface PriceEstimateDisplayProps {
   dataSource?: string;
 }
 
+// Define the form schema
+const emailFormSchema = z.object({
+  name: z.string().min(2, 'Name is required'),
+  email: z.string().email('Please enter a valid email'),
+  phone: z.string().optional(),
+  zipCode: z.string().optional()
+});
+
+type EmailFormValues = z.infer<typeof emailFormSchema>;
+
 export default function PriceEstimateDisplay({
   price,
   area,
@@ -19,6 +38,20 @@ export default function PriceEstimateDisplay({
   onGetQuotes,
   dataSource = 'specific'
 }: PriceEstimateDisplayProps) {
+  const [emailModalOpen, setEmailModalOpen] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const { toast } = useToast();
+  
+  const form = useForm<EmailFormValues>({
+    resolver: zodResolver(emailFormSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      phone: '',
+      zipCode: ''
+    }
+  });
+
   // If we don't have pricing data or area is invalid
   if (!price || area <= 0) {
     return (
@@ -74,6 +107,114 @@ export default function PriceEstimateDisplay({
     }
   };
 
+  // Handle email submission
+  const handleEmailSubmit = async (values: EmailFormValues) => {
+    try {
+      setSubmitting(true);
+      
+      const leadId = crypto.randomUUID();
+      
+      // Insert the lead into Supabase
+      const { error } = await supabase.from("leads").insert([
+        {
+          lead_id: leadId,
+          name: values.name,
+          email: values.email,
+          phone: values.phone || null,
+          zip_code: values.zipCode || null,
+          job_type: "driveway",
+          formatted_job_type: "Driveway Installation",
+          status: "new",
+          matched_contractor_ids: [],
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+          campaign_id: null,
+        },
+      ]);
+      
+      if (error) throw new Error(error.message);
+      
+      // Show success toast
+      toast({
+        title: "Email Sent!",
+        description: `We've emailed your estimate to ${values.email}`,
+        duration: 5000
+      });
+      
+      // Close modal and reset form
+      setEmailModalOpen(false);
+      form.reset();
+      
+      console.log("Lead submitted successfully:", leadId);
+      
+    } catch (error) {
+      console.error("Error submitting lead:", error);
+      toast({
+        title: "Submission Error",
+        description: "There was a problem sending your estimate. Please try again.",
+        variant: "destructive",
+        duration: 5000
+      });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+  
+  // Handle quick quote button
+  const handleGetQuotesClick = async (e: React.MouseEvent) => {
+    try {
+      // Create a lead without personal details
+      const leadId = crypto.randomUUID();
+      
+      const { error } = await supabase.from("leads").insert([
+        {
+          lead_id: leadId,
+          name: null,
+          email: null,
+          phone: null,
+          zip_code: null, // We don't have zip code for this flow
+          job_type: "driveway",
+          formatted_job_type: "Driveway Installation",
+          status: "new",
+          matched_contractor_ids: [],
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+          campaign_id: null,
+        },
+      ]);
+      
+      if (error) throw new Error(error.message);
+      
+      // Show success toast
+      toast({
+        title: "Request Submitted!",
+        description: "We'll match you with contractors now.",
+        duration: 5000
+      });
+      
+      console.log("Quick lead submitted successfully:", leadId);
+      
+      // Call the original onGetQuotes handler if provided
+      if (onGetQuotes) {
+        onGetQuotes(e);
+      }
+      
+    } catch (error) {
+      console.error("Error submitting quick lead:", error);
+      toast({
+        title: "Submission Error",
+        description: "There was a problem with your request. Please try again.",
+        variant: "destructive",
+        duration: 5000
+      });
+      
+      // Still call the original handler even if there's an error
+      if (onGetQuotes) {
+        onGetQuotes(e);
+      }
+    }
+  };
+
   return (
     <div className="mt-6 p-6 bg-blue-50 rounded-lg border border-blue-100">
       <h3 className="text-xl font-bold text-center">Your {stateName} Driveway Estimate</h3>
@@ -99,9 +240,105 @@ export default function PriceEstimateDisplay({
         {getDataSourceMessage()}
       </div>
       
-      <div className="mt-6 text-center">
-        <Button size="lg" onClick={onGetQuotes}>Get Free Quotes</Button>
+      <div className="mt-6 grid grid-cols-2 gap-4">
+        <Button 
+          onClick={() => setEmailModalOpen(true)} 
+          variant="outline" 
+          className="flex items-center justify-center"
+        >
+          <Mail className="mr-2 h-4 w-4" /> Email To Me
+        </Button>
+        <Button 
+          size="lg" 
+          onClick={handleGetQuotesClick}
+          className="bg-blue-600 hover:bg-blue-700"
+        >
+          Get Free Quotes
+        </Button>
       </div>
+      
+      {/* Email Modal */}
+      <Dialog open={emailModalOpen} onOpenChange={setEmailModalOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle className="text-center">Email Your Estimate</DialogTitle>
+          </DialogHeader>
+          
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(handleEmailSubmit)} className="space-y-4 mt-4">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Your name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input placeholder="your.email@example.com" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Phone (optional)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="(555) 555-5555" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="zipCode"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>ZIP Code (optional)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="10001" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <div className="pt-4">
+                <Button 
+                  type="submit" 
+                  className="w-full" 
+                  disabled={submitting}
+                >
+                  {submitting ? 'Sending...' : (
+                    <>
+                      <Send className="mr-2 h-4 w-4" /> Send My Estimate
+                    </>
+                  )}
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
