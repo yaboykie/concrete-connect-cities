@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import StateDrivewayCalculator from '@/components/StateDrivewayCalculator';
 
 interface CalculatorSectionProps {
@@ -7,6 +7,8 @@ interface CalculatorSectionProps {
 }
 
 const CalculatorSection: React.FC<CalculatorSectionProps> = ({ calculatorRef }) => {
+  const [selectedState, setSelectedState] = useState("ca");
+  
   return (
     <section className="bg-gray-50 py-12 px-4" ref={calculatorRef}>
       <div className="container mx-auto max-w-6xl">
@@ -14,7 +16,7 @@ const CalculatorSection: React.FC<CalculatorSectionProps> = ({ calculatorRef }) 
           {/* Left Column (2/3 width) - Calculator */}
           <div className="lg:col-span-2">
             <StateDrivewayCalculator 
-              stateName="ca" 
+              stateName={selectedState}
               estimateDisclaimer="These estimates are based on real project data from our network of concrete contractors."
             />
           </div>
