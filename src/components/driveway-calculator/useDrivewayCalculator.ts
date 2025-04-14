@@ -111,7 +111,7 @@ export const useDrivewayCalculator = (state: string | undefined, onInteraction?:
     'plain': 'Plain Concrete',
     'exposed': 'Exposed Aggregate',
     'stamped': 'Stamped Concrete',
-    'coloured': 'Colored Concrete',  // Note: Different spelling from database
+    'coloured': 'Coloured Concrete',
     'pebble': 'Pebble Finish',
     'brushed': 'Brushed Finish'
   };
