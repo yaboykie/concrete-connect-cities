@@ -4,6 +4,13 @@ import react from '@vitejs/plugin-react'
 import * as path from 'path'
 import { componentTagger } from "lovable-tagger"
 
+// Add version logging to help with debugging
+console.log('-------------------------------------');
+console.log('Loading Vite config');
+console.log('Node version:', process.version);
+console.log('Current directory:', process.cwd());
+console.log('-------------------------------------');
+
 export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
