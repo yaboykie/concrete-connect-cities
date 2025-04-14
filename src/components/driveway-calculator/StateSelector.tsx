@@ -1,13 +1,14 @@
 
 import React from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { formatStateName } from '../driveway-concreters/utils/locationFormatter';
 
 interface StateSelectorProps {
   selectedState: string;
   onChange: (state: string) => void;
 }
 
-// Available states, with Texas first since we have data for it
+// Available states with proper formatting
 const availableStates = [
   { name: "Texas" },
   { name: "California" },
@@ -22,11 +23,14 @@ const availableStates = [
 ];
 
 export default function StateSelector({ selectedState, onChange }: StateSelectorProps) {
+  // Ensure state name is properly formatted
+  const formattedSelectedState = formatStateName(selectedState);
+
   return (
     <div className="mb-4">
       <label className="block text-sm font-medium mb-2">Select State:</label>
       <Select
-        value={selectedState}
+        value={formattedSelectedState}
         onValueChange={(value) => {
           console.log("State changed to:", value);
           onChange(value);

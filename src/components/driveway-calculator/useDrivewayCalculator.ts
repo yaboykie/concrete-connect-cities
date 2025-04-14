@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { getFinishPricingByState } from '@/lib/api/getFinishPricing';
 import { finishIdToLabel, labelToFinishType } from '@/config/finishTypes';
@@ -107,13 +106,24 @@ export const useDrivewayCalculator = (state: string | undefined, onInteraction?:
           if (Object.keys(processedPricing).length > 0) {
             setPricing(processedPricing);
             
-            // Check if data is for the selected state or fallback
-            const isSpecificData = data.some(item => 
+            // Check if data source is from database or defaults
+            const isFromDatabase = data.some(item => item._isFromDatabase === true);
+            
+            // If using default data, check if it's specific to the selected state
+            const isStateSpecific = data.some(item => 
               item.State && item.State.toLowerCase() === stateToFetch.toLowerCase()
             );
             
-            setDataSource(isSpecificData ? 'specific' : 'fallback');
-            console.log(`Using ${isSpecificData ? 'specific' : 'fallback'} pricing data`);
+            if (isFromDatabase) {
+              setDataSource('specific');
+              console.log('Using database-specific pricing data');
+            } else if (isStateSpecific) {
+              setDataSource('state-default');
+              console.log('Using state-specific default pricing data');
+            } else {
+              setDataSource('fallback');
+              console.log('Using fallback pricing data');
+            }
           } else {
             // If processing failed, use default prices
             console.log('Pricing data processing failed, using defaults');

@@ -33,7 +33,27 @@ export default function PriceEstimateDisplay({
     );
   }
 
-  const isFallbackData = dataSource === 'fallback';
+  // Determine data source message
+  const getDataSourceMessage = () => {
+    switch(dataSource) {
+      case 'specific':
+        return null; // No message needed for database-specific data
+      case 'state-default':
+        return (
+          <p className="mt-1 text-green-600">
+            Using specific pricing data for {stateName}.
+          </p>
+        );
+      case 'fallback':
+      default:
+        return (
+          <p className="mt-1 text-amber-600">
+            Note: Using estimated pricing for {stateName} based on regional averages.
+            Request quotes below for exact pricing from local contractors.
+          </p>
+        );
+    }
+  };
 
   return (
     <div className="mt-6 p-6 bg-blue-50 rounded-lg border border-blue-100">
@@ -54,12 +74,7 @@ export default function PriceEstimateDisplay({
       <div className="mt-3 text-xs text-gray-500 text-center">
         <p>Driveway size: {area} sqft</p>
         {estimateDisclaimer && <p className="mt-1">{estimateDisclaimer}</p>}
-        {isFallbackData && (
-          <p className="mt-1 text-amber-600">
-            Note: We don't have specific pricing for {stateName} yet. 
-            This estimate is based on Texas pricing data and serves as a general guide.
-          </p>
-        )}
+        {getDataSourceMessage()}
       </div>
       
       <div className="mt-6 text-center">
