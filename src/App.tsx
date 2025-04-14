@@ -1,4 +1,3 @@
-
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import SiteLayout from './components/layouts/SiteLayout';
 import Home from './pages/Home';
@@ -7,12 +6,12 @@ import LocationsRoot from './components/locations/LocationsRoot';
 import LocationsState from './components/locations/LocationsState';
 import LocationDetails from './components/locations/LocationDetails';
 import SupabaseCheck from './components/SupabaseCheck';
+import ArizonaCostEstimator from './pages/ArizonaCostEstimator';
 
 function App() {
   return (
     <Router>
       <Routes>
-        {/* Home route - this renders the Home component */}
         <Route
           path="/"
           element={
@@ -50,6 +49,14 @@ function App() {
           element={
             <SiteLayout>
               <LocationsRoot />
+            </SiteLayout>
+          }
+        />
+        <Route
+          path="/arizona-concrete-cost-estimator"
+          element={
+            <SiteLayout>
+              <ArizonaCostEstimator />
             </SiteLayout>
           }
         />
