@@ -1,6 +1,6 @@
 
 {
-  "buildCommand": "npm install && npm install vite@latest && npx vite build",
+  "buildCommand": "npm install && npm install vite@latest -g && npm install vite@latest && npx vite build",
   "outputDirectory": "dist",
   "framework": "vite",
   "installCommand": "npm install --no-audit --no-fund",
@@ -16,5 +16,5 @@
       ]
     }
   ],
-  "devCommand": "npm install vite@latest && npx vite"
+  "devCommand": "npm install vite@latest -g && npx vite"
 }
