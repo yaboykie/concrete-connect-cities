@@ -2,6 +2,8 @@
 import { supabase } from '@/integrations/supabase/client';
 
 export async function getFinishPricingByState(state: string) {
+  console.log('Fetching pricing data for state:', state);
+  
   const { data, error } = await supabase
     .from('concrete_estimates')
     .select('*')
@@ -12,5 +14,6 @@ export async function getFinishPricingByState(state: string) {
     return [];
   }
   
+  console.log('Retrieved pricing data:', data);
   return data || [];
 }

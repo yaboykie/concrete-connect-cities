@@ -18,22 +18,46 @@ export const useDrivewayCalculator = (state: string | undefined, onInteraction?:
   const [finishId, setFinishId] = useState('plain');
   const [sizePreset, setSizePreset] = useState('Medium');
   const [custom, setCustom] = useState<DrivewaySize>({ width: 0, length: 0 });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!state) return;
+    
     const fetch = async () => {
-      const formattedState = state.charAt(0).toUpperCase() + state.slice(1);
-      const data = await getFinishPricingByState(formattedState);
-      const prices: Record<string, { min: number; max: number }> = {};
-      data.forEach((item: any) => {
-        prices[item.concrete_style] = {
-          min: item.min_price_sqft,
-          max: item.max_price_sqft
-        };
-      });
-      console.log('Fetched pricing data:', prices);
-      setPricing(prices);
+      try {
+        setIsLoading(true);
+        setError(null);
+        
+        const formattedState = state.charAt(0).toUpperCase() + state.slice(1);
+        console.log('Fetching data for state:', formattedState);
+        
+        const data = await getFinishPricingByState(formattedState);
+        console.log('Received data:', data);
+        
+        const prices: Record<string, { min: number; max: number }> = {};
+        
+        if (data && data.length > 0) {
+          data.forEach((item: any) => {
+            prices[item.concrete_style] = {
+              min: item.min_price_sqft,
+              max: item.max_price_sqft
+            };
+          });
+          console.log('Processed pricing data:', prices);
+          setPricing(prices);
+        } else {
+          console.log('No pricing data found for state:', formattedState);
+          setPricing({});
+        }
+      } catch (err) {
+        console.error('Error fetching pricing data:', err);
+        setError('Failed to fetch pricing data');
+      } finally {
+        setIsLoading(false);
+      }
     };
+    
     fetch();
   }, [state]);
 
@@ -94,6 +118,8 @@ export const useDrivewayCalculator = (state: string | undefined, onInteraction?:
     length,
     area,
     price,
+    isLoading,
+    error,
     handleSizeChange,
     handleFinishChange,
     handleCustomSizeChange,

@@ -17,8 +17,21 @@ const PriceEstimateDisplay: React.FC<PriceEstimateDisplayProps> = ({
   estimateDisclaimer,
   onGetQuotes
 }) => {
-  const minCost = price ? (area * price.min).toFixed(0) : '';
-  const maxCost = price ? (area * price.max).toFixed(0) : '';
+  // Format numbers for display
+  const formatCurrency = (num: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      maximumFractionDigits: 0
+    }).format(num);
+  };
+
+  const minCost = price && area > 0 ? formatCurrency(area * price.min) : '';
+  const maxCost = price && area > 0 ? formatCurrency(area * price.max) : '';
+
+  console.log("PriceEstimateDisplay - Price data:", price);
+  console.log("PriceEstimateDisplay - Area:", area);
+  console.log("PriceEstimateDisplay - Calculated costs:", { minCost, maxCost });
 
   return (
     <>
@@ -26,7 +39,7 @@ const PriceEstimateDisplay: React.FC<PriceEstimateDisplayProps> = ({
         <Card className="mt-6 bg-brand-yellow/20 border border-brand-yellow mb-4">
           <CardContent className="pt-6">
             <p className="mb-2">📐 <strong>Estimated Area:</strong> {area} sq ft</p>
-            <p className="mb-2 text-lg font-bold">💲 <strong>Estimated Price Range:</strong> ${minCost} – ${maxCost}</p>
+            <p className="mb-2 text-lg font-bold">💲 <strong>Estimated Price Range:</strong> {minCost} – {maxCost}</p>
             <p className="text-sm text-gray-600">📍 Based on average {stateName} prices (updated 2025).</p>
             <p className="text-sm text-gray-600 mt-1">
               💬 Final pricing depends on site conditions like concrete depth, access, and prep work. This is a ballpark estimate.
