@@ -1,9 +1,9 @@
 
 {
-  "buildCommand": "npm install && npx vite build",
+  "buildCommand": "npx vite build",
   "outputDirectory": "dist",
   "framework": "vite",
-  "installCommand": "npm install --no-audit --no-fund",
+  "installCommand": "npm install --no-audit --no-fund && npm install -D vite@5.1.4 @vitejs/plugin-react@4.2.1 --legacy-peer-deps",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ],
