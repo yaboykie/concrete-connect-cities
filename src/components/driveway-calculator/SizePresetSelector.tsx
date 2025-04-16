@@ -29,9 +29,12 @@ const SizePresetSelector: React.FC<SizePresetSelectorProps> = ({
               <Button
                 onClick={() => onPresetChange(label)}
                 variant={selectedPreset === label ? "default" : "outline"}
-                className="w-full"
+                className="w-full flex flex-col items-center"
               >
-                {label}
+                <span>{label}</span>
+                <span className="text-xs text-gray-500 font-normal mt-1">
+                  {details.description}
+                </span>
               </Button>
             </TooltipTrigger>
             <TooltipContent>

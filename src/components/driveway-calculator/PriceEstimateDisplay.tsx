@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -20,7 +19,6 @@ interface PriceEstimateDisplayProps {
   dataSource?: string;
 }
 
-// Define the form schema
 const emailFormSchema = z.object({
   name: z.string().min(2, 'Name is required'),
   email: z.string().email('Please enter a valid email'),
@@ -52,7 +50,6 @@ export default function PriceEstimateDisplay({
     }
   });
 
-  // If we don't have pricing data or area is invalid
   if (!price || area <= 0) {
     return (
       <div className="mt-6 p-6 bg-gray-50 rounded-lg border border-gray-100 text-center">
@@ -66,30 +63,25 @@ export default function PriceEstimateDisplay({
     );
   }
 
-  // Calculate the estimated price range based on the actual area
   const calculatePriceRange = () => {
-    // Extract numbers from the pricePerSqft string (e.g., "$5-7" -> [5, 7])
     const priceMatch = price.pricePerSqft.match(/\$(\d+)-(\d+)/);
-    if (!priceMatch) return price.totalRange; // Fallback to the default range
+    if (!priceMatch) return price.totalRange;
 
     const minPrice = parseInt(priceMatch[1]);
     const maxPrice = parseInt(priceMatch[2]);
     
-    // Calculate the price range based on the actual area
     const minTotal = minPrice * area;
     const maxTotal = maxPrice * area;
     
     return `$${minTotal.toLocaleString()}-${maxTotal.toLocaleString()}`;
   };
 
-  // Get the calculated price range
   const calculatedPriceRange = calculatePriceRange();
 
-  // Determine data source message
   const getDataSourceMessage = () => {
     switch(dataSource) {
       case 'specific':
-        return null; // No message needed for database-specific data
+        return null;
       case 'state-default':
         return (
           <p className="mt-1 text-green-600">
@@ -107,14 +99,12 @@ export default function PriceEstimateDisplay({
     }
   };
 
-  // Handle email submission
   const handleEmailSubmit = async (values: EmailFormValues) => {
     try {
       setSubmitting(true);
       
       const leadId = crypto.randomUUID();
       
-      // Insert the lead into Supabase
       const { error } = await supabase.from("leads").insert([
         {
           lead_id: leadId,
@@ -134,14 +124,12 @@ export default function PriceEstimateDisplay({
       
       if (error) throw new Error(error.message);
       
-      // Show success toast
       toast({
         title: "Email Sent!",
         description: `We've emailed your estimate to ${values.email}`,
         duration: 5000
       });
       
-      // Close modal and reset form
       setEmailModalOpen(false);
       form.reset();
       
@@ -159,11 +147,9 @@ export default function PriceEstimateDisplay({
       setSubmitting(false);
     }
   };
-  
-  // Handle quick quote button
+
   const handleGetQuotesClick = async (e: React.MouseEvent) => {
     try {
-      // Create a lead without personal details
       const leadId = crypto.randomUUID();
       
       const { error } = await supabase.from("leads").insert([
@@ -172,7 +158,7 @@ export default function PriceEstimateDisplay({
           name: null,
           email: null,
           phone: null,
-          zip_code: null, // We don't have zip code for this flow
+          zip_code: null,
           job_type: "driveway",
           formatted_job_type: "Driveway Installation",
           status: "new",
@@ -185,7 +171,6 @@ export default function PriceEstimateDisplay({
       
       if (error) throw new Error(error.message);
       
-      // Show success toast
       toast({
         title: "Request Submitted!",
         description: "We'll match you with contractors now.",
@@ -194,7 +179,6 @@ export default function PriceEstimateDisplay({
       
       console.log("Quick lead submitted successfully:", leadId);
       
-      // Call the original onGetQuotes handler if provided
       if (onGetQuotes) {
         onGetQuotes(e);
       }
@@ -208,7 +192,6 @@ export default function PriceEstimateDisplay({
         duration: 5000
       });
       
-      // Still call the original handler even if there's an error
       if (onGetQuotes) {
         onGetQuotes(e);
       }
@@ -241,23 +224,32 @@ export default function PriceEstimateDisplay({
       </div>
       
       <div className="mt-6 grid grid-cols-2 gap-4">
-        <Button 
-          onClick={() => setEmailModalOpen(true)} 
-          variant="outline" 
-          className="flex items-center justify-center"
-        >
-          <Mail className="mr-2 h-4 w-4" /> Email To Me
-        </Button>
-        <Button 
-          size="lg" 
-          onClick={handleGetQuotesClick}
-          className="bg-blue-600 hover:bg-blue-700"
-        >
-          Get Free Quotes
-        </Button>
+        <div className="flex flex-col">
+          <Button 
+            onClick={() => setEmailModalOpen(true)} 
+            variant="outline" 
+            className="flex items-center justify-center"
+          >
+            <Mail className="mr-2 h-4 w-4" /> Email Me My Estimate
+          </Button>
+          <p className="text-xs text-gray-500 opacity-75 mt-2 text-center">
+            We'll send your estimate straight to your inbox — no spam.
+          </p>
+        </div>
+        <div className="flex flex-col">
+          <Button 
+            size="lg" 
+            onClick={handleGetQuotesClick}
+            className="bg-blue-600 hover:bg-blue-700"
+          >
+            Get Free Quotes
+          </Button>
+          <p className="text-xs text-gray-500 opacity-75 mt-2 text-center">
+            Compare real prices from 3 local concreters.
+          </p>
+        </div>
       </div>
       
-      {/* Email Modal */}
       <Dialog open={emailModalOpen} onOpenChange={setEmailModalOpen}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
