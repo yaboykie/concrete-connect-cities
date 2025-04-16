@@ -31,7 +31,7 @@ const SizePresetSelector: React.FC<SizePresetSelectorProps> = ({
                 variant={selectedPreset === label ? "default" : "outline"}
                 className="w-full flex flex-col items-center"
               >
-                <span>{label}</span>
+                <span className="font-semibold">{label}</span>
                 <span className="text-xs text-gray-500 font-normal mt-1">
                   {details.description}
                 </span>
