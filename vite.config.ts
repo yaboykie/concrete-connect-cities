@@ -1,7 +1,6 @@
 
-
 import { defineConfig } from 'vite'
-import { default as react } from '@vitejs/plugin-react'
+import react from '@vitejs/plugin-react'
 import * as path from 'path'
 import { componentTagger } from "lovable-tagger"
 
