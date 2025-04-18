@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowDown } from 'lucide-react';
+import { ClipboardCheck } from 'lucide-react';
 
 interface HeroSectionProps {
   scrollToCalculator: () => void;
@@ -9,26 +9,35 @@ interface HeroSectionProps {
 
 const HeroSection: React.FC<HeroSectionProps> = ({ scrollToCalculator }) => {
   return (
-    <section className="bg-white py-16 px-4">
+    <section className="bg-white py-16 px-4 border-b border-gray-100 shadow-sm">
       <div className="container mx-auto max-w-4xl text-center">
-        <h1 className="text-3xl font-bold text-gray-900 leading-tight">
-          See What It Should Actually Cost to Concrete Your Driveway — Before You Get a Single Quote
+        <div className="flex justify-center mb-6">
+          <ClipboardCheck className="h-12 w-12 text-brand-blue" />
+        </div>
+        
+        <h1 className="text-4xl font-bold text-center mb-4 max-w-3xl mx-auto">
+          Check Driveway Concrete Costs in Your Area — Instantly
         </h1>
-
-        <p className="mt-3 text-base text-gray-700">
-          We'll show you real pricing based on your home's location and the type of concrete you're after — no chasing tradies, no inflated bids, just clear info for homeowners.
+        
+        <p className="text-lg text-center text-gray-600 max-w-xl mx-auto mb-4">
+          Use our free tool to see what other homeowners are paying — based on real jobs, finish type, and your location.
+          No calls. No chasing tradies. Just clear cost info before you get quotes.
         </p>
-
-        <p className="mt-2 text-sm text-gray-600 italic">
-          Know what concrete should cost before speaking to a tradie — so you're in control, not guessing, when the real quotes come in.
+        
+        <p className="text-sm text-center text-gray-500 mb-6">
+          Know what concrete should cost — before speaking to anyone.
         </p>
-
+        
         <Button 
+          className="text-lg px-6 py-3 mx-auto block"
           onClick={scrollToCalculator}
-          className="mt-6 bg-black text-white px-6 py-3 rounded-md hover:bg-gray-800 transition"
         >
-          Start My Estimate <ArrowDown className="ml-2 h-4 w-4" />
+          Check My Driveway Cost →
         </Button>
+        
+        <p className="text-xs text-center text-gray-400 mt-2">
+          Takes 30 seconds. No pressure.
+        </p>
       </div>
     </section>
   );
