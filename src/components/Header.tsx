@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { MapPin, Phone, Menu, X, ChevronRight, LogIn } from 'lucide-react';
@@ -15,7 +14,6 @@ import {
 import QuoteFormModal from './QuoteFormModal';
 
 const Header = () => {
-  // Initialize state with React.useState instead of just useState
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
 
   return (
@@ -31,14 +29,12 @@ const Header = () => {
           <div className="hidden md:flex items-center space-x-6">
             <NavigationMenu>
               <NavigationMenuList>
-                {/* Home Link */}
                 <NavigationMenuItem>
                   <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
                     <Link to="/">Home</Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
                 
-                {/* Concrete Services Dropdown */}
                 <NavigationMenuItem>
                   <NavigationMenuTrigger>Concrete Services</NavigationMenuTrigger>
                   <NavigationMenuContent>
@@ -82,14 +78,13 @@ const Header = () => {
               <MapPin className="h-5 w-5 mr-2 text-brand-blue" />
               <span>Serving the USA</span>
             </div>
-            <QuoteFormModal />
+            <QuoteFormModal buttonText="Check Local Driveway Costs" />
             <Link to="/contractor/login" className="flex items-center text-sm text-gray-600 hover:text-brand-blue">
               <LogIn className="h-4 w-4 mr-1" />
               <span>Contractor Login</span>
             </Link>
           </div>
           
-          {/* Mobile menu button */}
           <div className="md:hidden flex items-center">
             <Button 
               variant="ghost" 
@@ -106,7 +101,6 @@ const Header = () => {
           </div>
         </div>
         
-        {/* Mobile menu */}
         {isMobileMenuOpen && (
           <div className="md:hidden mt-4 py-4 border-t">
             <nav className="space-y-4">
@@ -114,7 +108,6 @@ const Header = () => {
                 Home
               </Link>
               
-              {/* Mobile Concrete Services */}
               <div className="py-2">
                 <p className="font-medium mb-2">Concrete Services</p>
                 <div className="pl-4 space-y-2">

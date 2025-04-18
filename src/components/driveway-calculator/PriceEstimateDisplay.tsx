@@ -115,10 +115,10 @@ export default function PriceEstimateDisplay({
             onClick={handleGetQuotesClick}
             className="w-full mb-1"
           >
-            Get Free Quotes
+            See Which Local Pros Match This Estimate
           </Button>
           <p className="text-xs text-gray-500 text-center px-2">
-            Compare real prices from 3 local concreters.
+            We only show concreters rated 4.7★ or higher on Google.
           </p>
         </div>
       </div>
@@ -132,4 +132,4 @@ export default function PriceEstimateDisplay({
       />
     </div>
   );
-};
+}
