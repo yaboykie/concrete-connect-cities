@@ -83,29 +83,6 @@ export default function StateDrivewayCalculator({
 
   return (
     <div className="calculator bg-white p-4 rounded-lg shadow-lg max-w-2xl mx-auto">
-      {isLoading ? (
-        <div className="p-3 bg-gray-50 rounded-md border border-gray-200 mb-3">
-          <p className="text-sm text-gray-700 text-center">
-            Loading pricing data for {stateDisplayName}...
-          </p>
-        </div>
-      ) : error ? (
-        <div className="p-3 bg-amber-50 rounded-md border border-amber-200 mb-3">
-          <p className="text-sm text-amber-700 text-center">
-            {error} We're showing you our standard pricing guide instead.
-          </p>
-        </div>
-      ) : price && (
-        <PriceEstimateDisplay 
-          price={price}
-          area={area}
-          stateName={stateDisplayName}
-          estimateDisclaimer={estimateDisclaimer}
-          onGetQuotes={handleScrollToQuoteForm}
-          dataSource={dataSource}
-        />
-      )}
-      
       <div className="space-y-3">
         <StateSelector 
           selectedState={selectedState}
@@ -132,6 +109,18 @@ export default function StateDrivewayCalculator({
           onInteraction={onInteraction}
         />
       </div>
+
+      {price && (
+        <PriceEstimateDisplay 
+          price={price}
+          area={area}
+          stateName={stateDisplayName}
+          estimateDisclaimer={estimateDisclaimer}
+          onGetQuotes={handleScrollToQuoteForm}
+          dataSource={dataSource}
+          className="mt-8"
+        />
+      )}
 
       {afterContent && (
         <div className="mt-4">

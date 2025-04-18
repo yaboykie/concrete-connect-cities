@@ -1,7 +1,8 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Button } from '@/components/ui/button';
 import LeadCaptureDialog from './LeadCaptureDialog';
+import { cn } from "@/lib/utils";
 
 interface PriceEstimateDisplayProps {
   price: { pricePerSqft: string; avgSize: string; totalRange: string; } | null;
@@ -10,6 +11,7 @@ interface PriceEstimateDisplayProps {
   estimateDisclaimer?: string;
   onGetQuotes?: (e: React.MouseEvent) => void;
   dataSource?: string;
+  className?: string;
 }
 
 export default function PriceEstimateDisplay({
@@ -18,26 +20,31 @@ export default function PriceEstimateDisplay({
   stateName = '',
   estimateDisclaimer,
   onGetQuotes,
-  dataSource = 'specific'
+  dataSource = 'specific',
+  className
 }: PriceEstimateDisplayProps) {
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = React.useState(false);
 
   const handleGetQuotesClick = (e: React.MouseEvent) => {
     setDialogOpen(true);
     
-    // Still call the passed onGetQuotes function if it exists
     if (onGetQuotes) {
       onGetQuotes(e);
     }
   };
   
   if (!price) {
-    return <div>No pricing available</div>;
+    return null;
   }
 
   return (
-    <div className="mt-6 p-4 bg-gray-50 rounded-md border border-gray-200 mb-4">
-      <h3 className="text-lg font-semibold mb-3">Your {stateName} Driveway Estimate</h3>
+    <div className={cn(
+      "mt-6 p-4 bg-gray-50 rounded-md border border-gray-200 mb-4 animate-fade-in",
+      className
+    )}>
+      <h3 className="text-lg font-semibold mb-1">
+        🎯 Your {stateName} Driveway Estimate
+      </h3>
       
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3">
         <div className="bg-white p-3 rounded border border-gray-100">
@@ -46,21 +53,18 @@ export default function PriceEstimateDisplay({
         </div>
         <div className="bg-white p-3 rounded border border-gray-100">
           <p className="text-sm text-gray-600">Price Range:</p>
-          <p className="text-2xl font-bold">{price.totalRange}</p>
+          <p className="text-2xl font-bold text-green-700">{price.totalRange}</p>
         </div>
       </div>
       
       <div className="text-sm text-gray-600 mb-4">
-        <p>
-          <strong>Average Price:</strong> {price.pricePerSqft} per square foot
-        </p>
         {estimateDisclaimer && <p className="mt-1 text-xs">{estimateDisclaimer}</p>}
       </div>
       
       <div className="mt-4">
         <Button 
           onClick={handleGetQuotesClick}
-          className="w-full mb-1"
+          className="w-full bg-brand-blue hover:bg-brand-blue/90"
         >
           See Which Local Pros Match This Estimate
         </Button>
