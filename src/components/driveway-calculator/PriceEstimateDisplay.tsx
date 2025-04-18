@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import LeadCaptureDialog from './LeadCaptureDialog';
@@ -31,14 +30,13 @@ export default function PriceEstimateDisplay({
     setDialogOpen(true);
   };
   
-  const handleGetQuotesClick = () => {
+  const handleGetQuotesClick = (e: React.MouseEvent) => {
     setLeadPurpose('quotes');
     setDialogOpen(true);
     
     // Still call the passed onGetQuotes function if it exists
-    // This maintains any tracking or analytics functionality
     if (onGetQuotes) {
-      onGetQuotes(event as React.MouseEvent);
+      onGetQuotes(e);
     }
   };
   
