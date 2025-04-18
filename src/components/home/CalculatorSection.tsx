@@ -1,8 +1,6 @@
-
 import React from 'react';
 import StateDrivewayCalculator from '@/components/StateDrivewayCalculator';
-import { CheckCircle } from 'lucide-react';
-import { Quote } from 'lucide-react';
+import { CheckCircle, Quote } from 'lucide-react';
 
 interface CalculatorSectionProps {
   calculatorRef: React.RefObject<HTMLDivElement>;
@@ -38,23 +36,39 @@ const CalculatorSection: React.FC<CalculatorSectionProps> = ({ calculatorRef }) 
               </ul>
             </div>
 
-            {/* Testimonial Card */}
-            <div className="bg-white p-4 rounded-lg shadow-sm max-w-sm">
-              <div className="flex items-start gap-2">
-                <Quote className="h-5 w-5 text-brand-blue flex-shrink-0 mt-1" />
-                <div>
-                  <p className="text-sm text-gray-700 italic">
-                    "I didn't know what was fair to pay for a driveway. This gave me a clear range and saved me time chasing quotes."
-                  </p>
-                  <p className="mt-2 text-right text-xs text-gray-500">
-                    — Daniel R., Plano TX
-                  </p>
+            {/* Testimonials */}
+            <div className="space-y-4">
+              <div className="bg-white p-4 rounded-lg shadow-sm">
+                <div className="flex items-start gap-2">
+                  <Quote className="h-5 w-5 text-brand-blue flex-shrink-0 mt-1" />
+                  <div>
+                    <p className="text-sm text-gray-800 italic">
+                      "I was getting quotes from $6,000 to $14,000 for the same driveway. ConcreterQuotes showed me what was actually normal in my area — and matched me with two concreters who didn't play games. We had the job booked in 48 hours."
+                    </p>
+                    <p className="mt-2 text-right text-xs text-gray-500">
+                      — Jennifer M., Austin, TX
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white p-4 rounded-lg shadow-sm">
+                <div className="flex items-start gap-2">
+                  <Quote className="h-5 w-5 text-brand-blue flex-shrink-0 mt-1" />
+                  <div>
+                    <p className="text-sm text-gray-700 italic">
+                      "I didn't know what was fair to pay for a driveway. This gave me a clear range and saved me time chasing quotes."
+                    </p>
+                    <p className="mt-2 text-right text-xs text-gray-500">
+                      — Daniel R., Plano TX
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Benefits Section */}
-            <div className="bg-white p-5 rounded-lg shadow-sm">
+            <div className="bg-white p-6 rounded-lg shadow-sm">
               <h2 className="text-lg font-semibold text-gray-800 mb-3">
                 Why Smart Homeowners Are Upgrading Their Concrete Now — Not Later
               </h2>
@@ -81,7 +95,7 @@ const CalculatorSection: React.FC<CalculatorSectionProps> = ({ calculatorRef }) 
           
           {/* Right Column - Calculator */}
           <div>
-            <h3 className="text-lg font-semibold mb-3">
+            <h3 className="text-lg font-semibold mb-4">
               🎯 Your Texas Driveway Estimate
             </h3>
             <StateDrivewayCalculator 

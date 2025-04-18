@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import LeadCaptureDialog from './LeadCaptureDialog';
@@ -52,12 +51,7 @@ export default function PriceEstimateDisplay({
       
       <div className="text-sm text-gray-600 mb-4">
         <p>
-          <strong>Average Price:</strong> {price.pricePerSqft} per square foot 
-          {dataSource !== 'specific' && (
-            <span className="ml-1 text-amber-600">
-              (using general pricing - exact {stateName} data not available)
-            </span>
-          )}
+          <strong>Average Price:</strong> {price.pricePerSqft} per square foot
         </p>
         {estimateDisclaimer && <p className="mt-1 text-xs">{estimateDisclaimer}</p>}
       </div>
@@ -85,4 +79,3 @@ export default function PriceEstimateDisplay({
     </div>
   );
 }
-
