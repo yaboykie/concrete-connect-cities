@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDrivewayCalculator, presets } from './driveway-calculator/useDrivewayCalculator';
@@ -28,7 +27,6 @@ export default function StateDrivewayCalculator({
   const params = useParams<{ state: string }>();
   const stateFromParam = params.state;
   
-  // Use stateName prop if provided, otherwise use from URL params, fallback to "Texas"
   const initialState = (propStateName || stateFromParam || "Texas").toLowerCase();
   const stateMap: Record<string, string> = {
     'tx': 'Texas',
@@ -43,10 +41,8 @@ export default function StateDrivewayCalculator({
     'nc': 'North Carolina'
   };
   
-  // Map state codes to full names
   const mappedInitialState = stateMap[initialState] || initialState;
   
-  // Show that we detected the state
   const { toast } = useToast();
   
   const {
@@ -69,7 +65,6 @@ export default function StateDrivewayCalculator({
     handleStateChange
   } = useDrivewayCalculator(mappedInitialState, onInteraction);
 
-  // Show toast when state changes
   useEffect(() => {
     if (selectedState) {
       toast({
@@ -79,7 +74,6 @@ export default function StateDrivewayCalculator({
     }
   }, [selectedState, toast]);
 
-  // Get state display name
   const stateDisplayName = selectedState;
 
   console.log("Current price data:", price);
@@ -88,47 +82,20 @@ export default function StateDrivewayCalculator({
   console.log("Data source:", dataSource);
 
   return (
-    <div className="calculator bg-white p-6 rounded-lg shadow-lg max-w-2xl mx-auto">
-      <CalculatorIntro stateName={stateDisplayName} />
-      
-      <StateSelector 
-        selectedState={selectedState}
-        onChange={handleStateChange}
-      />
-      
-      <SizePresetSelector 
-        presets={presets} 
-        selectedPreset={sizePreset} 
-        onPresetChange={handleSizeChange} 
-      />
-
-      {isCustom && (
-        <CustomSizeInputs 
-          width={custom.width} 
-          length={custom.length}
-          onChange={handleCustomSizeChange}
-        />
-      )}
-
-      <FinishSelector 
-        selectedFinishId={finishId}
-        onFinishChange={handleFinishChange}
-        onInteraction={onInteraction}
-      />
-
+    <div className="calculator bg-white p-4 rounded-lg shadow-lg max-w-2xl mx-auto">
       {isLoading ? (
-        <div className="mt-6 p-4 bg-gray-50 rounded-md border border-gray-200 mb-4">
+        <div className="p-3 bg-gray-50 rounded-md border border-gray-200 mb-3">
           <p className="text-sm text-gray-700 text-center">
             Loading pricing data for {stateDisplayName}...
           </p>
         </div>
       ) : error ? (
-        <div className="mt-6 p-4 bg-amber-50 rounded-md border border-amber-200 mb-4">
+        <div className="p-3 bg-amber-50 rounded-md border border-amber-200 mb-3">
           <p className="text-sm text-amber-700 text-center">
             {error} We're showing you our standard pricing guide instead.
           </p>
         </div>
-      ) : (
+      ) : price && (
         <PriceEstimateDisplay 
           price={price}
           area={area}
@@ -138,9 +105,36 @@ export default function StateDrivewayCalculator({
           dataSource={dataSource}
         />
       )}
+      
+      <div className="space-y-3">
+        <StateSelector 
+          selectedState={selectedState}
+          onChange={handleStateChange}
+        />
+        
+        <SizePresetSelector 
+          presets={presets} 
+          selectedPreset={sizePreset} 
+          onPresetChange={handleSizeChange} 
+        />
+
+        {isCustom && (
+          <CustomSizeInputs 
+            width={custom.width} 
+            length={custom.length}
+            onChange={handleCustomSizeChange}
+          />
+        )}
+
+        <FinishSelector 
+          selectedFinishId={finishId}
+          onFinishChange={handleFinishChange}
+          onInteraction={onInteraction}
+        />
+      </div>
 
       {afterContent && (
-        <div className="mt-6">
+        <div className="mt-4">
           {afterContent}
         </div>
       )}
