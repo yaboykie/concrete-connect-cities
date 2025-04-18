@@ -1,6 +1,7 @@
 
 import '@/styles/globals.css'
 import { Toaster } from '@/components/ui/toaster'
+import SiteLayout from '@/components/layouts/SiteLayout'
 
 export const metadata = {
   title: 'ConcreterQuotes – Instant Concrete Estimates',
@@ -11,7 +12,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
-        {children}
+        <SiteLayout>
+          {children}
+        </SiteLayout>
         <Toaster />
       </body>
     </html>

@@ -13,7 +13,7 @@ const CalculatorSection: React.FC<CalculatorSectionProps> = ({ calculatorRef }) 
       <div className="container mx-auto max-w-6xl">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left Column - Value framing and trust building */}
-          <div className="lg:order-1">
+          <div>
             <div className="bg-white p-6 rounded-lg shadow-sm">
               <h2 className="text-2xl font-bold mb-2">
                 Wondering What You Should Actually Pay for a Driveway?
@@ -64,7 +64,7 @@ const CalculatorSection: React.FC<CalculatorSectionProps> = ({ calculatorRef }) 
           </div>
           
           {/* Right Column - Calculator */}
-          <div className="lg:order-2">
+          <div>
             <h3 className="text-lg font-semibold mb-4">
               🎯 Your Texas Driveway Estimate
             </h3>

@@ -3,7 +3,7 @@ import StateDrivewayCalculator from '@/components/StateDrivewayCalculator';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { ArrowDown, ClipboardCheck } from 'lucide-react';
+import { ArrowDown, ClipboardCheck, CheckCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const Home = () => {
@@ -103,15 +103,15 @@ const Home = () => {
                 </p>
                 <ul className="text-sm text-gray-600 space-y-2">
                   <li className="flex items-start gap-2">
-                    <ClipboardCheck className="h-5 w-5 text-brand-blue mt-0.5 flex-shrink-0" />
+                    <CheckCircle className="h-5 w-5 text-brand-blue mt-0.5 flex-shrink-0" />
                     <span>Based on 2025 pricing in Texas</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <ClipboardCheck className="h-5 w-5 text-brand-blue mt-0.5 flex-shrink-0" />
+                    <CheckCircle className="h-5 w-5 text-brand-blue mt-0.5 flex-shrink-0" />
                     <span>Not a quote — no calls, no spam</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <ClipboardCheck className="h-5 w-5 text-brand-blue mt-0.5 flex-shrink-0" />
+                    <CheckCircle className="h-5 w-5 text-brand-blue mt-0.5 flex-shrink-0" />
                     <span>Takes less than 30 seconds</span>
                   </li>
                 </ul>
@@ -124,19 +124,19 @@ const Home = () => {
                 </h2>
                 <ul className="space-y-3">
                   <li className="flex items-start gap-2">
-                    <ClipboardCheck className="h-5 w-5 text-brand-blue mt-0.5 flex-shrink-0" />
+                    <CheckCircle className="h-5 w-5 text-brand-blue mt-0.5 flex-shrink-0" />
                     <span>Cracked, uneven driveways are trip hazards and eyesores</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <ClipboardCheck className="h-5 w-5 text-brand-blue mt-0.5 flex-shrink-0" />
+                    <CheckCircle className="h-5 w-5 text-brand-blue mt-0.5 flex-shrink-0" />
                     <span>Water pooling near your slab can cause long-term damage</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <ClipboardCheck className="h-5 w-5 text-brand-blue mt-0.5 flex-shrink-0" />
+                    <CheckCircle className="h-5 w-5 text-brand-blue mt-0.5 flex-shrink-0" />
                     <span>New concrete adds visual appeal and long-term value</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <ClipboardCheck className="h-5 w-5 text-brand-blue mt-0.5 flex-shrink-0" />
+                    <CheckCircle className="h-5 w-5 text-brand-blue mt-0.5 flex-shrink-0" />
                     <span>According to Forbes, a new driveway can increase your home's value by $5,000–$7,000</span>
                   </li>
                 </ul>

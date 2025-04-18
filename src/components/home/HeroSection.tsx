@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { ClipboardCheck, ArrowRight } from 'lucide-react';
+import { ClipboardCheck, ArrowDown } from 'lucide-react';
 
 interface HeroSectionProps {
   scrollToCalculator: () => void;
@@ -32,7 +32,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ scrollToCalculator }) => {
           onClick={scrollToCalculator}
           className="text-lg px-6 py-3 mx-auto block bg-brand-blue hover:bg-brand-blue/90 text-white"
         >
-          Check My Driveway Cost <ArrowRight className="ml-2" />
+          Check My Driveway Cost <ArrowDown className="ml-2 h-4 w-4" />
         </Button>
         
         <p className="text-xs text-center text-gray-400 mt-2">
