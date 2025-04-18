@@ -32,6 +32,7 @@ export default function LeadCaptureDialog({
 }: LeadCaptureDialogProps) {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [submitError, setSubmitError] = React.useState<string | null>(null);
   
   const form = useForm<FormValues>({
     defaultValues: {
@@ -44,9 +45,11 @@ export default function LeadCaptureDialog({
   
   const onSubmit = async (data: FormValues) => {
     setIsSubmitting(true);
+    setSubmitError(null);
     
     try {
-      await supabase.from("leads").insert([
+      // First, save to Supabase
+      const { data: leadData, error: supabaseError } = await supabase.from("leads").insert([
         {
           lead_id: crypto.randomUUID(),
           name: data.name,
@@ -61,7 +64,33 @@ export default function LeadCaptureDialog({
           updated_at: new Date().toISOString(),
           campaign_id: null,
         },
-      ]);
+      ]).select();
+      
+      if (supabaseError) {
+        console.error("Supabase error:", supabaseError);
+        throw new Error(`Database error: ${supabaseError.message}`);
+      }
+      
+      // Then send email notification via edge function
+      try {
+        const functionResponse = await supabase.functions.invoke('send-lead', {
+          body: {
+            name: data.name,
+            email: data.email,
+            zipCode: data.zip_code,
+            estimate: priceRange,
+            jobType: "Concrete Driveway"
+          }
+        });
+        
+        if (functionResponse.error) {
+          console.warn("Email notification failed but lead was saved:", functionResponse.error);
+          // We don't throw here because we already saved the lead to the database
+        }
+      } catch (emailError) {
+        console.warn("Email sending failed but lead was saved:", emailError);
+        // We don't throw here because we already saved the lead to the database
+      }
       
       toast({
         title: "Estimate Sent!",
@@ -71,8 +100,9 @@ export default function LeadCaptureDialog({
       
       form.reset();
       onOpenChange(false);
-    } catch (error) {
-      console.error("Error submitting lead:", error);
+    } catch (error: any) {
+      console.error("Error in lead submission:", error);
+      setSubmitError(error.message);
       toast({
         title: "Error",
         description: "There was a problem sending your estimate. Please try again.",
@@ -90,6 +120,13 @@ export default function LeadCaptureDialog({
         <DialogHeader>
           <DialogTitle>Get your driveway estimate by email</DialogTitle>
         </DialogHeader>
+        
+        {submitError && (
+          <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-md mb-3">
+            <p className="text-sm font-medium">Error: {submitError}</p>
+            <p className="text-xs">Please try again or contact support if this persists.</p>
+          </div>
+        )}
         
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-2">
           <div className="grid gap-2">

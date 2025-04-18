@@ -1,5 +1,6 @@
+
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react' // ✅ FIXED default import
+import react from '@vitejs/plugin-react' // Fix the import syntax
 import * as path from 'path'
 import { componentTagger } from 'lovable-tagger'
 
