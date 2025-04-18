@@ -127,13 +127,18 @@ export default function LeadCaptureDialog({
   
   const dialogTitle = purpose === 'email' 
     ? "Get your driveway estimate by email" 
-    : "Get matched with local concreters";
-  
+    : "Get matched with local driveway concreters";
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>{dialogTitle}</DialogTitle>
+          {purpose === 'quotes' && (
+            <p className="text-sm text-muted-foreground mt-2">
+              We'll match you with up to 3 local driveway concreters, all rated 4.7★ or higher on Google Reviews
+            </p>
+          )}
         </DialogHeader>
         
         {submitError && (
@@ -193,13 +198,13 @@ export default function LeadCaptureDialog({
           </div>
           
           <div className="bg-gray-50 p-3 rounded text-sm">
-            <p><strong>Your {stateName} Estimate</strong></p>
+            <p><strong>Your {stateName} Driveway Estimate</strong></p>
             <p>Area: {area} sq ft</p>
             <p>Price Range: {priceRange}</p>
           </div>
           
           <DialogFooter>
-            <Button type="submit" disabled={isSubmitting}>
+            <Button type="submit" className="w-full">
               {isSubmitting ? "Sending..." : purpose === 'email' ? "Send My Estimate" : "Match Me With Pros"}
             </Button>
           </DialogFooter>
