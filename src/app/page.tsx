@@ -4,8 +4,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import HeroSection from '@/components/home/HeroSection';
 import CalculatorSection from '@/components/home/CalculatorSection';
-import BeliefSection from '@/components/home/BeliefSection';
-import ValueProposition from '@/components/home/ValueProposition';
+import MatchEstimateSection from '@/components/home/MatchEstimateSection';
 import TrustSection from '@/components/home/TrustSection';
 import EaseSpeedSection from '@/components/home/EaseSpeedSection';
 import EmotionalCloser from '@/components/home/EmotionalCloser';
@@ -19,7 +18,6 @@ export default function HomePage() {
   const [scrollPercentage, setScrollPercentage] = useState(0);
   const calculatorRef = useRef<HTMLDivElement>(null);
   
-  // Track scroll position to trigger exit intent modal
   useEffect(() => {
     const handleScroll = () => {
       const windowHeight = window.innerHeight;
@@ -28,7 +26,6 @@ export default function HomePage() {
       const scrollPercentage = (scrollTop / (documentHeight - windowHeight)) * 100;
       setScrollPercentage(scrollPercentage);
       
-      // Show exit intent modal when user scrolls past 50% and hasn't submitted
       if (scrollPercentage > 50 && !localStorage.getItem('exitModalShown')) {
         setShowExitModal(true);
         localStorage.setItem('exitModalShown', 'true');
@@ -49,8 +46,7 @@ export default function HomePage() {
     <main className="flex-grow">
       <HeroSection scrollToCalculator={scrollToCalculator} />
       <CalculatorSection calculatorRef={calculatorRef} />
-      <BeliefSection />
-      <ValueProposition />
+      <MatchEstimateSection />
       <TrustSection />
       <EaseSpeedSection />
       <EmotionalCloser />
