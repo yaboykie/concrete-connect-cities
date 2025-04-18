@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { getFinishPricingByState } from '@/lib/api/getFinishPricing';
 import { finishIdToLabel, labelToFinishType } from '@/config/finishTypes';
 
@@ -78,6 +78,27 @@ const defaultPrices = {
   'Brushed Finish': { pricePerSqft: '$5-8', avgSize: '500-600 sqft', totalRange: '$2,500-$4,800' }
 };
 
+// Helper function to calculate price based on square footage and price per sqft
+const calculatePriceRange = (area: number, pricePerSqft: string): string => {
+  try {
+    // Parse price per sqft range (format: "$X-Y")
+    const match = pricePerSqft.match(/\$(\d+)-(\d+)/);
+    if (!match) return 'Price calculation error';
+    
+    const minPrice = parseInt(match[1], 10);
+    const maxPrice = parseInt(match[2], 10);
+    
+    // Calculate total price range based on area
+    const minTotal = Math.round(minPrice * area / 100) * 100; // Round to nearest hundred
+    const maxTotal = Math.round(maxPrice * area / 100) * 100;
+    
+    return `$${minTotal.toLocaleString()}-$${maxTotal.toLocaleString()}`;
+  } catch (e) {
+    console.error('Error calculating price range:', e);
+    return pricePerSqft; // Return original string if calculation fails
+  }
+};
+
 export const useDrivewayCalculator = (state: string | undefined, onInteraction?: () => void) => {
   const [pricing, setPricing] = useState<Record<string, { pricePerSqft: string; avgSize: string; totalRange: string }>>({});
   const [finishId, setFinishId] = useState('plain');
@@ -87,7 +108,12 @@ export const useDrivewayCalculator = (state: string | undefined, onInteraction?:
   const [error, setError] = useState<string | null>(null);
   const [selectedState, setSelectedState] = useState(state || 'Texas');
   const [dataSource, setDataSource] = useState<string>('specific'); // 'specific' or 'fallback'
-  const [area, setArea] = useState(0); // Track area explicitly
+  const [area, setArea] = useState(0);
+  const [cachedPriceData, setCachedPriceData] = useState<{
+    pricePerSqft: string; 
+    avgSize: string; 
+    totalRange: string;
+  } | null>(null);
 
   // Fetch pricing data when state changes
   useEffect(() => {
@@ -159,10 +185,74 @@ export const useDrivewayCalculator = (state: string | undefined, onInteraction?:
   
   // Update area whenever size changes
   useEffect(() => {
-    const calculatedArea = width * length;
+    const calculatedArea = Math.round(width * length);
     console.log(`Recalculating area: ${width} × ${length} = ${calculatedArea}`);
     setArea(calculatedArea);
   }, [width, length, sizePreset, isCustom]);
+
+  // Update price calculation when area or finish changes
+  useEffect(() => {
+    if (area > 0) {
+      updatePriceForCurrentFinish();
+    }
+  }, [area, finishId, pricing]);
+
+  // Function to update price based on current finish and area
+  const updatePriceForCurrentFinish = useCallback(() => {
+    const finishLabel = finishIdToLabel[finishId] || finishId;
+    console.log(`Updating price for ${finishLabel} with area ${area}sq ft`);
+    
+    // Try to find base price data
+    let basePrice = null;
+    
+    // First try exact match with UI finish label
+    if (pricing[finishLabel]) {
+      basePrice = pricing[finishLabel];
+      console.log('Found base price using UI finish label:', finishLabel);
+    }
+    // Then try lowercase UI finish label
+    else if (pricing[finishLabel.toLowerCase()]) {
+      basePrice = pricing[finishLabel.toLowerCase()];
+      console.log('Found base price using lowercase UI finish label:', finishLabel.toLowerCase());
+    }
+    // Fallback to database finish type
+    else {
+      const databaseFinishType = labelToFinishType[finishLabel];
+      
+      if (databaseFinishType && pricing[databaseFinishType]) {
+        basePrice = pricing[databaseFinishType];
+        console.log('Found base price using database finish type:', databaseFinishType);
+      }
+      else if (databaseFinishType && pricing[databaseFinishType.toLowerCase()]) {
+        basePrice = pricing[databaseFinishType.toLowerCase()];
+        console.log('Found base price using lowercase database finish type:', databaseFinishType.toLowerCase());
+      }
+      else if (Object.keys(pricing).length > 0) {
+        const firstFinishType = Object.keys(pricing)[0];
+        basePrice = pricing[firstFinishType];
+        console.log('Using fallback price from first available finish type:', firstFinishType);
+      } 
+      else if (defaultPrices[finishLabel]) {
+        basePrice = defaultPrices[finishLabel];
+        console.log('Using default price for finish:', finishLabel);
+      }
+    }
+    
+    // Calculate the actual price range based on area
+    if (basePrice) {
+      const scaledPriceRange = calculatePriceRange(area, basePrice.pricePerSqft);
+      
+      // Create new price data with updated total range
+      const updatedPrice = {
+        ...basePrice,
+        totalRange: scaledPriceRange
+      };
+      
+      // Update cached price data
+      setCachedPriceData(updatedPrice);
+      console.log('Updated price data:', updatedPrice);
+    }
+  }, [area, finishId, pricing]);
 
   const handleInteraction = () => {
     if (onInteraction) {
@@ -213,53 +303,6 @@ export const useDrivewayCalculator = (state: string | undefined, onInteraction?:
     handleInteraction();
   };
 
-  // Get the UI finish label for the selected finish ID
-  const finishLabel = finishIdToLabel[finishId] || finishId;
-  
-  // Try to find pricing data
-  console.log('UI Finish Label:', finishLabel);
-  
-  // Try to find pricing data with priority on UI Finish Label
-  let price = null;
-  
-  // First try exact match with UI finish label (primary matching strategy)
-  if (pricing[finishLabel]) {
-    price = pricing[finishLabel];
-    console.log('Found price using UI finish label (exact match):', finishLabel);
-  }
-  // Then try lowercase UI finish label
-  else if (pricing[finishLabel.toLowerCase()]) {
-    price = pricing[finishLabel.toLowerCase()];
-    console.log('Found price using lowercase UI finish label:', finishLabel.toLowerCase());
-  }
-  // Fallback to database finish type
-  else {
-    // Get the database finish type from the UI label using our mapping
-    const databaseFinishType = labelToFinishType[finishLabel];
-    console.log('Database Finish Type:', databaseFinishType);
-    
-    if (databaseFinishType && pricing[databaseFinishType]) {
-      price = pricing[databaseFinishType];
-      console.log('Found price using database finish type:', databaseFinishType);
-    }
-    // Then try lowercase database finish type
-    else if (databaseFinishType && pricing[databaseFinishType.toLowerCase()]) {
-      price = pricing[databaseFinishType.toLowerCase()];
-      console.log('Found price using lowercase database finish type:', databaseFinishType.toLowerCase());
-    }
-    // Finally use the first price found in the data or default price for the finish
-    else if (Object.keys(pricing).length > 0) {
-      const firstFinishType = Object.keys(pricing)[0];
-      price = pricing[firstFinishType];
-      console.log('Using fallback price from first available finish type:', firstFinishType);
-    } 
-    // Last resort - use default price for the finish
-    else if (defaultPrices[finishLabel]) {
-      price = defaultPrices[finishLabel];
-      console.log('Using default price for finish:', finishLabel);
-    }
-  }
-
   return {
     pricing,
     finishId,
@@ -269,7 +312,7 @@ export const useDrivewayCalculator = (state: string | undefined, onInteraction?:
     width,
     length,
     area,
-    price,
+    price: cachedPriceData,
     isLoading,
     error,
     selectedState,
