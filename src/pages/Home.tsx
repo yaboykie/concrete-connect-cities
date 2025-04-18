@@ -2,6 +2,7 @@
 import React, { useRef, useState } from 'react';
 import HeroSection from '@/components/home/HeroSection';
 import CalculatorSection from '@/components/home/CalculatorSection';
+import MatchEstimateSection from '@/components/home/MatchEstimateSection';
 import BeliefSection from '@/components/home/BeliefSection';
 import ValueProposition from '@/components/home/ValueProposition';
 import TrustSection from '@/components/home/TrustSection';
@@ -41,6 +42,7 @@ const Home = () => {
       <ScrollTracker onScroll={handleScroll} />
       <HeroSection scrollToCalculator={scrollToCalculator} />
       <CalculatorSection calculatorRef={calculatorRef} />
+      <MatchEstimateSection />
       <BeliefSection />
       <ValueProposition />
       <TrustSection />
