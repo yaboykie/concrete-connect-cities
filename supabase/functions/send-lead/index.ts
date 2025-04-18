@@ -16,23 +16,35 @@ serve(async (req) => {
   }
 
   try {
-    const { name, email, zipCode, estimate, jobType } = await req.json();
+    const { name, email, zipCode, estimate, jobType, details, phone } = await req.json();
 
     // Log received data for debugging
-    console.log("Received lead data:", { name, email, zipCode, estimate, jobType });
+    console.log("Received lead data:", { name, email, zipCode, estimate, jobType, details, phone });
+
+    // Build a more detailed email based on available information
+    let emailContent = `
+      <h2>New Lead Details:</h2>
+      <p><strong>Name:</strong> ${name || 'Not provided'}</p>
+      <p><strong>Email:</strong> ${email || 'Not provided'}</p>
+    `;
+
+    // Add optional fields if they exist
+    if (zipCode) emailContent += `<p><strong>Zip Code:</strong> ${zipCode}</p>`;
+    if (estimate) emailContent += `<p><strong>Estimate:</strong> ${estimate}</p>`;
+    if (jobType) emailContent += `<p><strong>Job Type:</strong> ${jobType}</p>`;
+    if (phone) emailContent += `<p><strong>Phone:</strong> ${phone}</p>`;
+    if (details) emailContent += `<p><strong>Additional Details:</strong> ${details}</p>`;
+
+    emailContent += `
+      <p><em>Lead submitted at: ${new Date().toLocaleString()}</em></p>
+      <p><strong>Source URL:</strong> ${req.headers.get('referer') || 'Unknown'}</p>
+    `;
 
     const { data, error } = await resend.emails.send({
       from: "ConcreterQuotes <onboarding@resend.dev>",
       to: ["kierontaylor1995@gmail.com"],
       subject: "New Driveway Estimate Lead",
-      html: `
-        <h2>New Lead Details:</h2>
-        <p><strong>Name:</strong> ${name || 'Not provided'}</p>
-        <p><strong>Email:</strong> ${email || 'Not provided'}</p>
-        <p><strong>Zip Code:</strong> ${zipCode || 'Not provided'}</p>
-        <p><strong>Estimate:</strong> ${estimate || 'Not provided'}</p>
-        <p><strong>Job Type:</strong> ${jobType || 'Concrete Driveway'}</p>
-      `,
+      html: emailContent,
     });
 
     if (error) {
@@ -42,7 +54,7 @@ serve(async (req) => {
 
     console.log("Email sent successfully:", data);
 
-    return new Response(JSON.stringify({ success: true }), {
+    return new Response(JSON.stringify({ success: true, data }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,
     });
