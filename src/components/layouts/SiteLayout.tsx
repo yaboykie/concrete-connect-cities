@@ -11,11 +11,7 @@ const SiteLayout: React.FC<SiteLayoutProps> = ({ children }) => {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <main className="flex-grow">
-        <div className="max-w-screen-lg mx-auto px-4 py-6 space-y-6">
-          {children}
-        </div>
-      </main>
+      {children}
       <Footer />
     </div>
   );

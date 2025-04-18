@@ -55,7 +55,7 @@ export default function HomePage() {
       <EaseSpeedSection />
       <EmotionalCloser />
       <TestimonialsSection />
-      <FinalCTA /> {/* No props needed, component uses common utils function */}
+      <FinalCTA />
       <ExitIntentModal 
         showModal={showExitModal} 
         setShowModal={setShowExitModal} 
