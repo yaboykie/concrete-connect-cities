@@ -97,6 +97,9 @@ const CalculatorSection: React.FC<CalculatorSectionProps> = ({ calculatorRef }) 
             <h3 className="text-lg font-semibold mb-4">
               🎯 Your Texas Driveway Estimate
             </h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Simply select your driveway size and the concrete finish to see your personalized estimate.
+            </p>
             <StateDrivewayCalculator 
               stateName="tx"
               estimateDisclaimer="These estimates are based on real project data from our network of concrete contractors."
@@ -109,3 +112,4 @@ const CalculatorSection: React.FC<CalculatorSectionProps> = ({ calculatorRef }) 
 };
 
 export default CalculatorSection;
+
