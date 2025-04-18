@@ -15,7 +15,7 @@ const CalculatorSection: React.FC<CalculatorSectionProps> = ({ calculatorRef }) 
       <div className="container mx-auto max-w-6xl">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left Column - Benefits */}
-          <div className="space-y-8">
+          <div className="space-y-8 lg:order-1">
             {/* How This Estimate Works */}
             <div className="bg-white p-6 rounded-lg shadow-sm">
               <h2 className="text-lg font-semibold text-gray-800 mb-4">
@@ -58,7 +58,7 @@ const CalculatorSection: React.FC<CalculatorSectionProps> = ({ calculatorRef }) 
           </div>
           
           {/* Right Column - Calculator */}
-          <div>
+          <div className="lg:order-2">
             <StateDrivewayCalculator 
               stateName={selectedState}
               estimateDisclaimer="These estimates are based on real project data from our network of concrete contractors."
