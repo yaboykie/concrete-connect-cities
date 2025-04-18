@@ -1,8 +1,7 @@
-import React from 'react';
+
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import LeadCaptureDialog from './LeadCaptureDialog';
-import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
 
 interface PriceEstimateDisplayProps {
   price: { pricePerSqft: string; avgSize: string; totalRange: string; } | null;
@@ -21,17 +20,9 @@ export default function PriceEstimateDisplay({
   onGetQuotes,
   dataSource = 'specific'
 }: PriceEstimateDisplayProps) {
-  const [dialogOpen, setDialogOpen] = React.useState(false);
-  const [leadPurpose, setLeadPurpose] = React.useState<'email' | 'quotes'>('email');
-  const { toast } = useToast();
-  
-  const handleEmailEstimateClick = () => {
-    setLeadPurpose('email');
-    setDialogOpen(true);
-  };
-  
+  const [dialogOpen, setDialogOpen] = useState(false);
+
   const handleGetQuotesClick = (e: React.MouseEvent) => {
-    setLeadPurpose('quotes');
     setDialogOpen(true);
     
     // Still call the passed onGetQuotes function if it exists
@@ -71,30 +62,16 @@ export default function PriceEstimateDisplay({
         {estimateDisclaimer && <p className="mt-1 text-xs">{estimateDisclaimer}</p>}
       </div>
       
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-4">
-        <div className="flex flex-col">
-          <Button 
-            onClick={handleEmailEstimateClick}
-            variant="outline" 
-            className="w-full mb-1"
-          >
-            📤 Email Me My Estimate
-          </Button>
-          <p className="text-xs text-gray-500 text-center px-2">
-            We'll send your estimate straight to your inbox — no spam.
-          </p>
-        </div>
-        <div className="flex flex-col">
-          <Button 
-            onClick={handleGetQuotesClick}
-            className="w-full mb-1"
-          >
-            See Which Local Pros Match This Estimate
-          </Button>
-          <p className="text-xs text-gray-500 text-center px-2">
-            We only show concreters rated 4.7★ or higher on Google.
-          </p>
-        </div>
+      <div className="mt-4">
+        <Button 
+          onClick={handleGetQuotesClick}
+          className="w-full mb-1"
+        >
+          See Which Local Pros Match This Estimate
+        </Button>
+        <p className="text-xs text-gray-500 text-center px-2 mt-2">
+          We only show concreters rated 4.7★ or higher on Google.
+        </p>
       </div>
       
       <LeadCaptureDialog 
@@ -103,8 +80,9 @@ export default function PriceEstimateDisplay({
         area={area}
         priceRange={price.totalRange} 
         stateName={stateName}
-        purpose={leadPurpose}
+        purpose="quotes"
       />
     </div>
   );
 }
+
