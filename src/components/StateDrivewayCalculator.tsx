@@ -84,6 +84,15 @@ export default function StateDrivewayCalculator({
 
   const stateDisplayName = selectedState;
 
+  // Force re-render when area changes to ensure price display updates
+  const [forceUpdate, setForceUpdate] = useState(0);
+  
+  useEffect(() => {
+    // Trigger re-render when area changes
+    setForceUpdate(prev => prev + 1);
+    console.log("Area changed, forcing update:", area);
+  }, [area, width, length]);
+
   return (
     <div className="calculator bg-white p-4 rounded-lg shadow-lg max-w-2xl mx-auto">
       <div className="space-y-3">
@@ -115,6 +124,7 @@ export default function StateDrivewayCalculator({
 
       {price && (
         <PriceEstimateDisplay 
+          key={`price-${area}-${finishId}-${forceUpdate}`}
           price={price}
           area={area}
           stateName={stateDisplayName}

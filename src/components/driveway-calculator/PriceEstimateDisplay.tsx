@@ -33,6 +33,10 @@ export default function PriceEstimateDisplay({
     }
   };
   
+  React.useEffect(() => {
+    console.log("PriceEstimateDisplay received new data:", { price, area });
+  }, [price, area]);
+  
   if (!price) {
     return null;
   }

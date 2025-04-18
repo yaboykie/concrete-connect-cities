@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { getFinishPricingByState } from '@/lib/api/getFinishPricing';
 import { finishIdToLabel, labelToFinishType } from '@/config/finishTypes';
@@ -88,6 +89,7 @@ export const useDrivewayCalculator = (state: string | undefined, onInteraction?:
   const [dataSource, setDataSource] = useState<string>('specific'); // 'specific' or 'fallback'
   const [area, setArea] = useState(0); // Track area explicitly
 
+  // Fetch pricing data when state changes
   useEffect(() => {
     const stateToFetch = selectedState || 'Texas';
     const fetch = async () => {
@@ -177,6 +179,11 @@ export const useDrivewayCalculator = (state: string | undefined, onInteraction?:
       const newWidth = presets[preset as keyof typeof presets].width;
       const newLength = presets[preset as keyof typeof presets].length;
       console.log(`New dimensions: ${newWidth} × ${newLength}`);
+      
+      // Force immediate area update for better UI responsiveness
+      const newArea = newWidth * newLength;
+      setArea(newArea);
+      console.log(`Immediately updated area to: ${newArea}`);
     }
     
     handleInteraction();
