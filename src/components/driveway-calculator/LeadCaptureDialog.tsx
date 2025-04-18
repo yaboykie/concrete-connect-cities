@@ -14,6 +14,7 @@ interface LeadCaptureDialogProps {
   area: number;
   priceRange: string;
   stateName: string;
+  purpose?: 'email' | 'quotes';
 }
 
 type FormValues = {
@@ -29,6 +30,7 @@ export default function LeadCaptureDialog({
   area,
   priceRange,
   stateName,
+  purpose = 'email',
 }: LeadCaptureDialogProps) {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
@@ -54,8 +56,8 @@ export default function LeadCaptureDialog({
           lead_id: crypto.randomUUID(),
           name: data.name,
           email: data.email,
-          phone: data.phone || null,
-          zip_code: data.zip_code || null,
+          phone: data.phone || '',  // Use empty string instead of null
+          zip_code: data.zip_code || '',  // Use empty string instead of null
           job_type: "driveway",
           formatted_job_type: "Driveway Installation",
           status: "new",
@@ -71,32 +73,41 @@ export default function LeadCaptureDialog({
         throw new Error(`Database error: ${supabaseError.message}`);
       }
       
-      // Then send email notification via edge function
-      try {
-        const { error: functionError } = await supabase.functions.invoke('send-lead', {
-          body: {
-            name: data.name,
-            email: data.email,
-            zipCode: data.zip_code,
-            estimate: priceRange,
-            jobType: "Concrete Driveway"
+      if (purpose === 'email') {
+        // Send email notification via edge function
+        try {
+          const { error: functionError } = await supabase.functions.invoke('send-lead', {
+            body: {
+              name: data.name,
+              email: data.email,
+              zipCode: data.zip_code,
+              estimate: priceRange,
+              jobType: "Concrete Driveway"
+            }
+          });
+          
+          if (functionError) {
+            console.warn("Email notification failed but lead was saved:", functionError);
+            // We don't throw here because we already saved the lead to the database
           }
-        });
-        
-        if (functionError) {
-          console.warn("Email notification failed but lead was saved:", functionError);
+        } catch (emailError) {
+          console.warn("Email sending failed but lead was saved:", emailError);
           // We don't throw here because we already saved the lead to the database
         }
-      } catch (emailError) {
-        console.warn("Email sending failed but lead was saved:", emailError);
-        // We don't throw here because we already saved the lead to the database
+        
+        toast({
+          title: "Estimate Sent!",
+          description: "We've emailed you your estimate!",
+          duration: 5000,
+        });
+      } else {
+        // Show quote matching success message
+        toast({
+          title: "Request Sent",
+          description: "We'll match you with local driveway concreters shortly!",
+          duration: 5000,
+        });
       }
-      
-      toast({
-        title: "Estimate Sent!",
-        description: "We've emailed you your estimate!",
-        duration: 5000,
-      });
       
       form.reset();
       onOpenChange(false);
@@ -105,7 +116,7 @@ export default function LeadCaptureDialog({
       setSubmitError(error.message);
       toast({
         title: "Error",
-        description: "There was a problem sending your estimate. Please try again.",
+        description: "There was a problem sending your request. Please try again.",
         variant: "destructive",
         duration: 5000,
       });
@@ -114,11 +125,15 @@ export default function LeadCaptureDialog({
     }
   };
   
+  const dialogTitle = purpose === 'email' 
+    ? "Get your driveway estimate by email" 
+    : "Get matched with local concreters";
+  
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Get your driveway estimate by email</DialogTitle>
+          <DialogTitle>{dialogTitle}</DialogTitle>
         </DialogHeader>
         
         {submitError && (
@@ -185,7 +200,7 @@ export default function LeadCaptureDialog({
           
           <DialogFooter>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Sending..." : "Send My Estimate"}
+              {isSubmitting ? "Sending..." : purpose === 'email' ? "Send My Estimate" : "Match Me With Pros"}
             </Button>
           </DialogFooter>
         </form>

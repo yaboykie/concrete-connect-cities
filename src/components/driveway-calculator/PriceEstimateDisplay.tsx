@@ -23,59 +23,22 @@ export default function PriceEstimateDisplay({
   dataSource = 'specific'
 }: PriceEstimateDisplayProps) {
   const [dialogOpen, setDialogOpen] = React.useState(false);
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const [submitError, setSubmitError] = React.useState<string | null>(null);
+  const [leadPurpose, setLeadPurpose] = React.useState<'email' | 'quotes'>('email');
   const { toast } = useToast();
   
-  const handleGetQuotesClick = async (e: React.MouseEvent) => {
-    try {
-      setIsSubmitting(true);
-      setSubmitError(null);
-      
-      // Submit lead with minimal info for "Get Free Quotes"
-      const { error } = await supabase.from("leads").insert([
-        {
-          lead_id: crypto.randomUUID(),
-          name: null,
-          email: null,
-          phone: null,
-          zip_code: null,
-          job_type: "driveway",
-          formatted_job_type: "Driveway Installation",
-          status: "new",
-          matched_contractor_ids: [],
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-          campaign_id: null,
-        },
-      ]);
-      
-      if (error) {
-        console.error("Supabase error:", error);
-        setSubmitError(error.message);
-        throw new Error(`Database error: ${error.message}`);
-      }
-      
-      toast({
-        title: "Request Sent",
-        description: "We'll match you with contractors now.",
-        duration: 5000,
-      });
-      
-      // Call the passed onGetQuotes function if it exists
-      if (onGetQuotes) {
-        onGetQuotes(e);
-      }
-    } catch (error: any) {
-      console.error("Error submitting lead:", error);
-      toast({
-        title: "Error",
-        description: "There was a problem submitting your request. Please try again.",
-        variant: "destructive",
-        duration: 5000,
-      });
-    } finally {
-      setIsSubmitting(false);
+  const handleEmailEstimateClick = () => {
+    setLeadPurpose('email');
+    setDialogOpen(true);
+  };
+  
+  const handleGetQuotesClick = () => {
+    setLeadPurpose('quotes');
+    setDialogOpen(true);
+    
+    // Still call the passed onGetQuotes function if it exists
+    // This maintains any tracking or analytics functionality
+    if (onGetQuotes) {
+      onGetQuotes(event as React.MouseEvent);
     }
   };
   
@@ -110,17 +73,10 @@ export default function PriceEstimateDisplay({
         {estimateDisclaimer && <p className="mt-1 text-xs">{estimateDisclaimer}</p>}
       </div>
       
-      {submitError && (
-        <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-md mb-3">
-          <p className="text-sm font-medium">Error: {submitError}</p>
-          <p className="text-xs">Please try again or contact support if this persists.</p>
-        </div>
-      )}
-      
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-4">
         <div className="flex flex-col">
           <Button 
-            onClick={() => setDialogOpen(true)}
+            onClick={handleEmailEstimateClick}
             variant="outline" 
             className="w-full mb-1"
           >
@@ -133,10 +89,9 @@ export default function PriceEstimateDisplay({
         <div className="flex flex-col">
           <Button 
             onClick={handleGetQuotesClick}
-            disabled={isSubmitting}
             className="w-full mb-1"
           >
-            {isSubmitting ? "Processing..." : "See Which Local Pros Match This Estimate"}
+            See Which Local Pros Match This Estimate
           </Button>
           <p className="text-xs text-gray-500 text-center px-2">
             We only show concreters rated 4.7★ or higher on Google.
@@ -150,6 +105,7 @@ export default function PriceEstimateDisplay({
         area={area}
         priceRange={price.totalRange} 
         stateName={stateName}
+        purpose={leadPurpose}
       />
     </div>
   );
