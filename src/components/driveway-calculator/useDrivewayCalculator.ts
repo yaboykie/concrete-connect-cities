@@ -86,6 +86,7 @@ export const useDrivewayCalculator = (state: string | undefined, onInteraction?:
   const [error, setError] = useState<string | null>(null);
   const [selectedState, setSelectedState] = useState(state || 'Texas');
   const [dataSource, setDataSource] = useState<string>('specific'); // 'specific' or 'fallback'
+  const [area, setArea] = useState(0); // Track area explicitly
 
   useEffect(() => {
     const stateToFetch = selectedState || 'Texas';
@@ -149,10 +150,17 @@ export const useDrivewayCalculator = (state: string | undefined, onInteraction?:
     fetch();
   }, [selectedState]);
 
+  // Recalculate area whenever width or length changes
   const isCustom = sizePreset === 'Custom';
   const width = isCustom ? parseFloat(custom.width.toString() || '0') : presets[sizePreset as keyof typeof presets].width;
   const length = isCustom ? parseFloat(custom.length.toString() || '0') : presets[sizePreset as keyof typeof presets].length;
-  const area = width * length;
+  
+  // Update area whenever size changes
+  useEffect(() => {
+    const calculatedArea = width * length;
+    console.log(`Recalculating area: ${width} × ${length} = ${calculatedArea}`);
+    setArea(calculatedArea);
+  }, [width, length, sizePreset, isCustom]);
 
   const handleInteraction = () => {
     if (onInteraction) {
@@ -161,7 +169,16 @@ export const useDrivewayCalculator = (state: string | undefined, onInteraction?:
   };
 
   const handleSizeChange = (preset: string) => {
+    console.log(`Size preset changed to: ${preset}`);
     setSizePreset(preset);
+    
+    // If switching to a preset size, immediately recalculate area
+    if (preset !== 'Custom') {
+      const newWidth = presets[preset as keyof typeof presets].width;
+      const newLength = presets[preset as keyof typeof presets].length;
+      console.log(`New dimensions: ${newWidth} × ${newLength}`);
+    }
+    
     handleInteraction();
   };
 
@@ -192,6 +209,7 @@ export const useDrivewayCalculator = (state: string | undefined, onInteraction?:
   // Get the UI finish label for the selected finish ID
   const finishLabel = finishIdToLabel[finishId] || finishId;
   
+  // Try to find pricing data
   console.log('UI Finish Label:', finishLabel);
   
   // Try to find pricing data with priority on UI Finish Label

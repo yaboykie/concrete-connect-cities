@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDrivewayCalculator, presets } from './driveway-calculator/useDrivewayCalculator';
@@ -65,6 +66,13 @@ export default function StateDrivewayCalculator({
     handleStateChange
   } = useDrivewayCalculator(mappedInitialState, onInteraction);
 
+  // Log current state for debugging
+  useEffect(() => {
+    console.log("Size preset changed:", sizePreset);
+    console.log("Current dimensions:", { width, length, area });
+    console.log("Current price data:", price);
+  }, [sizePreset, width, length, area, price]);
+
   useEffect(() => {
     if (selectedState) {
       toast({
@@ -75,11 +83,6 @@ export default function StateDrivewayCalculator({
   }, [selectedState, toast]);
 
   const stateDisplayName = selectedState;
-
-  console.log("Current price data:", price);
-  console.log("Current area:", area);
-  console.log("Selected state:", selectedState);
-  console.log("Data source:", dataSource);
 
   return (
     <div className="calculator bg-white p-4 rounded-lg shadow-lg max-w-2xl mx-auto">
