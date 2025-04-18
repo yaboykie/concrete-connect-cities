@@ -33,9 +33,12 @@ const QuoteFormModal = ({
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle className="text-center text-2xl">Get Your Free Concrete Quote</DialogTitle>
-          <DialogDescription className="text-center">
-            Fill out the form below to receive free quotes from trusted concrete professionals in your area.
+          <DialogTitle className="text-center text-2xl">Get Your Free Driveway Quote</DialogTitle>
+          <DialogDescription className="text-center space-y-2">
+            <p>Fill out the form below to receive free quotes from trusted driveway concreters in your area.</p>
+            <p className="text-sm text-muted-foreground">
+              We'll match you with up to 3 local driveway concreters, all rated 4.7★ or higher on Google Reviews
+            </p>
           </DialogDescription>
         </DialogHeader>
         <ContactForm closeModal={() => setOpen(false)} />
