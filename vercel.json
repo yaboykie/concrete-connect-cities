@@ -1,9 +1,8 @@
-
 {
   "buildCommand": "npx vite build",
   "outputDirectory": "dist",
   "framework": "vite",
-  "installCommand": "npm install --no-audit --no-fund --legacy-peer-deps && npm install -D vite@5.1.4 @vitejs/plugin-react-swc@3.7.1",
+  "installCommand": "npm ci --legacy-peer-deps",
   "devCommand": "npx vite",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
