@@ -73,7 +73,7 @@ export default function LeadCaptureDialog({
       
       // Then send email notification via edge function
       try {
-        const functionResponse = await supabase.functions.invoke('send-lead', {
+        const { error: functionError } = await supabase.functions.invoke('send-lead', {
           body: {
             name: data.name,
             email: data.email,
@@ -83,8 +83,8 @@ export default function LeadCaptureDialog({
           }
         });
         
-        if (functionResponse.error) {
-          console.warn("Email notification failed but lead was saved:", functionResponse.error);
+        if (functionError) {
+          console.warn("Email notification failed but lead was saved:", functionError);
           // We don't throw here because we already saved the lead to the database
         }
       } catch (emailError) {
