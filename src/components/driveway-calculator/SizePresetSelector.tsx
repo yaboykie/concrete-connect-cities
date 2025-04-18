@@ -29,10 +29,10 @@ const SizePresetSelector: React.FC<SizePresetSelectorProps> = ({
               <Button
                 onClick={() => onPresetChange(label)}
                 variant={selectedPreset === label ? "default" : "outline"}
-                className="w-full flex flex-col items-center py-3"
+                className="w-full flex flex-col items-center justify-center py-3"
               >
-                <span className="font-semibold mb-1">{label}</span>
-                <span className="text-[11px] text-gray-500 font-normal leading-tight">
+                <span className="font-semibold mb-1 text-center">{label}</span>
+                <span className="text-[11px] text-gray-500 font-normal leading-tight text-center">
                   {details.description}
                 </span>
               </Button>
@@ -45,7 +45,7 @@ const SizePresetSelector: React.FC<SizePresetSelectorProps> = ({
         <Button
           onClick={() => onPresetChange('Custom')}
           variant={selectedPreset === 'Custom' ? "default" : "outline"}
-          className="w-full"
+          className="w-full flex items-center justify-center"
         >
           Custom
         </Button>
@@ -55,3 +55,4 @@ const SizePresetSelector: React.FC<SizePresetSelectorProps> = ({
 };
 
 export default SizePresetSelector;
+
