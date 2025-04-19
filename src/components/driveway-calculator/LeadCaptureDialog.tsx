@@ -7,6 +7,8 @@ import { Label } from '@/components/ui/label';
 import { useForm } from 'react-hook-form';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import * as z from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 interface LeadCaptureDialogProps {
   open: boolean;
@@ -17,12 +19,15 @@ interface LeadCaptureDialogProps {
   purpose?: 'email' | 'quotes';
 }
 
-type FormValues = {
-  name: string;
-  email: string;
-  phone: string;
-  zip_code: string;
-};
+// Updated form validation schema
+const formSchema = z.object({
+  name: z.string().min(2, { message: "Name is required" }),
+  email: z.string().email({ message: "Valid email is required" }),
+  phone: z.string().min(10, { message: "Phone number is required" }),
+  zip_code: z.string().min(5, { message: "ZIP code is required" }),
+});
+
+type FormValues = z.infer<typeof formSchema>;
 
 export default function LeadCaptureDialog({
   open,
@@ -37,6 +42,7 @@ export default function LeadCaptureDialog({
   const [submitError, setSubmitError] = React.useState<string | null>(null);
   
   const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
       name: '',
       email: '',
@@ -56,8 +62,8 @@ export default function LeadCaptureDialog({
           lead_id: crypto.randomUUID(),
           name: data.name,
           email: data.email,
-          phone: data.phone || '',  // Use empty string instead of null
-          zip_code: data.zip_code || '',  // Use empty string instead of null
+          phone: data.phone,
+          zip_code: data.zip_code,
           job_type: "driveway",
           formatted_job_type: "Driveway Installation",
           status: "new",
@@ -88,11 +94,9 @@ export default function LeadCaptureDialog({
           
           if (functionError) {
             console.warn("Email notification failed but lead was saved:", functionError);
-            // We don't throw here because we already saved the lead to the database
           }
         } catch (emailError) {
           console.warn("Email sending failed but lead was saved:", emailError);
-          // We don't throw here because we already saved the lead to the database
         }
         
         toast({
@@ -154,10 +158,10 @@ export default function LeadCaptureDialog({
             <Input
               id="name"
               placeholder="Your full name"
-              {...form.register('name', { required: true })}
+              {...form.register('name')}
             />
             {form.formState.errors.name && (
-              <p className="text-red-500 text-xs">Name is required</p>
+              <p className="text-red-500 text-xs">{form.formState.errors.name.message}</p>
             )}
           </div>
           
@@ -167,33 +171,36 @@ export default function LeadCaptureDialog({
               id="email"
               type="email"
               placeholder="Your email address"
-              {...form.register('email', { 
-                required: true, 
-                pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i 
-              })}
+              {...form.register('email')}
             />
             {form.formState.errors.email && (
-              <p className="text-red-500 text-xs">Valid email is required</p>
+              <p className="text-red-500 text-xs">{form.formState.errors.email.message}</p>
             )}
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="phone">Phone (optional)</Label>
+              <Label htmlFor="phone">Phone *</Label>
               <Input
                 id="phone"
                 placeholder="Your phone number"
                 {...form.register('phone')}
               />
+              {form.formState.errors.phone && (
+                <p className="text-red-500 text-xs">{form.formState.errors.phone.message}</p>
+              )}
             </div>
             
             <div className="grid gap-2">
-              <Label htmlFor="zip_code">ZIP Code (optional)</Label>
+              <Label htmlFor="zip_code">ZIP Code *</Label>
               <Input
                 id="zip_code"
                 placeholder="Your ZIP code"
                 {...form.register('zip_code')}
               />
+              {form.formState.errors.zip_code && (
+                <p className="text-red-500 text-xs">{form.formState.errors.zip_code.message}</p>
+              )}
             </div>
           </div>
           
@@ -213,3 +220,4 @@ export default function LeadCaptureDialog({
     </Dialog>
   );
 }
+
