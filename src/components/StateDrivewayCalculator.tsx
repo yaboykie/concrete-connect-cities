@@ -67,7 +67,6 @@ export default function StateDrivewayCalculator({
     handleStateChange
   } = useDrivewayCalculator(mappedInitialState, onInteraction);
 
-  // Log current state for debugging
   useEffect(() => {
     console.log("Size preset changed:", sizePreset);
     console.log("Current dimensions:", { width, length, area });
@@ -122,7 +121,6 @@ export default function StateDrivewayCalculator({
 
       {price && (
         <PriceEstimateDisplay 
-          key={`price-${area}-${finishId}`}
           price={price}
           area={area}
           stateName={stateDisplayName}
