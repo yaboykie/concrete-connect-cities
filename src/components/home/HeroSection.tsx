@@ -9,28 +9,28 @@ interface HeroSectionProps {
 
 const HeroSection: React.FC<HeroSectionProps> = ({ scrollToCalculator }) => {
   return (
-    <section className="bg-white py-16 px-4 border-b border-gray-100 shadow-sm">
+    <section className="bg-white py-12 px-4 border-b border-gray-100 shadow-sm">
       <div className="container mx-auto max-w-4xl text-center">
-        <div className="flex justify-center mb-6">
-          <ClipboardCheck className="h-12 w-12 text-brand-blue" />
+        <div className="flex justify-center mb-2">
+          <ClipboardCheck className="h-8 w-8 text-brand-blue" />
         </div>
         
-        <h1 className="text-4xl font-bold text-center mb-4 max-w-3xl mx-auto">
+        <h1 className="text-4xl font-bold text-center mb-2 max-w-3xl mx-auto">
           Check Driveway Concrete Costs in Your Area — Instantly
         </h1>
         
-        <p className="text-lg text-center text-gray-600 max-w-xl mx-auto mb-4">
+        <p className="text-lg text-center text-gray-600 max-w-xl mx-auto mb-3">
           Use our free tool to see what other homeowners are paying — based on real jobs, finish type, and your location.
           No calls. No chasing tradies. Just clear cost info before you get quotes.
         </p>
         
-        <p className="text-sm text-center text-gray-500 mb-6">
+        <p className="text-sm text-center text-gray-500 mb-3">
           Know what concrete should cost — before speaking to anyone.
         </p>
         
         <Button 
           onClick={scrollToCalculator}
-          className="text-lg px-6 py-3 mx-auto block bg-brand-blue hover:bg-brand-blue/90 text-white"
+          className="text-lg px-6 py-2.5 mx-auto block bg-brand-blue hover:bg-brand-blue/90 text-white"
         >
           Check My Driveway Cost <ArrowDown className="ml-2 h-4 w-4" />
         </Button>
