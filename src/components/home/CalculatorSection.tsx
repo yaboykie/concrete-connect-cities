@@ -1,7 +1,9 @@
+
 import React, { useState } from 'react';
 import StateDrivewayCalculator from '@/components/StateDrivewayCalculator';
 import MatchEstimateSection from './MatchEstimateSection';
 import FinalCTA from './FinalCTA';
+import ComparisonTable from './ComparisonTable';
 import { CheckCircle, Quote } from 'lucide-react';
 
 interface CalculatorSectionProps {
@@ -122,6 +124,7 @@ const CalculatorSection: React.FC<CalculatorSectionProps> = ({ calculatorRef }) 
         </div>
       </section>
 
+      <ComparisonTable />
       <MatchEstimateSection estimateData={estimateData} />
       <FinalCTA estimateData={estimateData} />
     </>
