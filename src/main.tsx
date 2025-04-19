@@ -12,12 +12,18 @@ console.log('Build timestamp:', new Date().toISOString());
 console.log('Vercel deployment verification - Using npx direct execution');
 console.log('Environment:', process.env.NODE_ENV || 'unknown');
 console.log('React version:', React.version);
+console.log('ReactDOM version:', ReactDOM.version);
 console.log('-------------------------------------');
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <HelmetProvider>
-      <App />
-    </HelmetProvider>
-  </React.StrictMode>,
-);
+const rootElement = document.getElementById('root');
+if (!rootElement) {
+  console.error('Root element not found');
+} else {
+  ReactDOM.createRoot(rootElement).render(
+    <React.StrictMode>
+      <HelmetProvider>
+        <App />
+      </HelmetProvider>
+    </React.StrictMode>,
+  );
+}

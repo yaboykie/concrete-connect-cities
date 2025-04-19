@@ -12,7 +12,9 @@ console.log('-------------------------------------')
 
 export default defineConfig(({ mode }) => ({
   plugins: [
-    react(),
+    react({
+      jsxRuntime: 'automatic',
+    }),
     mode === 'development' && componentTagger(),
   ].filter(Boolean),
 
@@ -39,7 +41,7 @@ export default defineConfig(({ mode }) => ({
 
   optimizeDeps: {
     force: true,
-    include: ['react', 'react-dom', 'react-router-dom']
+    include: ['react', 'react-dom', 'react-router-dom'],
   },
 
   appType: 'spa',
