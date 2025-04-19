@@ -27,18 +27,11 @@ export default defineConfig(({ mode }) => ({
       '@': path.resolve(__dirname, './src'),
     },
   },
-
-  // Remove optimizeDeps esbuildOptions to avoid version conflicts
   
-  // Fixed esbuild configuration to avoid version mismatch
-  esbuild: {
-    // Simplified configuration to avoid version conflicts
-    logLevel: 'info',
-    target: 'es2020',
-  },
-
+  // Remove all esbuild custom configuration to avoid version conflicts
+  
   build: {
-    target: 'es2020', // Use a more compatible target
+    target: 'es2020',
     outDir: 'dist',
     rollupOptions: {
       input: {
