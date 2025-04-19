@@ -1,4 +1,3 @@
-
 "use client"
 
 import React, { useState, useRef, useEffect } from 'react';
@@ -17,7 +16,12 @@ export default function HomePage() {
   const [exitEmail, setExitEmail] = useState('');
   const [scrollPercentage, setScrollPercentage] = useState(0);
   const calculatorRef = useRef<HTMLDivElement>(null);
-  
+  const [calculatorData, setCalculatorData] = useState({
+    area: 0,
+    priceRange: '',
+    stateName: ''
+  });
+
   useEffect(() => {
     const handleScroll = () => {
       const windowHeight = window.innerHeight;
@@ -35,23 +39,38 @@ export default function HomePage() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-  
+
   const scrollToCalculator = () => {
     if (calculatorRef.current) {
       calculatorRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
+  const handleCalculatorUpdate = (data: { area: number; priceRange: string; stateName: string }) => {
+    setCalculatorData(data);
+  };
+
   return (
     <main className="flex-grow">
       <HeroSection scrollToCalculator={scrollToCalculator} />
-      <CalculatorSection calculatorRef={calculatorRef} />
-      <MatchEstimateSection />
+      <CalculatorSection 
+        calculatorRef={calculatorRef} 
+        onCalculate={handleCalculatorUpdate}
+      />
+      <MatchEstimateSection 
+        area={calculatorData.area}
+        priceRange={calculatorData.priceRange}
+        stateName={calculatorData.stateName}
+      />
       <TrustSection />
       <EaseSpeedSection />
       <EmotionalCloser />
       <TestimonialsSection />
-      <FinalCTA />
+      <FinalCTA 
+        area={calculatorData.area}
+        priceRange={calculatorData.priceRange}
+        stateName={calculatorData.stateName}
+      />
       <ExitIntentModal 
         showModal={showExitModal} 
         setShowModal={setShowExitModal} 
