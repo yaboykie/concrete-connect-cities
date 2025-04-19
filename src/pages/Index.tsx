@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
@@ -8,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ArrowDown } from 'lucide-react';
 import StateDrivewayCalculator from '@/components/StateDrivewayCalculator';
+import ComparisonTable from '@/components/home/ComparisonTable';
 
 const Index = () => {
   const [showExitModal, setShowExitModal] = useState(false);
@@ -15,7 +15,6 @@ const Index = () => {
   const [scrollPercentage, setScrollPercentage] = useState(0);
   const calculatorRef = useRef<HTMLDivElement>(null);
   
-  // Track scroll position to trigger exit intent modal
   useEffect(() => {
     const handleScroll = () => {
       const windowHeight = window.innerHeight;
@@ -24,7 +23,6 @@ const Index = () => {
       const scrollPercentage = (scrollTop / (documentHeight - windowHeight)) * 100;
       setScrollPercentage(scrollPercentage);
       
-      // Show exit intent modal when user scrolls past 50% and hasn't submitted
       if (scrollPercentage > 50 && !localStorage.getItem('exitModalShown')) {
         setShowExitModal(true);
         localStorage.setItem('exitModalShown', 'true');
@@ -43,9 +41,7 @@ const Index = () => {
   
   const handleExitEmailSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would send the email to your backend
     setShowExitModal(false);
-    // Show success toast
     alert("We've sent your estimate to " + exitEmail);
     setExitEmail('');
   };
@@ -55,7 +51,6 @@ const Index = () => {
       <Header />
       
       <main className="flex-grow">
-        {/* SECTION 1 – Hero Block */}
         <section className="bg-white py-16 px-4">
           <div className="container mx-auto max-w-4xl text-center">
             <h1 className="text-3xl font-bold text-gray-900 leading-tight">
@@ -79,14 +74,14 @@ const Index = () => {
           </div>
         </section>
         
-        {/* SECTION 2 – Estimate Calculator */}
         <section className="bg-gray-50 py-12 px-4" ref={calculatorRef}>
           <div className="container mx-auto max-w-4xl">
             <StateDrivewayCalculator />
           </div>
         </section>
         
-        {/* SECTION 3 – Belief Injector */}
+        <ComparisonTable />
+        
         <section className="bg-white py-8 px-4">
           <div className="container mx-auto max-w-2xl text-center">
             <p className="text-sm text-gray-700 mt-4">
@@ -103,7 +98,6 @@ const Index = () => {
           </div>
         </section>
         
-        {/* SECTION 4 – Why Concrete Is Worth It */}
         <section className="bg-gray-50 py-12 px-4">
           <div className="container mx-auto max-w-2xl">
             <h2 className="text-xl font-bold text-gray-900">
@@ -119,7 +113,6 @@ const Index = () => {
           </div>
         </section>
         
-        {/* SECTION 5 – Concreter Trust Layer */}
         <section className="bg-white py-12 px-4">
           <div className="container mx-auto max-w-2xl">
             <h2 className="text-xl font-bold text-gray-900">
@@ -136,7 +129,6 @@ const Index = () => {
           </div>
         </section>
         
-        {/* SECTION 6 – Ease & Speed Layer */}
         <section className="bg-gray-50 py-12 px-4">
           <div className="container mx-auto max-w-2xl">
             <h2 className="text-xl font-bold text-gray-900">
@@ -153,7 +145,6 @@ const Index = () => {
           </div>
         </section>
         
-        {/* SECTION 7 – Emotional Closer */}
         <section className="bg-white py-12 px-4">
           <div className="container mx-auto">
             <p className="text-sm text-gray-700 mt-6 text-center max-w-xl mx-auto">
@@ -166,7 +157,6 @@ const Index = () => {
           </div>
         </section>
         
-        {/* SECTION 8 – Testimonials */}
         <section className="bg-gray-50 py-12 px-4">
           <div className="container mx-auto max-w-4xl">
             <h2 className="text-xl font-bold text-gray-900 text-center">
@@ -213,7 +203,6 @@ const Index = () => {
           </div>
         </section>
         
-        {/* SECTION 9 – Final CTA Block */}
         <section className="bg-white py-12 px-4">
           <div className="container mx-auto max-w-2xl">
             <div className="bg-black text-white p-6 rounded-xl text-center space-y-3">
@@ -232,7 +221,6 @@ const Index = () => {
         </section>
       </main>
       
-      {/* Exit-Intent Modal */}
       <Dialog open={showExitModal} onOpenChange={setShowExitModal}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
