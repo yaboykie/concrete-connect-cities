@@ -23,7 +23,7 @@ export const LeadForm = ({ form, isSubmitting, purpose, onSubmit }: LeadFormProp
           {...form.register('name')}
         />
         {form.formState.errors.name && (
-          <p className="text-red-500 text-xs">{form.formState.errors.name.message}</p>
+          <p className="text-red-500 text-xs">{String(form.formState.errors.name.message || 'Name is required')}</p>
         )}
       </div>
       
@@ -36,7 +36,7 @@ export const LeadForm = ({ form, isSubmitting, purpose, onSubmit }: LeadFormProp
           {...form.register('email')}
         />
         {form.formState.errors.email && (
-          <p className="text-red-500 text-xs">{form.formState.errors.email.message}</p>
+          <p className="text-red-500 text-xs">{String(form.formState.errors.email.message || 'Email is required')}</p>
         )}
       </div>
       
@@ -49,7 +49,7 @@ export const LeadForm = ({ form, isSubmitting, purpose, onSubmit }: LeadFormProp
             {...form.register('phone')}
           />
           {form.formState.errors.phone && (
-            <p className="text-red-500 text-xs">{form.formState.errors.phone.message}</p>
+            <p className="text-red-500 text-xs">{String(form.formState.errors.phone.message || 'Phone is required')}</p>
           )}
         </div>
         
@@ -61,7 +61,7 @@ export const LeadForm = ({ form, isSubmitting, purpose, onSubmit }: LeadFormProp
             {...form.register('zip_code')}
           />
           {form.formState.errors.zip_code && (
-            <p className="text-red-500 text-xs">{form.formState.errors.zip_code.message}</p>
+            <p className="text-red-500 text-xs">{String(form.formState.errors.zip_code.message || 'ZIP Code is required')}</p>
           )}
         </div>
       </div>
