@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDrivewayCalculator, presets } from './driveway-calculator/useDrivewayCalculator';
@@ -16,6 +15,7 @@ interface StateDrivewayCalculatorProps {
   tooltipDescriptions?: Record<string, string>;
   onInteraction?: () => void;
   stateName?: string;
+  onCalculate?: (area: number, priceRange: string, stateName: string) => void;
 }
 
 export default function StateDrivewayCalculator({
@@ -23,7 +23,8 @@ export default function StateDrivewayCalculator({
   estimateDisclaimer,
   tooltipDescriptions,
   onInteraction,
-  stateName: propStateName
+  stateName: propStateName,
+  onCalculate
 }: StateDrivewayCalculatorProps) {
   const params = useParams<{ state: string }>();
   const stateFromParam = params.state;
@@ -83,6 +84,12 @@ export default function StateDrivewayCalculator({
   }, [selectedState, toast]);
 
   const stateDisplayName = selectedState;
+
+  useEffect(() => {
+    if (price && onCalculate) {
+      onCalculate(area, price.totalRange, stateDisplayName);
+    }
+  }, [price, area, stateDisplayName, onCalculate]);
 
   return (
     <div className="calculator bg-white p-4 rounded-lg shadow-lg max-w-2xl mx-auto">

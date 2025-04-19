@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import StateDrivewayCalculator from '@/components/StateDrivewayCalculator';
 import { CheckCircle, Quote } from 'lucide-react';
 
@@ -8,6 +8,16 @@ interface CalculatorSectionProps {
 }
 
 const CalculatorSection: React.FC<CalculatorSectionProps> = ({ calculatorRef }) => {
+  const [estimateData, setEstimateData] = useState<{
+    area: number;
+    priceRange: string;
+    stateName: string;
+  } | null>(null);
+
+  const handleCalculate = (area: number, priceRange: string, stateName: string) => {
+    setEstimateData({ area, priceRange, stateName });
+  };
+
   return (
     <section className="bg-gray-50 py-8 px-4" ref={calculatorRef}>
       <div className="container mx-auto max-w-6xl">
@@ -103,6 +113,7 @@ const CalculatorSection: React.FC<CalculatorSectionProps> = ({ calculatorRef }) 
             <StateDrivewayCalculator 
               stateName="tx"
               estimateDisclaimer="These estimates are based on real project data from our network of concrete contractors."
+              onCalculate={handleCalculate}
             />
           </div>
         </div>
@@ -112,4 +123,3 @@ const CalculatorSection: React.FC<CalculatorSectionProps> = ({ calculatorRef }) 
 };
 
 export default CalculatorSection;
-
