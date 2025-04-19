@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -19,7 +18,6 @@ interface LeadCaptureDialogProps {
   purpose?: 'email' | 'quotes';
 }
 
-// Updated form validation schema
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name is required" }),
   email: z.string().email({ message: "Valid email is required" }),
@@ -56,7 +54,6 @@ export default function LeadCaptureDialog({
     setSubmitError(null);
     
     try {
-      // First, save to Supabase
       const { data: leadData, error: supabaseError } = await supabase.from("leads").insert([
         {
           lead_id: crypto.randomUUID(),
@@ -80,7 +77,6 @@ export default function LeadCaptureDialog({
       }
       
       if (purpose === 'email') {
-        // Send email notification via edge function
         try {
           const { error: functionError } = await supabase.functions.invoke('send-lead', {
             body: {
@@ -105,7 +101,6 @@ export default function LeadCaptureDialog({
           duration: 5000,
         });
       } else {
-        // Show quote matching success message
         toast({
           title: "Request Sent",
           description: "We'll match you with local driveway concreters shortly!",
@@ -152,7 +147,21 @@ export default function LeadCaptureDialog({
           </div>
         )}
         
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-2">
+        <div className="bg-blue-50 p-4 rounded-lg mb-4">
+          <h3 className="font-medium mb-2">Your {stateName} Driveway Details</h3>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <p className="text-sm text-gray-600">Size:</p>
+              <p className="font-semibold">{area} sq ft</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-600">Estimate:</p>
+              <p className="font-semibold text-green-700">{priceRange}</p>
+            </div>
+          </div>
+        </div>
+        
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <div className="grid gap-2">
             <Label htmlFor="name">Name *</Label>
             <Input
@@ -204,12 +213,6 @@ export default function LeadCaptureDialog({
             </div>
           </div>
           
-          <div className="bg-gray-50 p-3 rounded text-sm">
-            <p><strong>Your {stateName} Driveway Estimate</strong></p>
-            <p>Area: {area} sq ft</p>
-            <p>Price Range: {priceRange}</p>
-          </div>
-          
           <DialogFooter>
             <Button type="submit" className="w-full">
               {isSubmitting ? "Sending..." : purpose === 'email' ? "Send My Estimate" : "Match Me With Pros"}
@@ -220,4 +223,3 @@ export default function LeadCaptureDialog({
     </Dialog>
   );
 }
-
