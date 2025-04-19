@@ -28,8 +28,6 @@ export default defineConfig(({ mode }) => ({
     },
   },
   
-  // Remove all esbuild custom configuration to avoid version conflicts
-  
   build: {
     target: 'es2020',
     outDir: 'dist',
