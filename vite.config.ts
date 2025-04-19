@@ -38,9 +38,9 @@ export default defineConfig(({ mode }) => ({
   },
 
   optimizeDeps: {
-    force: true // Force dependencies optimization
+    force: true,
+    include: ['react', 'react-dom', 'react-router-dom']
   },
 
   appType: 'spa',
 }))
-
