@@ -16,7 +16,6 @@ interface StateDrivewayCalculatorProps {
   tooltipDescriptions?: Record<string, string>;
   onInteraction?: () => void;
   stateName?: string;
-  onEstimateCalculated?: (data: { area: number; priceRange: string; stateName: string }) => void;
 }
 
 export default function StateDrivewayCalculator({
@@ -24,8 +23,7 @@ export default function StateDrivewayCalculator({
   estimateDisclaimer,
   tooltipDescriptions,
   onInteraction,
-  stateName: propStateName,
-  onEstimateCalculated
+  stateName: propStateName
 }: StateDrivewayCalculatorProps) {
   const params = useParams<{ state: string }>();
   const stateFromParam = params.state;
@@ -67,18 +65,6 @@ export default function StateDrivewayCalculator({
     handleScrollToQuoteForm,
     handleStateChange
   } = useDrivewayCalculator(mappedInitialState, onInteraction);
-
-  // Notify parent component when estimate is calculated
-  useEffect(() => {
-    if (price && onEstimateCalculated) {
-      onEstimateCalculated({
-        area: area,
-        priceRange: price.totalRange,
-        stateName: selectedState
-      });
-      console.log("Emitting calculator data:", { area, priceRange: price.totalRange, stateName: selectedState });
-    }
-  }, [area, price, selectedState, onEstimateCalculated]);
 
   // Log current state for debugging
   useEffect(() => {

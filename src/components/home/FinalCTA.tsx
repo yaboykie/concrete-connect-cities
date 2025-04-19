@@ -4,17 +4,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import LeadCaptureDialog from '@/components/driveway-calculator/LeadCaptureDialog';
 
-interface FinalCTAProps {
-  area?: number;
-  priceRange?: string;
-  stateName?: string;
-}
-
-const FinalCTA = ({ 
-  area = 0, 
-  priceRange = 'Contact for quote', 
-  stateName = '' 
-}: FinalCTAProps) => {
+const FinalCTA = ({ area = 0, priceRange = '', stateName = '' }) => {
   const [dialogOpen, setDialogOpen] = React.useState(false);
 
   return (
@@ -38,7 +28,7 @@ const FinalCTA = ({
         open={dialogOpen} 
         onOpenChange={setDialogOpen}
         area={area}
-        priceRange={priceRange} 
+        priceRange={priceRange || 'Contact for quote'} 
         stateName={stateName}
         purpose="quotes"
       />

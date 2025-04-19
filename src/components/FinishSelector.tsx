@@ -39,7 +39,7 @@ export default function FinishSelector({
             >
               <div className="flex flex-col items-center text-center">
                 <Icon className={`h-8 w-8 mb-2 ${selectedFinishId === option.id ? 'text-brand-blue' : 'text-gray-500'}`} />
-                <span className="text-sm font-medium text-gray-800 dark:text-gray-200">{option.label}</span>
+                <span className="text-sm font-medium">{option.label}</span>
               </div>
             </div>
           );
@@ -48,4 +48,3 @@ export default function FinishSelector({
     </div>
   );
 }
-
