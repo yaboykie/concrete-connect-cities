@@ -18,6 +18,13 @@ export default function HomePage() {
   const [scrollPercentage, setScrollPercentage] = useState(0);
   const calculatorRef = useRef<HTMLDivElement>(null);
   
+  // Add state to track calculator data
+  const [calculatorData, setCalculatorData] = useState({
+    area: 0,
+    priceRange: 'Contact for quote',
+    stateName: 'Texas'
+  });
+  
   useEffect(() => {
     const handleScroll = () => {
       const windowHeight = window.innerHeight;
@@ -41,17 +48,34 @@ export default function HomePage() {
       calculatorRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   };
+  
+  // Handler to update calculator data
+  const handleCalculatorDataUpdate = (data: { area: number; priceRange: string; stateName: string }) => {
+    setCalculatorData(data);
+    console.log("Calculator data updated:", data);
+  };
 
   return (
     <main className="flex-grow">
       <HeroSection scrollToCalculator={scrollToCalculator} />
-      <CalculatorSection calculatorRef={calculatorRef} />
-      <MatchEstimateSection />
+      <CalculatorSection 
+        calculatorRef={calculatorRef} 
+        onCalculatorDataUpdate={handleCalculatorDataUpdate}
+      />
+      <MatchEstimateSection 
+        area={calculatorData.area} 
+        priceRange={calculatorData.priceRange} 
+        stateName={calculatorData.stateName} 
+      />
       <TrustSection />
       <EaseSpeedSection />
       <EmotionalCloser />
       <TestimonialsSection />
-      <FinalCTA />
+      <FinalCTA 
+        area={calculatorData.area} 
+        priceRange={calculatorData.priceRange} 
+        stateName={calculatorData.stateName} 
+      />
       <ExitIntentModal 
         showModal={showExitModal} 
         setShowModal={setShowExitModal} 

@@ -4,7 +4,17 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import LeadCaptureDialog from '@/components/driveway-calculator/LeadCaptureDialog';
 
-const MatchEstimateSection = ({ area = 0, priceRange = '', stateName = '' }) => {
+interface MatchEstimateSectionProps {
+  area?: number;
+  priceRange?: string;
+  stateName?: string;
+}
+
+const MatchEstimateSection = ({ 
+  area = 0, 
+  priceRange = 'Contact for quote', 
+  stateName = '' 
+}: MatchEstimateSectionProps) => {
   const [dialogOpen, setDialogOpen] = React.useState(false);
 
   return (
@@ -46,7 +56,7 @@ const MatchEstimateSection = ({ area = 0, priceRange = '', stateName = '' }) => 
         open={dialogOpen} 
         onOpenChange={setDialogOpen}
         area={area}
-        priceRange={priceRange || 'Contact for quote'} 
+        priceRange={priceRange} 
         stateName={stateName}
         purpose="quotes"
       />
