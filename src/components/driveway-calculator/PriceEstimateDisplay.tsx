@@ -3,6 +3,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import LeadCaptureDialog from './LeadCaptureDialog';
 import { cn } from "@/lib/utils";
+import { ArrowRight } from 'lucide-react';
 
 interface PriceEstimateDisplayProps {
   price: { pricePerSqft: string; avgSize: string; totalRange: string; } | null;
@@ -19,27 +20,12 @@ export default function PriceEstimateDisplay({
   area,
   stateName = '',
   estimateDisclaimer,
-  onGetQuotes,
   dataSource = 'specific',
   className
 }: PriceEstimateDisplayProps) {
   const [dialogOpen, setDialogOpen] = React.useState(false);
-
-  const handleGetQuotesClick = (e: React.MouseEvent) => {
-    setDialogOpen(true);
-    
-    if (onGetQuotes) {
-      onGetQuotes(e);
-    }
-  };
   
-  React.useEffect(() => {
-    console.log("PriceEstimateDisplay received new data:", { price, area });
-  }, [price, area]);
-  
-  if (!price) {
-    return null;
-  }
+  if (!price) return null;
 
   return (
     <div className={cn(
@@ -67,13 +53,26 @@ export default function PriceEstimateDisplay({
       
       <div className="mt-4">
         <Button 
-          onClick={handleGetQuotesClick}
+          onClick={() => setDialogOpen(true)}
           className="w-full bg-brand-blue hover:bg-brand-blue/90"
         >
-          See Which Local Pros Match This Estimate
+          Get Matched with Local Pros <ArrowRight className="ml-2 h-5 w-5" />
         </Button>
-        <p className="text-xs text-gray-500 text-center px-2 mt-2">
-          We only show concreters rated 4.7★ or higher on Google.
+
+        <ul className="mt-4 space-y-2 text-sm">
+          <li className="flex items-center text-gray-600">
+            <span className="mr-2">✓</span> No chasing. No voicemails. No pressure.
+          </li>
+          <li className="flex items-center text-gray-600">
+            <span className="mr-2">✓</span> Quotes only from verified concreters in {stateName}
+          </li>
+          <li className="flex items-center text-gray-600">
+            <span className="mr-2">✓</span> Many respond within 24 hours
+          </li>
+        </ul>
+        
+        <p className="text-xs text-gray-500 text-center px-2 mt-4">
+          We only match you with concreters rated 4.7★ or higher on Google Reviews
         </p>
       </div>
       
