@@ -213,10 +213,26 @@ export default function LeadCaptureDialog({
             </div>
           </div>
           
+          <div className="text-center">
+            <p className="text-xs text-gray-400 mb-2">
+              🔒 Your details are only shared with concreters you approve.
+            </p>
+          </div>
+          
           <DialogFooter>
-            <Button type="submit" className="w-full">
-              {isSubmitting ? "Sending..." : purpose === 'email' ? "Send My Estimate" : "Match Me With Pros"}
-            </Button>
+            <div className="w-full">
+              <Button type="submit" className="w-full">
+                {isSubmitting 
+                  ? "Sending..." 
+                  : purpose === 'email' 
+                    ? "Send My Estimate" 
+                    : "See My Local Matches"
+                }
+              </Button>
+              <p className="text-xs text-gray-500 mt-2 text-center">
+                You'll instantly see up to 3 concreters who match your estimate. No pressure. No spam.
+              </p>
+            </div>
           </DialogFooter>
         </form>
       </DialogContent>
