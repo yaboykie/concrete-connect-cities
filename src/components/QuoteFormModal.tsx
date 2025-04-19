@@ -1,49 +1,45 @@
 
 import React from 'react';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { Button } from '@/components/ui/button';
-import ContactForm from './ContactForm';
+import LeadCaptureDialog from './driveway-calculator/LeadCaptureDialog';
 
 interface QuoteFormModalProps {
   buttonText?: string;
   buttonClassName?: string;
   triggerClassName?: string;
+  area?: number;
+  priceRange?: string;
+  stateName?: string;
 }
 
 const QuoteFormModal = ({
   buttonText = "Get My Free Quote",
   buttonClassName = "cta-button",
   triggerClassName = "",
+  area = 0,
+  priceRange = "Contact for quote",
+  stateName = "",
 }: QuoteFormModalProps) => {
   const [open, setOpen] = React.useState(false);
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild className={triggerClassName}>
-        <Button className={buttonClassName}>
-          {buttonText}
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
-        <DialogHeader>
-          <DialogTitle className="text-center text-2xl">Get Your Free Driveway Quote</DialogTitle>
-          <DialogDescription className="text-center space-y-2">
-            <p>Fill out the form below to receive free quotes from trusted driveway concreters in your area.</p>
-            <p className="text-sm text-muted-foreground">
-              We'll match you with up to 3 local driveway concreters, all rated 4.7★ or higher on Google Reviews
-            </p>
-          </DialogDescription>
-        </DialogHeader>
-        <ContactForm closeModal={() => setOpen(false)} />
-      </DialogContent>
-    </Dialog>
+    <>
+      <Button 
+        onClick={() => setOpen(true)} 
+        className={buttonClassName}
+      >
+        {buttonText}
+      </Button>
+
+      <LeadCaptureDialog
+        open={open}
+        onOpenChange={setOpen}
+        area={area}
+        priceRange={priceRange}
+        stateName={stateName}
+        purpose="quotes"
+      />
+    </>
   );
 };
 

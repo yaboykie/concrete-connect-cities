@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import LeadCaptureDialog from '@/components/driveway-calculator/LeadCaptureDialog';
 
-const FinalCTA = () => {
+const FinalCTA = ({ area = 0, priceRange = '', stateName = '' }) => {
   const [dialogOpen, setDialogOpen] = React.useState(false);
 
   return (
@@ -19,7 +19,7 @@ const FinalCTA = () => {
             onClick={() => setDialogOpen(true)}
             className="bg-white text-black px-6 py-3 rounded-md hover:bg-gray-200 transition"
           >
-            Get My Free Quote <ArrowRight className="ml-2 h-5 w-5" />
+            Get Matched with Local Pros <ArrowRight className="ml-2 h-5 w-5" />
           </Button>
         </div>
       </div>
@@ -27,9 +27,9 @@ const FinalCTA = () => {
       <LeadCaptureDialog 
         open={dialogOpen} 
         onOpenChange={setDialogOpen}
-        area={0}
-        priceRange="Contact for quote" 
-        stateName=""
+        area={area}
+        priceRange={priceRange || 'Contact for quote'} 
+        stateName={stateName}
         purpose="quotes"
       />
     </section>
