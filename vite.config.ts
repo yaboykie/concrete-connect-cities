@@ -28,23 +28,17 @@ export default defineConfig(({ mode }) => ({
     },
   },
 
-  optimizeDeps: {
-    esbuildOptions: {
-      target: 'esnext',
-    },
-  },
-
+  // Remove optimizeDeps esbuildOptions to avoid version conflicts
+  
+  // Fixed esbuild configuration to avoid version mismatch
   esbuild: {
-    tsconfigRaw: {
-      compilerOptions: {
-        target: 'esnext',
-        module: 'esnext',
-      },
-    },
+    // Simplified configuration to avoid version conflicts
+    logLevel: 'info',
+    target: 'es2020',
   },
 
   build: {
-    target: 'esnext',
+    target: 'es2020', // Use a more compatible target
     outDir: 'dist',
     rollupOptions: {
       input: {
