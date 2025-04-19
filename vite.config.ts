@@ -2,6 +2,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 import * as path from 'path'
+import { componentTagger } from "lovable-tagger"
 
 console.log('-------------------------------------')
 console.log('Loading Vite config')
@@ -9,8 +10,11 @@ console.log('Node version:', process.version)
 console.log('Current directory:', process.cwd())
 console.log('-------------------------------------')
 
-export default defineConfig({
-  plugins: [react()],
+export default defineConfig(({ mode }) => ({
+  plugins: [
+    react(),
+    mode === 'development' && componentTagger(),
+  ].filter(Boolean),
 
   server: {
     host: '::',
@@ -33,10 +37,10 @@ export default defineConfig({
     },
   },
 
-  // Removing specific esbuild configuration to avoid version conflicts
   optimizeDeps: {
     force: true // Force dependencies optimization
   },
 
   appType: 'spa',
-})
+}))
+
