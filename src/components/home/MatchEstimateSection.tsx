@@ -21,22 +21,6 @@ const MatchEstimateSection = ({ estimateData }: MatchEstimateSectionProps) => {
         Ready to See Which Concreters Match Your Estimate?
       </h2>
 
-      <p className="text-center text-gray-600 max-w-2xl mx-auto mb-8">
-        We'll match you with 2–3 concreters in your area who are rated 4.7★ or higher on Google — and are actually available to quote your job.
-      </p>
-
-      <ul className="flex flex-col md:flex-row justify-center gap-6 text-sm text-left max-w-4xl mx-auto mb-8">
-        <li className="flex items-start gap-2">
-          ✓ No chasing. No voicemails. No pressure.
-        </li>
-        <li className="flex items-start gap-2">
-          ✓ All concreters verified & highly rated
-        </li>
-        <li className="flex items-start gap-2">
-          ✓ Many respond within 24 hours
-        </li>
-      </ul>
-
       <div className="flex justify-center">
         <Button 
           onClick={() => setDialogOpen(true)}
@@ -45,32 +29,12 @@ const MatchEstimateSection = ({ estimateData }: MatchEstimateSectionProps) => {
           Get Matched with Local Pros <ArrowRight className="ml-2 h-5 w-5" />
         </Button>
       </div>
-
-      <p className="text-center text-xs text-gray-400 mt-3">
-        We only match you with concreters rated 4.7★ or higher on Google Reviews
-      </p>
     </section>
   );
 
   const renderLocalProsSection = () => (
     <section className="bg-gray-50 py-16 px-6">
       <div className="container mx-auto max-w-4xl">
-        <p className="text-center text-gray-600 max-w-2xl mx-auto mb-8">
-          We'll match you with 2–3 concreters in your area who are rated 4.7★ or higher on Google — and are actually available to quote your job.
-        </p>
-
-        <ul className="flex flex-col md:flex-row justify-center gap-6 text-sm text-left max-w-4xl mx-auto mb-8">
-          <li className="flex items-start gap-2">
-            ✓ No chasing. No voicemails. No pressure.
-          </li>
-          <li className="flex items-start gap-2">
-            ✓ All concreters verified & highly rated
-          </li>
-          <li className="flex items-start gap-2">
-            ✓ Many respond within 24 hours
-          </li>
-        </ul>
-
         <div className="flex justify-center">
           <Button 
             onClick={() => setDialogOpen(true)}
@@ -79,10 +43,6 @@ const MatchEstimateSection = ({ estimateData }: MatchEstimateSectionProps) => {
             Get Matched with Local Pros <ArrowRight className="ml-2 h-5 w-5" />
           </Button>
         </div>
-
-        <p className="text-center text-xs text-gray-400 mt-3">
-          We only match you with concreters rated 4.7★ or higher on Google Reviews
-        </p>
       </div>
     </section>
   );
