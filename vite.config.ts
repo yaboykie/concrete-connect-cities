@@ -25,13 +25,17 @@ export default defineConfig({
   },
   
   build: {
-    target: 'es2020',
     outDir: 'dist',
     rollupOptions: {
       input: {
         main: path.resolve(__dirname, 'index.html'),
       },
     },
+  },
+
+  // Removing specific esbuild configuration to avoid version conflicts
+  optimizeDeps: {
+    force: true // Force dependencies optimization
   },
 
   appType: 'spa',
