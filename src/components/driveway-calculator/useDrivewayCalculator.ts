@@ -81,9 +81,13 @@ const defaultPrices = {
 // Helper function to calculate price based on square footage and price per sqft
 const calculatePriceRange = (area: number, pricePerSqft: string): string => {
   try {
-    // Parse price per sqft range (format: "$X-Y")
-    const match = pricePerSqft.match(/\$(\d+)-(\d+)/);
-    if (!match) return 'Price calculation error';
+    // Parse price per sqft range (format: "$X-Y", "$X–$Y", or "$X–Y")
+    // This regex handles multiple dash types and dollar sign formats
+    const match = pricePerSqft.match(/\$(\d+)(?:–|-)\$?(\d+)/);
+    if (!match) {
+      console.error("Price format not recognized:", pricePerSqft);
+      return `$${Math.round(area * 7)}-$${Math.round(area * 12)}`; // Fallback calculation
+    }
     
     const minPrice = parseInt(match[1], 10);
     const maxPrice = parseInt(match[2], 10);
@@ -94,8 +98,8 @@ const calculatePriceRange = (area: number, pricePerSqft: string): string => {
     
     return `$${minTotal.toLocaleString()}-$${maxTotal.toLocaleString()}`;
   } catch (e) {
-    console.error('Error calculating price range:', e);
-    return pricePerSqft; // Return original string if calculation fails
+    console.error('Error calculating price range:', e, 'for pricePerSqft:', pricePerSqft);
+    return `$${Math.round(area * 7)}-$${Math.round(area * 12)}`; // Fallback calculation
   }
 };
 
