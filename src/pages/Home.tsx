@@ -1,3 +1,4 @@
+
 "use client"
 
 import React, { useState, useRef, useEffect } from 'react';
@@ -8,7 +9,6 @@ import TrustSection from '@/components/home/TrustSection';
 import EaseSpeedSection from '@/components/home/EaseSpeedSection';
 import EmotionalCloser from '@/components/home/EmotionalCloser';
 import TestimonialsSection from '@/components/home/TestimonialsSection';
-import FinalCTA from '@/components/home/FinalCTA';
 import ExitIntentModal from '@/components/home/ExitIntentModal';
 
 export default function HomePage() {
@@ -50,7 +50,6 @@ export default function HomePage() {
       <EaseSpeedSection />
       <EmotionalCloser />
       <TestimonialsSection />
-      <FinalCTA />
       <ExitIntentModal 
         showModal={showExitModal} 
         setShowModal={setShowExitModal} 
@@ -59,4 +58,4 @@ export default function HomePage() {
       />
     </main>
   );
-}
+};
